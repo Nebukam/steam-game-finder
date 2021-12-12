@@ -1,0 +1,34 @@
+{
+    "name": "steam-game-finder",
+    "longName": "Steam : Game finder",
+    "shortName": "GameFinder",
+    "description": "Steam : Game Finder allows you to find which multiplayer games are shared within a group of steam users",
+    "homepage": "https://nebukam.github.io/steam-game-finder/",
+    "app": {
+        "display": "standalone",
+        "orientation": "portrait",
+        "colorTheme": "#1e1e1e",
+        "theme": "default"
+    },
+    "extension": {
+        "manifest_version":3,
+        "popup": {
+            "width": 800,
+            "height": 600
+        },
+        "display": "popup",
+        "permissions": [
+            "storage"
+        ],
+        "hostPermissions": [
+            "%homepage%"
+        ]
+    },
+    "builds": [
+        { "platform": "www" },
+        { "platform": "pwa" },
+        { "platform": "chrome" },
+        { "platform": "firefox" },
+        { "platform": "edge" }
+    ]
+}
