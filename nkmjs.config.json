@@ -16,12 +16,14 @@
             "width": 800,
             "height": 600
         },
-        "display": "popup",
+        "display": "standalone",
         "permissions": [
             "storage"
         ],
         "hostPermissions": [
-            "%homepage%"
+            "%homepage%",
+            "https://nebukam.github.io/*",
+            "https://steamcommunity.com/*"
         ]
     },
     "builds": [

@@ -5,55 +5,62 @@ const ui = nkm.ui;
 const com = nkm.common;
 const app = nkm.app;
 
-const LocalisationExplorer = require(`./localisation/explorer`);
-const OverviewExplorer = require(`./overview/explorer`);
-const AppOptionsExplorer = require(`./app-options/explorer`);
-const WorkspacePlaceholder = require(`./wks-placeholder`);
-const WelcomeView = require(`./welcome-view`);
+const sgfViews = require(`./views`);
+const sgfExplorers = require(`./explorers`);
+
+const AppOptionsExplorer = require(`./app-options/app-options-explorer`);
+const Database = require(`./data/database`);
 
 /**
- * NKMToolbox is a little tool designed to facilitate the creation & localisation
- * of apps that are built with the NKMjs Framework.
+ * SteamGameFinder allows you to find which multiplayer games are shared within a group of steam users
  */
-class NKMToolbox extends app.AppBase {
+class SteamGameFinder extends app.AppBase {
 
     constructor() { super(); }
 
     _Init() {
         super._Init();
 
-        nkm.uiworkspace.Workspace.__default_placeholderViewClass = WorkspacePlaceholder;
+        // Setup Steam cookies
+
+        this._fiftyYearsAgo = ((Date.now() - 1576800000000) / 1000).toFixed();
+        document.cookie = `wants_mature_content="1"`;
+        document.cookie = `birthtime=${this._fiftyYearsAgo}`;
+        document.cookie = `path=/`;
+        document.cookie = `max-age=315360000`;
+
+        //axios.defaults.withCredentials = true;
 
         this._layers = [
             { id: `mainLayout`, cl: require("./main-layout") }
         ];
+
+        this._DB = new Database();
+
     }
+
+    get database() { return this._DB; }
 
     AppReady() {
         super.AppReady();
 
         this._mainCatalog = nkm.data.catalogs.CreateFrom({
-            [com.IDS.NAME]: `NKMjs Toolbox`
+            [com.IDS.NAME]: `SGF`
         }, [
             {
-                [com.IDS.NAME]: `Overview`,
+                [com.IDS.NAME]: `Friends`,
                 [com.IDS.ICON]: `new`,
-                [ui.IDS.VIEW_CLASS]: OverviewExplorer
-            },
-            {
-                [com.IDS.NAME]: `Localization`,
-                [com.IDS.ICON]: `icon`,
-                [ui.IDS.VIEW_CLASS]: LocalisationExplorer
+                [ui.IDS.VIEW_CLASS]: sgfExplorers.UserList
             }
         ]);
 
 
         let mainShelf = this.mainLayout.shelf;
         mainShelf.catalog = this._mainCatalog;
-        mainShelf.RequestPlaceholderView();
+        mainShelf.RequestView(0);
 
         mainShelf.nav.toolbar.CreateHandle({
-            [com.IDS.NAME]: `Overview`,
+            [com.IDS.NAME]: `Options`,
             [com.IDS.ICON]: `icon`,
             [ui.IDS.TRIGGER]: {
                 fn: mainShelf.SetCurrentView,
@@ -62,15 +69,46 @@ class NKMToolbox extends app.AppBase {
             }
         });
 
-        this.mainLayout.workspace.Host({
-            [ui.IDS.VIEW_CLASS]: WelcomeView,
-            [ui.IDS.NAME]: `Welcome !`
+        let gamesList = this.mainLayout.workspace.Host({
+            [ui.IDS.VIEW_CLASS]: sgfViews.GamesList,
+            [ui.IDS.NAME]: `Shared Games`,
+            [ui.IDS.STATIC]: true
         });
 
+        this.mainLayout.workspace.Host({
+            [ui.IDS.VIEW_CLASS]: sgfViews.FriendsList,
+            [ui.IDS.NAME]: `Friends`,
+            [ui.IDS.STATIC]: true
+        });
 
+        gamesList.options.view.RequestDisplay();
+
+        //Load some users
+
+        this._DB.GetUser(`76561197998180826`);
+        this._DB.GetUser(`asdasdasdasd as das dasdasdasdasdasdasdasdasdasdasdasdasdasd`);
+        this._DB.GetUser(`76561198055276814`);
+        this._DB.GetUser(`nebukam`);
+
+        //      this._429();
+
+    }
+
+    _429() {
+        nkm.dialog.Push({
+            [ui.IDS.TITLE]: `Ewwww.`,
+            [ui.IDS.MESSAGE]: `It appears that Steam has temporarily locked out your IP from requesting data.</br><b>Wait a few minutes and come back.</b>`,
+            actions: [
+                { label: `Ok` }
+            ],
+            origin: this,
+            [ui.IDS.ICON]: `warning`,
+            [ui.IDS.FLAVOR]: nkm.common.FLAGS.WARNING,
+            [ui.IDS.VARIANT]: ui.FLAGS.FRAME
+        });
     }
 
 
 }
 
-module.exports = NKMToolbox;
+module.exports = SteamGameFinder;
