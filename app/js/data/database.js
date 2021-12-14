@@ -91,12 +91,15 @@ class Database extends nkm.common.pool.DisposableObjectEx{
         }else{
             game = new GameData();
             game.appid = p_appid;
-            game.Watch(RemoteDataBlock.STATE_CHANGE, this._OnGameStateChanged, this);
+            game._db = this;
+            game.Watch(SIGNAL.STATE_CHANGED, this._OnGameStateChanged, this);
             game.Watch(nkm.common.SIGNAL.UPDATED, this._OnGameUpdated, this);
             this._gameMap.Set(p_appid, game);
             this._gameList.push(game);
             this._Broadcast(SIGNAL.GAME_ADDED, game);
+            
             //game.RequestLoad();
+            
         }
 
         return game;
@@ -145,7 +148,6 @@ class Database extends nkm.common.pool.DisposableObjectEx{
     _OnUserUpdate(p_user){
         
         
-
         let anyLoading = false;
         let invalidCount = 0;
         let readyCount = 0;

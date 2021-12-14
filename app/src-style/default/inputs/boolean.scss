@@ -8,6 +8,7 @@
 @import '../_constants';
 
 :host {
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
 
@@ -16,6 +17,7 @@
 
 .field{
     height: var(--size);
+    cursor: pointer;
 }
 
 .body {

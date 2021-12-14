@@ -11,7 +11,7 @@
         "theme": "default"
     },
     "extension": {
-        "manifest_version":3,
+        "manifest_version": 3,
         "popup": {
             "width": 800,
             "height": 600
@@ -23,14 +23,25 @@
         "hostPermissions": [
             "%homepage%",
             "https://nebukam.github.io/*",
-            "https://steamcommunity.com/*"
+            "https://steamcommunity.com/*",
+            "https://cdn.akamai.steamstatic.com/steamcommunity/public/*"
         ]
     },
     "builds": [
-        { "platform": "www" },
-        { "platform": "pwa" },
-        { "platform": "chrome" },
-        { "platform": "firefox" },
-        { "platform": "edge" }
+        {
+            "platform": "www"
+        },
+        {
+            "platform": "pwa"
+        },
+        {
+            "platform": "chrome"
+        },
+        {
+            "platform": "firefox"
+        },
+        {
+            "platform": "edge"
+        }
     ]
 }

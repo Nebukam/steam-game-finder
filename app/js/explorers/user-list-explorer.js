@@ -35,21 +35,12 @@ class UserListExplorer extends uiworkspace.Explorer {
             '.body': {
                 'padding':'0px 8px 0px 4px'
             },
+            '.user-input-field':{
+                
+            },
             '.user-card': {
                 'margin-bottom':'4px',
                 'width':'100%'
-            },
-
-            '.input-ctnr':{
-                'display':'flex',
-                'flex-flow':'row nowrap',
-                //'padding':'10px'
-            },
-            '.field-id':{
-                'flex':'1 1 auto'
-            },
-            '.btn-add':{
-                'flex':'0 0 auto'
             }
 
 
@@ -57,20 +48,10 @@ class UserListExplorer extends uiworkspace.Explorer {
     }
 
     _Render(){
+        
         super._Render();
 
-        let inputCtnr = u.dom.El(`div`, { class:'input-ctnr'  }, this._header);
-
-        this._inputField = this.Add(uilib.inputs.InputText, `field-id`, inputCtnr);
-        this._inputField.placeholderValue = `Profile name, url, ...`;
-
-        this._submitBtn = this.Add(uilib.buttons.Tool, 'btn-add', inputCtnr);
-        this._submitBtn.options = {
-            [ui.IDS.FLAVOR] : ui.FLAGS.CTA,
-            //[ui.IDS.VARIANT] : ui.FLAGS.FRAME,
-            [ui.IDS.ICON] : 'plus',
-            trigger:{fn:this._OnInputSubmit, thisArg:this}
-        }
+        this.Add(comps.UserInputField, `user-input-field`, this._header);
 
         /*
         for(let i = 0; i < 13; i++){
@@ -117,8 +98,8 @@ class UserListExplorer extends uiworkspace.Explorer {
 
         var statusText = `Add some users to start !`;
         var substatus = ``;
-        this._submitBtn.visible = false;
-
+        //this._submitBtn.visible = false;
+        
         switch(nkm.env.APP.database._userStatuses){
 
             case RemoteDataBlock.STATE_NONE:
@@ -151,82 +132,7 @@ class UserListExplorer extends uiworkspace.Explorer {
 
         //this._subStatusLabel.text = substatus;
         //this._statusLabel.text = statusText;
-
-    }
-
-    //#endregion
-
-    //#region user input
-
-    _OnInputSubmit(p_field, p_value){
-        //this._inputField.currentValue = p_value;
-        console.log("current input = "+this._inputField.currentValue);
-    }
-
-    _CreateNewFromInputValue(){
-
-        try{
-            
-            var playerid = this._inputField.currentValue;
-
-            if(this._ReadJSONList(playerid)){
-                this._inputField.currentValue = ``;
-                return;
-            }
-
-            if(playerid == ``){ return; }
-
-            if(playerid.includes(`.com/profiles`)){
-                playerid = playerid.split(`.com/profiles/`)[1];
-                var fs = playerid.split(`/`);
-                if(fs.length >1){ playerid = fs[0]; }
-            }else if(playerid.includes(`.com/id`)){
-                playerid = playerid.split(`.com/id/`)[1];
-                var fs = playerid.split(`/`);
-                if(fs.length >1){ playerid = fs[0]; }
-            }
-
-            if(playerid == ``){ return; }
-
-            
-            ENV.APP._DB.GetUser(playerid);
-            this._inputField.currentValue = ``;
-
-        }catch(e){
-            this._inputField.currentValue = ``;
-        }
-    }
-
-    
-    _InitSearch(){
-        //window.open("steam://url/SteamIDMyProfile");
-        this._submitCallback.call();
-    }
-    
-    _LoadStoredUserList(result){
-        if(result.userlist != ``){
-            this._ReadJSONList(result.userlist);
-        }
-    }
-
-    _ReadJSONList(p_json){
-        try{
-            var uList = JSON.parse(p_json);
-            if(!Array.isArray(uList)){ return false; }
-            for(var i = 0, n = uList.length; i < n; i++){
-                if(uList[i].id == ``){ continue; }
-                ENV.APP._DB.GetUser(uList[i].id, uList[i].active);
-            }
-            return true;
-        }catch(e){
-            return false;
-        }
-    }
-
-    //
-
-    _CopyUsersToClipboard(){
-        navigator.clipboard.writeText(ENV.APP._DB._GetUserJSONData());
+        
     }
 
     //#endregion

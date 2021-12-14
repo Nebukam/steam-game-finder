@@ -21,6 +21,10 @@ class SteamGameFinder extends app.AppBase {
     _Init() {
         super._Init();
 
+        this._defaultUserPreferences = {
+            gamelist:{}
+        };
+
         // Setup Steam cookies
 
         this._fiftyYearsAgo = ((Date.now() - 1576800000000) / 1000).toFixed();
@@ -69,29 +73,34 @@ class SteamGameFinder extends app.AppBase {
             }
         });
 
-        let gamesList = this.mainLayout.workspace.Host({
+        this._gamesList = this.mainLayout.workspace.Host({
             [ui.IDS.VIEW_CLASS]: sgfViews.GamesList,
             [ui.IDS.NAME]: `Shared Games`,
             [ui.IDS.STATIC]: true
         });
 
-        this.mainLayout.workspace.Host({
+        this._friendsList = this.mainLayout.workspace.Host({
             [ui.IDS.VIEW_CLASS]: sgfViews.FriendsList,
             [ui.IDS.NAME]: `Friends`,
             [ui.IDS.STATIC]: true
         });
 
-        gamesList.options.view.RequestDisplay();
+        this._gamesList.options.view.RequestDisplay();
 
         //Load some users
 
         this._DB.GetUser(`76561197998180826`);
         this._DB.GetUser(`asdasdasdasd as das dasdasdasdasdasdasdasdasdasdasdasdasdasd`);
-        this._DB.GetUser(`76561198055276814`);
+        //this._DB.GetUser(`76561198055276814`); //gloomy mary 1500+games
         this._DB.GetUser(`nebukam`);
+        this._DB.GetUser(`asd`); // should be private
 
         //      this._429();
 
+    }
+
+    _RequestFriendList(p_user){
+        this._friendsList.options.view.LoadFriendlist(p_user);
     }
 
     _429() {

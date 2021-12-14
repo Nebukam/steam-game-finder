@@ -19,6 +19,10 @@ class RemoteDataBlock extends nkm.data.DataBlock{
     _Init(){
         super._Init();
 
+        this._loadPriority = false;
+        this._loadParallel = true;
+        this._rscType = io.resources.TextResource;
+
         this._db = null;
         this._state = RemoteDataBlock.STATE_NONE;
         this._dataPath = "";
@@ -34,7 +38,7 @@ class RemoteDataBlock extends nkm.data.DataBlock{
         if(p_state == this._state){return;}
         let oldState = this._state;
         this._state = p_state;        
-        this._Broadcast(SIGNAL.STATE_CHANGE, this, p_state, oldState);
+        this._Broadcast(SIGNAL.STATE_CHANGED, this, p_state, oldState);
         this.CommitUpdate();
     }
 
@@ -50,15 +54,15 @@ class RemoteDataBlock extends nkm.data.DataBlock{
 
         this.state = RemoteDataBlock.STATE_LOADING;
 
-
-
         io.Read(
             this._dataPath,
-            { cl: io.resources.TextResource },
+            { cl: this._rscType },
             {
                 success: this._OnLoadRequestSuccess,
                 error: this._OnLoadRequestError,
-                any:this._OnLoadRequestComplete
+                any:this._OnLoadRequestComplete,
+                important:this._loadPriority, 
+                parallel:this._loadParallel
             }
         );
         
@@ -69,7 +73,8 @@ class RemoteDataBlock extends nkm.data.DataBlock{
     }
 
     _OnLoadRequestError(p_err){
-        console.error(p_err);
+
+        //console.error(p_err);
         if(p_err.response && p_err.response.status == 429){
             nkm.env.APP._429();
         }
@@ -79,8 +84,6 @@ class RemoteDataBlock extends nkm.data.DataBlock{
     _OnLoadRequestComplete(){
         
     }
-
-    
 
     _CleanUp(){
 

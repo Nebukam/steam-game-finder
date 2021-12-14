@@ -10,6 +10,8 @@ class GameData extends RemoteDataBlock{
     _Init(){
         super._Init();
 
+        this._rscType = nkm.io.resources.JSONResource;
+
         this._appid = "";
         this._parentGame = null;
         this._flags = null;
@@ -90,22 +92,24 @@ class GameData extends RemoteDataBlock{
 
     /////
 
-    _OnLoadRequestSuccess(p_data){
+    _OnLoadRequestSuccess(p_rsc){
 
-        this._flags = p_data.data.flags;
-        this._tags = p_data.data.tags;
+        this._flags = p_rsc.content.flags;
+        this._tags = p_rsc.content.tags;
 
-        let parentID = p_data.data.parentappid;
+        let parentID = p_rsc.content.parentappid;
         if(parentID != ``){
-            this._parentGame = ENV.APP._DB.GetGame(parentID);
+            this._parentGame = nkm.env.APP.database.GetGame(parentID);
             this._parentGame.AddChild(this);
         }
 
-        super._OnLoadRequestSuccess(p_data);
+        super._OnLoadRequestSuccess(p_rsc);
     }
 
     AddChild(p_game){
-        if(!this._childs.includes(p_game)){ this._childs.push(p_game); }
+        if(!this._childs.includes(p_game)){ 
+            this._childs.push(p_game);
+        }
     }
 
     /////

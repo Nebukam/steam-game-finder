@@ -56,6 +56,10 @@ class FriendsListView extends ui.views.View {
         }
     }
 
+    LoadFriendlist(p_user){
+        this.RequestDisplay();
+    }
+
 }
 
 module.exports = FriendsListView;
