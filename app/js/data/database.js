@@ -39,8 +39,8 @@ class Database extends nkm.common.pool.DisposableObjectEx {
         this._enums.push({ key: "21", id: `DLC`, flag: false }); // 0
         //this._enums.push({ key: "1", id: `multiplayer`, flag: true }); // 1
         this._enums.push({ key: "2", id: `Single Player`, flag: false }); // 2
-        this._enums.push({ key: "49", id: `PVP`, flag: true }); // 3
-        this._enums.push({ key: "9", id: `Co-op`, flag: true }); // 4
+        //this._enums.push({ key: "49", id: `PVP`, flag: true }); // 3
+        //this._enums.push({ key: "9", id: `Co-op`, flag: true }); // 4
         this._enums.push({ key: "20", id: `MMO`, flag: false }); // 5
         this._enums.push({ key: "36", id: `Online PvP`, flag: true }); // 6
         this._enums.push({ key: "38", id: `Online Coop`, flag: true }); // 7

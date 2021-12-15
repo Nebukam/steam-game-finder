@@ -135,12 +135,18 @@ class GameData extends RemoteDataBlock {
 
     AddUser(p_user) {
         let index = this._users.indexOf(p_user);
-        if (index == -1) { this._users.push(p_user); }
+        if (index == -1) { 
+            this._users.push(p_user); 
+            this.CommitUpdate();
+        }
     }
 
     RemoveUser(p_user) {
         let index = this._users.indexOf(p_user);
-        if (index != -1) { this._users.splice(index, 1); }
+        if (index != -1) { 
+            this._users.splice(index, 1); 
+            this.CommitUpdate();
+        }
     }
 
     _CleanUp() {

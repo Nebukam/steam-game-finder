@@ -90,6 +90,14 @@ class UserData extends RemoteDataBlock {
 
     // Profile
 
+    RequestRefresh(){
+        if (this._state != RemoteDataBlock.STATE_READY) { return; }
+        let cachePath = `users._${this.userid}.gamelist`;
+        nkm.env.prefs.Delete(cachePath);
+        this._ClearGameList();
+        this.RequestLoad(true);
+    }
+
     RequestLoad(b_force = false) {
 
         if (!b_force && this._state != RemoteDataBlock.STATE_NONE) { return; }

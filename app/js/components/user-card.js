@@ -194,11 +194,11 @@ class UserCard extends uilib.cards.Media {
     }
 
     _RefreshCache(){
-        nkm.env.prefs.Delete(`users._${this._data.userid}.gamelist`);
-        this._data.RequestLoad(true);
+        this._data.RequestRefresh();
     }
 
     _DeleteUserEntry() {
+        nkm.env.prefs.Delete(`users._${this._data.userid}.gamelist`);
         this._data.Release();
     }
 

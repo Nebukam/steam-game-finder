@@ -61,6 +61,9 @@ class UserListExplorer extends uiworkspace.Explorer {
                 'margin': '4px',
                 'margin-top':'0px',
                 '--size': '100%-8px'
+            },
+            '.btn':{
+                'margin':'4px'
             }
 
 
@@ -82,11 +85,20 @@ class UserListExplorer extends uiworkspace.Explorer {
         }
         */
 
-        this._copyBtn = this.Add(uilib.buttons.Button, 'btn-copy', this._footer);
+        this._refreshAllBtn = this.Add(uilib.buttons.Button, 'btn', this._footer);
+        this._refreshAllBtn.options = {
+            [ui.IDS.LABEL]: `Reload all profiles`,
+            variant:ui.FLAGS.FRAME,
+            trigger:{fn:this._Bind(this._ReloadAll)}
+        }
+
+        this._copyBtn = this.Add(uilib.buttons.Button, 'btn', this._footer);
         this._copyBtn.options = {
             [ui.IDS.LABEL]: `Copy to clipboard`,
             trigger:{fn:this._Bind(this._CopyUsersToClipboard)}
         }
+
+        
 
         this._infoCard = this.Add(nkm.uilib.cards.Icon, 'info-card', this._body);
         this._infoCard._optionsHandler.Process(
@@ -177,6 +189,13 @@ class UserListExplorer extends uiworkspace.Explorer {
 
     _CopyUsersToClipboard(){
         navigator.clipboard.writeText(JSON.stringify(nkm.env.APP.database._GetUserJSONData()));
+    }
+
+    _ReloadAll(){
+        let users = this._usermap.keys;
+        for(var i = 0; i < users.length; i++){
+            users[i].RequestRefresh();
+        }
     }
 
 }
