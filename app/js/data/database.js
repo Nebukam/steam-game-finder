@@ -36,11 +36,11 @@ class Database extends nkm.common.pool.DisposableObjectEx {
         this._delayedComputeOverlap = new nkm.common.time.DelayedCall(this._Bind(this._ComputeLibrariesOverlap));
 
         this._enums = [];
-        this._enums.push({ key: "21", id: `dlc`, flag: false }); // 0
+        this._enums.push({ key: "21", id: `DLC`, flag: false }); // 0
         //this._enums.push({ key: "1", id: `multiplayer`, flag: true }); // 1
-        this._enums.push({ key: "2", id: `single_player`, flag: false }); // 2
-        this._enums.push({ key: "49", id: `pvp`, flag: true }); // 3
-        this._enums.push({ key: "9", id: `coop`, flag: true }); // 4
+        this._enums.push({ key: "2", id: `Single Player`, flag: false }); // 2
+        this._enums.push({ key: "49", id: `PVP`, flag: true }); // 3
+        this._enums.push({ key: "9", id: `Co-op`, flag: true }); // 4
         this._enums.push({ key: "20", id: `MMO`, flag: false }); // 5
         this._enums.push({ key: "36", id: `Online PvP`, flag: true }); // 6
         this._enums.push({ key: "38", id: `Online Coop`, flag: true }); // 7
@@ -61,7 +61,6 @@ class Database extends nkm.common.pool.DisposableObjectEx {
         this._enums.push({ key: "44", id: `Remote play together`, flag: false }); // 22
         //    this._enums.push({ key:"30", id:`steam_workshop`, flag:false }); // 23
         //    this._enums.push({ key:"32", id:`steam_turn_notification`, flag:false }); // 24
-        this._enums.push({ key: "-1", id: `Show all`, flag: false }); // 22
 
         this._filterShowAll = { id: `Show all`, flag: false };
 

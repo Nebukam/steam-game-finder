@@ -1,3 +1,4 @@
+const { uilib } = require("@nkmjs/core");
 const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const ui = nkm.ui;
@@ -21,7 +22,7 @@ class GamesListView extends ui.views.View {
         this._gameListQueue = new Array();
         nkm.common.time.TIME.Watch( nkm.common.SIGNAL.TICK, this._OnTick, this );
 
-        nkm.common.Preload(comps.GameCard, 1000);
+        //nkm.common.Preload(comps.GameCard, 1000);
 
     }
 
@@ -61,12 +62,6 @@ class GamesListView extends ui.views.View {
             }
         }, super._Style());
     }
-
-    _Cleanup(){
-        super._Cleanup();
-        console.log(`Cleanup !`);
-    }
-
 
     _Render(){
         super._Render();

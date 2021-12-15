@@ -36,6 +36,7 @@ class UserData extends RemoteDataBlock {
         this._personaID = "";
         this._avatarURL = "";
         this._privacy = "";
+        this._isUsingCache = false;
 
         this._gameList = new nkm.collections.Dictionary();
 
@@ -165,10 +166,12 @@ class UserData extends RemoteDataBlock {
 
         if (cachedGamelist && cachedGamelist.length > 0) {
             //TODO : Flag user as cached game list
+            this._isUsingCache = true;
             this._ProcessGameList(cachedGamelist);
             this.CommitUpdate();
             super._OnLoadRequestSuccess(p_rsc);
         } else {
+            this._isUsingCache = false;
             this.CommitUpdate();
             super.RequestLoad(true);
         }
@@ -258,6 +261,8 @@ class UserData extends RemoteDataBlock {
     // Second profile fetch
 
     _CleanUp() {
+
+        this._isUsingCache = false;
 
         this._userID = "";
         this._profileID64 = "";

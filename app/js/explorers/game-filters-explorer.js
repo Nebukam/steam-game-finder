@@ -47,7 +47,13 @@ class GameFiltersExplorer extends uiworkspace.Explorer {
                 'margin-bottom': '4px',
             },
             '.show-all': {
-                'margin-bottom':'20px'
+                'margin-bottom':'45px'
+            },
+            '.show-all::after': {
+                'position':'absolute',
+                'content':'"Show games that are..."',
+                'font-weight':'100',
+                'margin-top':'45px'
             }
 
 

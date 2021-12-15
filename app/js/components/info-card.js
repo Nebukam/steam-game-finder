@@ -26,8 +26,12 @@ class InfoCard extends uilib.cards.Icon {
 
     _Render() {
         super._Render();
-        this.label = '<i>Certain things such as films, apps, and other outlier products are omitted.</i>'
-        //new ui.manipulators.Text(u.El(`p`, {}, this._header)).Set(u.tils.CamelSplit(this.constructor.name));
+        this.label = '<i>Certain things such as films, apps, and other outlier products are omitted.</i>';
+        this.actions = [{
+            cl:uilib.buttons.Button,
+            label:'Open filters', flavor:nkm.common.FLAGS.ERROR,
+            trigger: { fn:()=>{nkm.env.APP.mainLayout.shelf.RequestView(1);} }
+        }];
     }
 
     _OnPaintChange() {
@@ -63,6 +67,7 @@ class InfoCard extends uilib.cards.Icon {
         this.variant = ui.FLAGS.FRAME;
         this.flavor = ui.FLAGS.CTA;
         this.icon = `dots`;
+        this._toolbar.visible = true;
     }
 
     _UpdateCardNoOverlap(){
@@ -71,6 +76,7 @@ class InfoCard extends uilib.cards.Icon {
         this.variant = ui.FLAGS.FRAME;
         this.flavor = nkm.common.FLAGS.ERROR;
         this.icon = `hidden`;
+        this._toolbar.visible = true;
     }
 
     _UpdateCardShowAll(){
@@ -79,6 +85,7 @@ class InfoCard extends uilib.cards.Icon {
         this.variant = ui.FLAGS.FRAME;
         this.flavor = ui.FLAGS.CTA;
         this.icon = `view-grid`;
+        this._toolbar.visible = false;
     }
 
     _UpdateCardsRegular(){
@@ -87,6 +94,7 @@ class InfoCard extends uilib.cards.Icon {
         this.variant = ui.FLAGS.FRAME;
         this.flavor = null;// ui.FLAGS.CTA;
         this.icon = `visible`;
+        this._toolbar.visible = false;
     }
 
 }

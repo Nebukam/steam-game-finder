@@ -88,6 +88,12 @@ class UserCard extends uilib.cards.Media {
                 variant: ui.FLAGS.FRAME
             },
             {
+                htitle: `Refresh game list`, icon: 'refresh',
+                trigger: { fn: this._Bind(this._RefreshCache) },
+                member: { owner: this, id: '_refreshCache' },
+                variant: ui.FLAGS.MINIMAL
+            },
+            {
                 cl: uilib.inputs.Boolean,
                 inputWatchers: [{ signal: ui.inputs.SIGNAL.VALUE_SUBMITTED, fn: this._OnToggleUserActivation }],
                 member: { owner: this, id: '_toggle' },
@@ -172,6 +178,7 @@ class UserCard extends uilib.cards.Media {
         this.variant = variant;
         this._flags.Set(_flag_noProfile, noProfile);
 
+        this._refreshCache.visible = p_data._isUsingCache;
 
         this.subtitle = subtitle;
         //this.label = label;
@@ -184,6 +191,11 @@ class UserCard extends uilib.cards.Media {
 
     _OpenFriendlist() {
         nkm.env.APP._RequestFriendList(this._data);
+    }
+
+    _RefreshCache(){
+        nkm.env.prefs.Delete(`users._${this._data.userid}.gamelist`);
+        this._data.RequestLoad(true);
     }
 
     _DeleteUserEntry() {
