@@ -28,6 +28,7 @@ class GameCard extends uilib.cards.Media {
     _Style() {
         return nkm.style.Extends({
             ':host': {
+                'cursor':'pointer',
                 'opacity':0,
                 'transition': 'opacity 0.5s',
                 'width': '140px',
@@ -72,6 +73,8 @@ class GameCard extends uilib.cards.Media {
     _OnDataUpdated(p_data) {
 
         super._OnDataUpdated(p_data);
+
+        this.htitle = `Launch ${p_data.name}`;
 
         if (this._toggle)
             this._toggle.currentValue = p_data.active;
@@ -141,6 +144,17 @@ class GameCard extends uilib.cards.Media {
 
     _OnLogoLoadError(p_rsc) {
         this.media = nkm.style.URLImgs(`placeholder-dark.png`);
+    }
+
+    Activate(p_evt){
+        if(!super.Activate(p_evt)){return false;}
+        this._Launch();
+        return true;
+    }
+
+    _Launch(){
+        var url = `steam://run/${this._data.appid}/`;
+        window.open(url);
     }
 
 }

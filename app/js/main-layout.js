@@ -16,7 +16,8 @@ class MainLayout extends ui.views.Layer {
     _Style() {
         return nkm.style.Extends({
             ':host': {
-                'background':`url("${nkm.style.URLImgs(`bg.png`)}")`
+                'background':`url("${nkm.style.URLImgs(`bg.png`)}")`,
+                'background-size':'cover'
             },
             '.header': {
                 'height': `0`//`var(--${ui.FLAGS.SIZE_L})`
