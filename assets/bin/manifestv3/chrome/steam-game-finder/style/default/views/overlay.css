@@ -1,1 +1,0 @@
-:host{--bg_color:rgba(0,0,0,0);background-color:var(--bg_color);transition:background-color .15s linear}:host(.shown){--bg_color:var(--col-overlay-bg)}
