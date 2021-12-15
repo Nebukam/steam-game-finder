@@ -10,72 +10,79 @@ const UserData = require("./user-data");
 const RemoteDataBlock = require(`./remote-data-block`);
 
 const SIGNAL = require(`./signal`);
+const ID_USER_LIST = `userlist`;
+const ID_FILTER_LIST = `filterlist`;
 
-class Database extends nkm.common.pool.DisposableObjectEx{
+class Database extends nkm.common.pool.DisposableObjectEx {
 
     constructor() { super(); }
 
-    _Init(){
+    _Init() {
         super._Init();
 
         this._gameMap = new collections.Dictionary();
-        this._gameList = new Array();
+        this._applist = new Array();
 
         this._flagMap = new collections.Dictionary();
         this._userMap = new collections.Dictionary();
         this._currentOverlap = new Array();
         this._filteredCount = 0;
 
+        this._userReadyList = new nkm.collections.List();
+
         this._userStatuses = RemoteDataBlock.STATE_NONE;
 
-        this._Bind(this._UpdateInfos);
-        this._Bind(this._LoadStoredFilterList);
+        this._delayedUpdate = new nkm.common.time.DelayedCall(this._Bind(this._UpdateInfos));
+        this._delayedComputeOverlap = new nkm.common.time.DelayedCall(this._Bind(this._ComputeLibrariesOverlap));
 
         this._enums = [];
-    //    this._enums.push({ key:"21", id:`dlc`, flag:false }); // 0
-    //    this._enums.push({ key:"1", id:`multiplayer`, flag:true }); // 1
-    //    this._enums.push({ key:"2", id:`single_player`, flag:false }); // 2
-    //    this._enums.push({ key:"49", id:`pvp`, flag:true }); // 3
-    //    this._enums.push({ key:"9", id:`coop`, flag:true }); // 4
-        this._enums.push({ key:"20", id:`MMO`, flag:false }); // 5
-        this._enums.push({ key:"36", id:`Online PvP`, flag:true }); // 6
-        this._enums.push({ key:"38", id:`Online Coop`, flag:true }); // 7
-        this._enums.push({ key:"47", id:`LAN PvP`, flag:false }); // 8
-        this._enums.push({ key:"48", id:`LAN Coop`, flag:false }); // 9
-        this._enums.push({ key:"37", id:`Split screen PvP`, flag:false }); // 10
-        this._enums.push({ key:"39", id:`Split screen Coop`, flag:false }); // 11
-    //    this._enums.push({ key:"27", id:`cross_platform_mp`, flag:false }); // 12
-    //    this._enums.push({ key:"29", id:`trading_cards`, flag:false }); // 13
-    //    this._enums.push({ key:"35", id:`in_app_purchase`, flag:false }); // 14
-    //    this._enums.push({ key:"18", id:`partial_controller_support`, flag:false }); // 15
-    //    this._enums.push({ key:"28", id:`full_controller_support`, flag:false }); // 16
-    //    this._enums.push({ key:"22", id:`achievements`, flag:false }); // 17
-    //    this._enums.push({ key:"22", id:`steam_cloud`, flag:false }); // 18
-    //    this._enums.push({ key:"13", id:`captions`, flag:false }); // 19
-    //    this._enums.push({ key:"42", id:`remote_play_tablet`, flag:false }); // 20
-    //    this._enums.push({ key:"43", id:`remote_play_tv`, flag:false }); // 21
-        this._enums.push({ key:"44", id:`Remote play together`, flag:false }); // 22
-    //    this._enums.push({ key:"30", id:`steam_workshop`, flag:false }); // 23
-    //    this._enums.push({ key:"32", id:`steam_turn_notification`, flag:false }); // 24
+        this._enums.push({ key: "21", id: `dlc`, flag: false }); // 0
+        //this._enums.push({ key: "1", id: `multiplayer`, flag: true }); // 1
+        this._enums.push({ key: "2", id: `single_player`, flag: false }); // 2
+        this._enums.push({ key: "49", id: `pvp`, flag: true }); // 3
+        this._enums.push({ key: "9", id: `coop`, flag: true }); // 4
+        this._enums.push({ key: "20", id: `MMO`, flag: false }); // 5
+        this._enums.push({ key: "36", id: `Online PvP`, flag: true }); // 6
+        this._enums.push({ key: "38", id: `Online Coop`, flag: true }); // 7
+        this._enums.push({ key: "47", id: `LAN PvP`, flag: false }); // 8
+        this._enums.push({ key: "48", id: `LAN Coop`, flag: false }); // 9
+        this._enums.push({ key: "37", id: `Split screen PvP`, flag: false }); // 10
+        this._enums.push({ key: "39", id: `Split screen Coop`, flag: false }); // 11
+        //    this._enums.push({ key:"27", id:`cross_platform_mp`, flag:false }); // 12
+        //    this._enums.push({ key:"29", id:`trading_cards`, flag:false }); // 13
+        //    this._enums.push({ key:"35", id:`in_app_purchase`, flag:false }); // 14
+        //    this._enums.push({ key:"18", id:`partial_controller_support`, flag:false }); // 15
+        //    this._enums.push({ key:"28", id:`full_controller_support`, flag:false }); // 16
+        //    this._enums.push({ key:"22", id:`achievements`, flag:false }); // 17
+        //    this._enums.push({ key:"22", id:`steam_cloud`, flag:false }); // 18
+        //    this._enums.push({ key:"13", id:`captions`, flag:false }); // 19
+        //    this._enums.push({ key:"42", id:`remote_play_tablet`, flag:false }); // 20
+        //    this._enums.push({ key:"43", id:`remote_play_tv`, flag:false }); // 21
+        this._enums.push({ key: "44", id: `Remote play together`, flag: false }); // 22
+        //    this._enums.push({ key:"30", id:`steam_workshop`, flag:false }); // 23
+        //    this._enums.push({ key:"32", id:`steam_turn_notification`, flag:false }); // 24
+        this._enums.push({ key: "-1", id: `Show all`, flag: false }); // 22
+
+        this._filterShowAll = { id: `Show all`, flag: false };
 
         this._filters = new Array();
 
-        try{chrome.storage.sync.get(['filterlist'], this._LoadStoredFilterList);}catch(e){this._UpdateFilters();}
-        
+        let cachedFilters = nkm.env.prefs.Get(ID_FILTER_LIST, this._filters);
+
+        if (cachedFilters == this._filters) {
+            this._UpdateFilters();
+        } else {
+            this._LoadStoredFilterList(cachedFilters);
+        }
+
     }
 
-    _LoadStoredFilterList(result){
-        
-        try{
-            if(result.filterlist != ``){
-                let list = result.filterlist.split(`,`);
-                let en;
-                for(let i = 0, n = this._enums.length; i < n; i++){
-                    en = this._enums[i];
-                    en.flag = list.includes(en.key);
-                }
-            }
-        }catch(e){}
+    _LoadStoredFilterList(filterlist) {
+
+        for (let i = 0, n = this._enums.length; i < n; i++) {
+            let en = this._enums[i];
+            en.flag = filterlist.includes(en.key);
+        }
 
         this._UpdateFilters();
 
@@ -83,230 +90,242 @@ class Database extends nkm.common.pool.DisposableObjectEx{
 
     ////
 
-    GetGame( p_appid ){
+    GetGame(p_appid) {
 
         let game = null;
-        if(this._gameMap.Contains(p_appid)){
+        if (this._gameMap.Contains(p_appid)) {
             game = this._gameMap.Get(p_appid);
-        }else{
+        } else {
             game = new GameData();
             game.appid = p_appid;
             game._db = this;
             game.Watch(SIGNAL.STATE_CHANGED, this._OnGameStateChanged, this);
-            game.Watch(nkm.common.SIGNAL.UPDATED, this._OnGameUpdated, this);
             this._gameMap.Set(p_appid, game);
-            this._gameList.push(game);
-            this._Broadcast(SIGNAL.GAME_ADDED, game);
-            
-            //game.RequestLoad();
-            
+            game.RequestLoad();
         }
 
         return game;
     }
 
-    _OnGameUpdated(p_game){
+    _OnGameUpdated(p_game) {
         this._Broadcast(SIGNAL.GAME_UPDATED, p_game);
-        nkm.common.time.NEXT_TICK = this._UpdateInfos;
+        this._delayedUpdate.Schedule();
     }
 
-    _OnGameStateChanged(p_game, p_state){
-        if(p_state == RemoteDataBlock.STATE_READY){
-            this._Broadcast(SIGNAL.GAME_READY, p_game);
+    _OnGameStateChanged(p_game, p_state) {
+
+        if (p_state == RemoteDataBlock.STATE_READY) {
+
+            if (!this._applist.includes(p_game)) {
+
+                this._applist.push(p_game);
+                this._Broadcast(SIGNAL.GAME_ADDED, p_game);
+                p_game.Watch(nkm.common.SIGNAL.UPDATED, this._OnGameUpdated, this);
+                this._delayedComputeOverlap.Schedule();
+
+            }
+
         }
+
     }
 
     /////
 
-    GetUser( p_username, p_active = true ){
+    FindUser(p_userID) {
+        if (this._userMap.Contains(p_userID)) {
+            return this._userMap.Get(p_userID);
+        } else {
+            let keys = this._userMap.keys;
+            p_userID = p_userID.toLowerCase();
+            for (var i = 0; i < keys.length; i++) {
+                let user = this._userMap.Get(keys[i]);
+                if (user._personaID.toLowerCase() == p_userID) { return user; }
+            }
+            return null;
+        }
+    }
 
-        let user = null;
-        if(this._userMap.Contains(p_username)){
-            user = this._userMap.Get(p_username);
-        }else{
+    GetUser(p_userID, p_active = true) {
+
+        let user = this.FindUser(p_userID);
+
+        if (!user) {
+
             user = new UserData();
             user.Watch(nkm.common.SIGNAL.RELEASED, this._OnUserReleased, this);
+            user.userid = p_userID;
+            user.active = p_active;
             user._db = this;
-            user.userid = p_username;  
-            user.active = p_active;          
-            this._userMap.Set(p_username, user);
+            this._userMap.Set(p_userID, user);
             this._Broadcast(SIGNAL.USER_ADDED, user);
             user.Watch(nkm.common.SIGNAL.UPDATED, this._OnUserUpdate, this);
             user.RequestLoad();
+
         }
 
         return user;
 
     }
 
-    _OnUserReleased(p_user){
+    _UpdateUserID(p_user, p_oldUID) {
+        let cUser = this._userMap.Get(p_oldUID);
+        if (cUser == p_user) {
+            this._userMap.Remove(p_oldUID);
+            this._userMap.Set(p_user.userid, p_user);
+        }
+    }
+
+    _OnUserReleased(p_user) {
         this._userMap.Remove(p_user.userid);
         this._Broadcast(SIGNAL.USER_REMOVED, p_user);
-        this._OnUserUpdate(p_user);
+
+        if (this._userReadyList.Contains(p_user)) {
+            this._userReadyList.Remove(p_user);
+            this._delayedComputeOverlap.Schedule();
+        }
+
+        nkm.env.prefs.Set(ID_USER_LIST, this._GetUserJSONData());
+
+        this._delayedUpdate.Schedule();
     }
 
-    _OnUserUpdate(p_user){
-        
-        
-        let anyLoading = false;
-        let invalidCount = 0;
-        let readyCount = 0;
+    _OnUserUpdate(p_user) {
 
-        let uList = this._userMap.keys;
-        let user;
-        for(let i = 0, n = uList.length; i < n; i++){
-            user = this._userMap.Get(uList[i]);
+        if (p_user.state == RemoteDataBlock.STATE_READY) {
 
-            if(user.state == RemoteDataBlock.STATE_NONE
-                || user.state == RemoteDataBlock.STATE_LOADING){
-                anyLoading = true;
-            }else if(user.state == RemoteDataBlock.STATE_INVALID){
-                invalidCount ++;
-            }else if(user.state == RemoteDataBlock.STATE_READY){
-                readyCount ++;
+            //TODO: If game count > 0 -> add to readylist
+            //otherwise ignore or remove
+            let recompute = false;
+            if (p_user.gamesCount > 0 && p_user.active) {
+                if (!this._userReadyList.Contains(p_user)) {
+                    this._userReadyList.Add(p_user);
+                    recompute = true;
+                }
+            } else {
+                if (this._userReadyList.Contains(p_user)) {
+                    this._userReadyList.Remove(p_user);
+                    recompute = true;
+                }
             }
 
+            if (recompute) {
+                this._delayedComputeOverlap.Schedule();
+            }
+
+            nkm.env.prefs.Set(ID_USER_LIST, this._GetUserJSONData());
+
         }
-
-        let diff = uList.length - invalidCount;
-
-        if(diff == 0){
-            this._userStatuses = RemoteDataBlock.STATE_INVALID;
-        }else if(anyLoading){
-            this._userStatuses = RemoteDataBlock.STATE_LOADING;
-        }else{
-            this._ComputeOverlap();
-            this._userStatuses = RemoteDataBlock.STATE_READY;
-        }
-
-        this._Broadcast(SIGNAL.USER_UPDATED, p_user);
-
-        if(!nkm.env.isNodeEnabled){
-            let uList = this._GetUserJSONData(uList);
-            try{ chrome.storage.sync.set({userlist:uList} );}catch(e){}
-        }        
-
-        //if(uList.length == 0){ this._ComputeOverlap(); }
-        this._ComputeOverlap();
-
-        nkm.common.time.NEXT_TICK = this._UpdateInfos;
 
     }
 
-    _GetUserJSONData(p_keys = null){
+    _GetUserJSONData(p_keys = null) {
 
-        if(!p_keys){ p_keys = this._userMap.keys; }
+        if (!p_keys) { p_keys = this._userMap.keys; }
 
         let user;
         let data = [];
-        for(let i = 0, n = p_keys.length; i < n; i++){
+        for (let i = 0, n = p_keys.length; i < n; i++) {
             user = this._userMap.Get(p_keys[i]);
-            if(user.profileID64 == ``){continue;}
-            data.push({ id:user.profileID64, active:user.active });
+            if (user.profileID64 == ``) { continue; }
+            data.push({ id: user.profileID64, active: user.active });
         }
 
-        return JSON.stringify(data);
+        return data;
+
     }
 
-    _ComputeOverlap(){
-
+    _ComputeLibrariesOverlap() {
 
         this._currentOverlap.length = 0;
 
-        let userKeys = this._userMap.keys;
-        let userList = new Array();
-        let user;
-        let refUser;
+        // For each game in ref library, check if it is present in others'
+        for (var i = 0; i < this._applist.length; i++) {
 
-        //Find user with the fewest games, yet not 0
-        for(let i = 0, n = userKeys.length; i < n; i++){
+            let app = this._applist[i];
+            let appid = app.appid;
+            let shared = true;
 
-            user = this._userMap.Get(userKeys[i]);
-            if(user.gamesCount == 0 || !user.active){ continue; }
-
-            userList.push(user);
-
-            if(!refUser || (refUser && (user.gamesCount < refUser.gamesCount))){
-                refUser = user;
+            for (var a = 0; a < this._userReadyList.count; a++) {
+                if (!this._userReadyList.At(a)._gameList.Contains(appid)) { shared = false; }
             }
 
-        }
-
-        if(!refUser || userList.length < 1){ 
-            //console.warn(`refUser = ${refUser} / userList.length = ${userList.length} / uKey.length = ${userKeys.length}`);
-            nkm.common.time.NEXT_TICK = this._UpdateInfos;
-            return; 
-        }
-
-        let gameList = refUser._gameList.keys;
-        
-        for(let g = 0, n = gameList.length; g < n; g++){
-            
-            let game = this._gameMap.Get(gameList[g]);
-            let ok = true;
-
-            for(let i = 0, ni = userList.length; i < ni; i++ ){
-                if(!game._users.includes(userList[i])){ ok = false; }
+            if (shared) {
+                this._currentOverlap.push(app);
+            } else {
+                app.shouldShow = false;
             }
-
-            if(ok){ this._currentOverlap.push(game); }
-
         }
 
-        nkm.common.time.NEXT_TICK = this._UpdateInfos;
+        this._delayedUpdate.Schedule();
 
     }
 
-    _UpdateFilters(){
+    _UpdateFilters() {
 
         this._filters.length = 0;
-        let fl = ``;
-        let en;
-        for(let i = 0, n = this._enums.length; i < n; i++){
-            en = this._enums[i];
-            if(en.flag){ 
-                this._filters.push(en.key); 
-                fl += `${i!=0?',':''}${en.key}`; 
+
+        if(!this._filterShowAll.flag){
+            this._ComputeLibrariesOverlap();
+        }
+
+        for (let i = 0, n = this._enums.length; i < n; i++) {
+            let en = this._enums[i];
+            if (en.flag) {
+                this._filters.push(en.key);
             }
         }
 
-        try{ chrome.storage.sync.set({filterlist:fl} );}catch(e){}
+        nkm.env.prefs.Delete(ID_FILTER_LIST);
+        nkm.env.prefs.Set(ID_FILTER_LIST, this._filters);
 
         this._Broadcast(SIGNAL.FILTERS_UPDATED, this);
-        nkm.common.time.NEXT_TICK = this._UpdateInfos;
+        this._delayedUpdate.Schedule();
 
     }
 
-    _UpdateInfos(){
+    _UpdateInfos() {
+
+        let game;
+        this._filteredCount = 0;
+
+        if(this._filterShowAll.flag){
+            for(var i = 0; i < this._applist.length; i++){
+                game = this._applist[i];
+                if(game.HasAnyActiveUsers()){
+                    this._filteredCount ++;
+                    game.shouldShow = true;
+                }else{
+                    game.shouldShow = false;
+                }
+            }
+            this._Broadcast(SIGNAL.INFOS_UPDATED, this);
+            return;
+        }
 
         // Update game infos, when available
-        if(this._currentOverlap.length == 0){
+        if (this._currentOverlap.length == 0) {
             //Either no game, or no overlap yet.
-            this._filteredCount = 0;
             this._Broadcast(SIGNAL.INFOS_UPDATED, this);
             return;
         }
 
         // Reset all games to shouldShow = false;
-        for(let g = 0, n = this._gameList.length; g < n; g++){
-            this._gameList[g].shouldShow = false;
+        for (let i = 0, n = this._applist.length; i < n; i++) {
+            this._applist[i].shouldShow = false;
         }
 
-        this._filteredCount = 0;
-
         // Flag overlapped games that meet filter criterias
-        let game;
-        for(let g = 0, n = this._currentOverlap.length; g < n; g++){
-            game = this._currentOverlap[g];
+        for (let i = 0, n = this._currentOverlap.length; i < n; i++) {
+            game = this._currentOverlap[i];
             let hasFlags = game.HasFlags(this._filters);
             game.shouldShow = hasFlags;
-            if(hasFlags){ this._filteredCount++; }
+            if (hasFlags) { this._filteredCount++; }
         }
 
         this._Broadcast(SIGNAL.INFOS_UPDATED, this);
     }
 
-    _CleanUp(){
+    _CleanUp() {
         super._CleanUp();
     }
 

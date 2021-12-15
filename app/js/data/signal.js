@@ -18,7 +18,6 @@ class SIGNAL {
     static GAME_ADDED = Symbol(`game-added`);
     static GAME_REMOVED = Symbol(`game-removed`);
     static GAME_UPDATED = Symbol(`game-updated`);
-    static GAME_READY = Symbol(`game-ready`);
 
     static INFOS_UPDATED = Symbol(`infos-updated`);
     static FILTERS_UPDATED = Symbol(`filters-updated`);

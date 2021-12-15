@@ -1,5 +1,7 @@
 'use strict';
 
+//"builds": "D:/wamp/www/SGF"
+
 const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const com = nkm.common;
@@ -20,11 +22,11 @@ class SteamGameFinder extends app.AppBase {
 
     _Init() {
         super._Init();
-
+/*
         this._defaultUserPreferences = {
             gamelist:{}
         };
-
+*/
         // Setup Steam cookies
 
         this._fiftyYearsAgo = ((Date.now() - 1576800000000) / 1000).toFixed();
@@ -39,7 +41,6 @@ class SteamGameFinder extends app.AppBase {
             { id: `mainLayout`, cl: require("./main-layout") }
         ];
 
-        this._DB = new Database();
 
     }
 
@@ -47,14 +48,21 @@ class SteamGameFinder extends app.AppBase {
 
     AppReady() {
         super.AppReady();
+        
+        this._DB = new Database();
 
         this._mainCatalog = nkm.data.catalogs.CreateFrom({
             [com.IDS.NAME]: `SGF`
         }, [
             {
                 [com.IDS.NAME]: `Friends`,
-                [com.IDS.ICON]: `new`,
+                [com.IDS.ICON]: `view-list`,
                 [ui.IDS.VIEW_CLASS]: sgfExplorers.UserList
+            },
+            {
+                [com.IDS.NAME]: `Filters`,
+                [com.IDS.ICON]: `search`,
+                [ui.IDS.VIEW_CLASS]: sgfExplorers.GameFilters
             }
         ]);
 
@@ -63,6 +71,7 @@ class SteamGameFinder extends app.AppBase {
         mainShelf.catalog = this._mainCatalog;
         mainShelf.RequestView(0);
 
+        /*
         mainShelf.nav.toolbar.CreateHandle({
             [com.IDS.NAME]: `Options`,
             [com.IDS.ICON]: `icon`,
@@ -72,35 +81,65 @@ class SteamGameFinder extends app.AppBase {
                 arg: ui.UI.Rent(AppOptionsExplorer)
             }
         });
+        */ 
 
+        /*
         this._gamesList = this.mainLayout.workspace.Host({
             [ui.IDS.VIEW_CLASS]: sgfViews.GamesList,
             [ui.IDS.NAME]: `Shared Games`,
             [ui.IDS.STATIC]: true
         });
+        */
 
+        /*
         this._friendsList = this.mainLayout.workspace.Host({
             [ui.IDS.VIEW_CLASS]: sgfViews.FriendsList,
             [ui.IDS.NAME]: `Friends`,
             [ui.IDS.STATIC]: true
         });
+        */
 
-        this._gamesList.options.view.RequestDisplay();
+        //this._gamesList.options.view.RequestDisplay();
+
+        this._gamesList = this.mainLayout.Add(sgfViews.GamesList, `workspace`);
+        new ui.manipulators.GridItem(this._gamesList, 2, 2, 1, 1);
+
+
+        let cachedUserList = nkm.env.prefs.Get(`userlist`, null);
+        if(cachedUserList){
+            for(var i = 0; i < cachedUserList.length; i++){
+                let data = cachedUserList[i];
+                let user = this._DB.GetUser(data.id);
+                user.active = data.active;
+            }
+        }
 
         //Load some users
 
-        this._DB.GetUser(`76561197998180826`);
-        this._DB.GetUser(`asdasdasdasd as das dasdasdasdasdasdasdasdasdasdasdasdasdasd`);
+        //this._DB.GetUser(`76561197998180826`);
+        //this._DB.GetUser(`asdasdasdasd as das dasdasdasdasdasdasdasdasdasdasdasdasdasd`);
         //this._DB.GetUser(`76561198055276814`); //gloomy mary 1500+games
-        this._DB.GetUser(`nebukam`);
-        this._DB.GetUser(`asd`); // should be private
+        //this._DB.GetUser(`nebukam`);
+        //this._DB.GetUser(`asd`); // should be private
 
-        //      this._429();
+        //this._429();
 
     }
 
     _RequestFriendList(p_user){
-        this._friendsList.options.view.LoadFriendlist(p_user);
+       
+       // this._friendsList.options.view.LoadFriendlist(p_user);
+
+        let opts = { 
+            orientation: ui.FLAGS.HORIZONTAL, 
+            placement: ui.FLAGS.LEFT,
+            title: `Friendlist`,
+            user:p_user,
+            contentClass:sgfViews.FriendsList
+        };
+
+        nkm.actions.Emit(nkm.uilib.REQUEST.DRAWER, opts, this);
+    
     }
 
     _429() {

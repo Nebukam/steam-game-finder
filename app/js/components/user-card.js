@@ -11,22 +11,39 @@ class UserCard extends uilib.cards.Media {
     constructor() { super(); }
 
     static __default_headerPlacement = ui.FLAGS.LEFT;
+    static __usePaintCallback = true;
 
     _Init() {
         super._Init();
-        //this._itemDataObserver.Hook(SIGNAL.STATE_CHANGE, )    
+
+        this._Bind(this._OnToggleUserActivation);
+        this._Bind(this._OnLogoLoadSuccess);
+        this._Bind(this._OnLogoLoadError);
+
         this._flags.Add(this, _flag_noProfile);
+    }
+
+    _OnPaintChange() {
+        super._OnPaintChange();
+
+        if (this._isPainted) {
+            this.style.opacity = 1;
+        } else {
+            this.style.opacity = 0;
+        }
     }
 
     _Style() {
         return nkm.style.Extends({
             ':host': {
-                'height':'115px',
+                'opacity': 0,
+                'transition': 'opacity 0.5s',
+                'height': '115px',
                 //margin:'10px'
                 '--header-size': '115px'
             },
             '.header': {
-                'min-height':'80px',
+                'min-height': '80px',
             },
             '.body .title': {
                 'padding-right': '12px'
@@ -37,7 +54,7 @@ class UserCard extends uilib.cards.Media {
             },
             ':host(.no-profile) .header': {
                 //'height':'80px',
-                'opacity':0.5
+                'opacity': 0.5
             },
             '.btn-delete': {
                 'position': 'absolute',
@@ -57,38 +74,36 @@ class UserCard extends uilib.cards.Media {
             trigger: { fn: this._Bind(this._DeleteUserEntry) },
             variant: ui.FLAGS.MINIMAL
         }
-    }
 
-    _BuildCardActions(p_mode) {
-
-        let
-            openFriendlist = {
+        this.actions = [
+            {
                 htitle: `Browser friendlist`, label: 'Friendlist',
                 trigger: { fn: this._Bind(this._OpenFriendlist) },
                 variant: ui.FLAGS.FRAME
             },
-            toggleActivation = {
+            {
                 cl: uilib.inputs.Boolean,
-                watchers: [{ signal: ui.inputs.SIGNAL.VALUE_SUBMITTED, fn: this._Bind(this._OnToggleUserActivation) }],
-                member: { owner: this, id: '_toggle' }
-            };
+                inputWatchers: [{ signal: ui.inputs.SIGNAL.VALUE_SUBMITTED, fn: this._OnToggleUserActivation }],
+                member: { owner: this, id: '_toggle' },
+                currentValue: true
+            }
+        ];
 
-        switch (p_mode) {
-            case 'none':
-                this.actions = null;
-                break;
-            default:
-                this.actions = [
-                    openFriendlist,
-                    toggleActivation
-                ]
-                break;
+        this._toolbar.size = ui.FLAGS.SIZE_XS;
+
+    }
+
+    _OnDataChanged(p_oldData) {
+        super._OnDataChanged(p_oldData);
+        if (this._data) {
+            nkm.io.Read(this._data._avatarURL,
+                { cl: nkm.io.resources.BlobResource },
+                {
+                    success: this._OnLogoLoadSuccess,
+                    error: this._OnLogoLoadError,
+                    parallel: true
+                });
         }
-
-        if (this._toolbar) {
-            this._toolbar.size = ui.FLAGS.SIZE_XS;
-        }
-
     }
 
     _OnDataUpdated(p_data) {
@@ -98,58 +113,57 @@ class UserCard extends uilib.cards.Media {
         if (this._toggle)
             this._toggle.currentValue = p_data.active;
 
-        this.media = ( p_data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
+        this.media = (p_data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
         this.title = p_data._personaID;
-        
+
 
         let subtitle = `...`;
         let noProfile = false;
         let variant = null;
         let flavor = null;
+        let showToolbar = true;
 
-        
         //let label = p_data._privacy;
 
         switch (this._data.state) {
             case RemoteDataBlock.STATE_NONE:
                 flavor = nkm.common.FLAGS.WARNING;
-                this._BuildCardActions(`none`);
+                showToolbar = false;
                 break;
             case RemoteDataBlock.STATE_LOADING:
                 subtitle = `loading...`;
                 flavor = nkm.common.FLAGS.LOADING;
-                this._BuildCardActions(`none`);
+                showToolbar = false;
                 break;
             case RemoteDataBlock.STATE_READY:
                 if (p_data._privacy == `private`) {
                     subtitle = `Profile is private`;
                     flavor = nkm.common.FLAGS.WARNING;
                     //variant = ui.FLAGS.MINIMAL;
-                }else{
-                    subtitle = `${p_data.gamesCount} games in library`;
+                } else {
+                    subtitle = `${p_data.gamesCount} products in library`;
                 }
-                
-                this._BuildCardActions();
+
                 break;
             case RemoteDataBlock.STATE_INVALID:
                 if (p_data._privacy == `private`) {
                     subtitle = `Profile is private`;
                     flavor = nkm.common.FLAGS.WARNING;
                     //variant = ui.FLAGS.MINIMAL;
-                    this._BuildCardActions();
                 } else {
                     subtitle = `Profile could not be loaded.`;
                     flavor = nkm.common.FLAGS.ERROR;
-                    this._BuildCardActions(`none`);
+                    showToolbar = false;
                     noProfile = true;
                 }
                 break;
         }
 
+        this._toolbar.visible = showToolbar;
         this.flavor = flavor;
         this.variant = variant;
         this._flags.Set(_flag_noProfile, noProfile);
-        
+
 
         this.subtitle = subtitle;
         //this.label = label;
@@ -166,6 +180,15 @@ class UserCard extends uilib.cards.Media {
 
     _DeleteUserEntry() {
         this._data.Release();
+    }
+
+
+    _OnLogoLoadSuccess(p_rsc) {
+        this.media = p_rsc.objectURL;
+    }
+
+    _OnLogoLoadError(p_rsc) {
+        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
     }
 
 }

@@ -6,29 +6,67 @@ const uilib = nkm.uilib;
 
 const RemoteDataBlock = require(`../data/remote-data-block`);
 
+const _flag_dlc = 'dlc';
+
 class GameCard extends uilib.cards.Media {
     constructor() { super(); }
+
+    static __usePaintCallback = true;
 
     _Init() {
         super._Init();
         this._orientation.Set(ui.FLAGS.VERTICAL);
         this._mediaPlacement.Set(ui.FLAGS.TOP);
+        this._flags.Add(this, _flag_dlc);
+        this._logoLoaded = false;
+
+        this._Bind(this._OnLogoLoadSuccess);
+        this._Bind(this._OnLogoLoadError);
+
     }
 
     _Style() {
         return nkm.style.Extends({
             ':host': {
-                'width': '150px',
+                'opacity':0,
+                'transition': 'opacity 0.5s',
+                'width': '140px',
+                'max-width': '180px',
                 '--header-size': '225px'
-                //margin:'10px'
             },
+            ':host(.dlc) .header::before': {
+                'position': 'absolute',
+                'width': '100%',
+                'height': '30px',
+                'background-color': 'rgba(255,255,255,0.5)',
+                'content': '"DLC"',
+                'text-align': 'center',
+                'padding-top': '10px',
+                'color': 'black'
+            }
         }, super._Style());
     }
 
     _Render() {
         super._Render();
+        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
         //new ui.manipulators.Text(u.El(`p`, {}, this._header)).Set(u.tils.CamelSplit(this.constructor.name));
+    }
 
+    _OnPaintChange() {
+        this._CheckLogoStatus();
+        super._OnPaintChange();
+
+        if(this._isPainted){
+            this.style.opacity = 1;
+        }else{
+            this.style.opacity = 0;
+        }
+    }
+
+    _OnDataChanged(p_oldData) {
+        this._logoLoaded = false;
+        super._OnDataChanged(p_oldData);
     }
 
     _OnDataUpdated(p_data) {
@@ -39,8 +77,7 @@ class GameCard extends uilib.cards.Media {
             this._toggle.currentValue = p_data.active;
 
         //this.media = (p_data._logo || nkm.style.URLImgs(`placeholder-dark.png`));
-        this.title = p_data._name;
-
+        this.title = p_data.name;
 
         let subtitle = null;
         let variant = null;
@@ -65,10 +102,45 @@ class GameCard extends uilib.cards.Media {
 
         this.flavor = flavor;
         this.variant = variant;
-
         this.subtitle = subtitle;
-        //this.label = label;
 
+        let childCount = p_data._childs.length;
+        if(childCount > 0){
+            if(childCount == 1){
+                this.label = `${childCount} DLC`;
+            }else{
+                this.label = `${childCount} DLCs`;
+            }            
+        }
+
+        this._flags.Set(_flag_dlc, p_data._parentGame ? true : false);
+        this._CheckLogoStatus();
+
+    }
+
+    _CheckLogoStatus() {
+        if (this._logoLoaded || !this._isPainted) { return; }
+        if (!this._data) { return; }
+        if (this._data.state != RemoteDataBlock.STATE_READY) { return; }
+
+        this._logoLoaded = true;
+
+        nkm.io.Read(this._data.logo,
+            { cl: nkm.io.resources.BlobResource },
+            {
+                success: this._OnLogoLoadSuccess,
+                error: this._OnLogoLoadError,
+                parallel:true
+            });
+
+    }
+
+    _OnLogoLoadSuccess(p_rsc) {
+        this.media = p_rsc.objectURL;
+    }
+
+    _OnLogoLoadError(p_rsc) {
+        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
     }
 
 }

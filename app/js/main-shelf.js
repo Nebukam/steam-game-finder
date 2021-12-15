@@ -5,6 +5,8 @@ const ui = nkm.ui;
 class MainShelf extends nkm.uilib.views.Shelf {
     constructor() { super(); }
 
+    //static __default_navPlacement = ui.FLAGS.RIGHT;
+
     _Init() {
         super._Init();
     }

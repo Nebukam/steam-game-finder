@@ -24,8 +24,12 @@
             "%homepage%",
             "https://nebukam.github.io/*",
             "https://steamcommunity.com/*",
-            "https://cdn.akamai.steamstatic.com/steamcommunity/public/*"
+            "https://cdn.akamai.steamstatic.com/steamcommunity/public/*",
+            "https://steamcdn-a.akamaihd.net/steam/apps/*"
         ]
+    },
+    "dirs": {
+        
     },
     "builds": [
         {

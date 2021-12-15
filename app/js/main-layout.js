@@ -2,6 +2,7 @@ const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const ui = nkm.ui;
 const uiworkspace = nkm.uiworkspace;
+const sgfViews = require(`./views`);
 
 const MainShelf = require(`./main-shelf`);
 
@@ -15,10 +16,10 @@ class MainLayout extends ui.views.Layer {
     _Style() {
         return nkm.style.Extends({
             ':host': {
-
+                'background':`url("${nkm.style.URLImgs(`bg.png`)}")`
             },
             '.header': {
-                'height': `var(--${ui.FLAGS.SIZE_L})`
+                'height': `0`//`var(--${ui.FLAGS.SIZE_L})`
             },
             '.shelf': {
             },
@@ -44,11 +45,15 @@ class MainLayout extends ui.views.Layer {
         };
         new ui.manipulators.GridItem(shelf, 1, 2, 1, 1);
         this.shelf = shelf;
-
+/*
         // Workspace
         let wkspace = this.Add(uiworkspace.WorkspaceRoot, `workspace`);
         new ui.manipulators.GridItem(wkspace, 2, 2, 1, 1);
         this.workspace = wkspace;
+        */
+
+        
+        
 
     }
 
