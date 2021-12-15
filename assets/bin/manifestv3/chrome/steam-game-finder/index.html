@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<!-- META -->
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Steam : Game finder</title>
+<meta name="description" content="Steam : Game Finder allows you to find which multiplayer games are shared within a group of steam users">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow"></meta>
+<meta name="theme-color" content="#1e1e1e"></meta>
+<link rel="canonical" href="https://nebukam.github.io/steam-game-finder/" />
+
+
+<!-- PRELOADS -->
+<link rel="stylesheet" href="./style/default/buttons/button-drag-handle.css">
+<link rel="stylesheet" href="./style/default/buttons/button-ex.css">
+<link rel="stylesheet" href="./style/default/buttons/button-tool.css">
+<link rel="stylesheet" href="./style/default/buttons/global-button.css">
+<link rel="stylesheet" href="./style/default/buttons/tab.css">
+<link rel="stylesheet" href="./style/default/cards/icon-card.css">
+<link rel="stylesheet" href="./style/default/cards/media-card.css">
+<link rel="stylesheet" href="./style/default/dialogs/dialog-box.css">
+<link rel="stylesheet" href="./style/default/dialogs/dialog-overlay.css">
+<link rel="stylesheet" href="./style/default/global-host.css">
+<link rel="stylesheet" href="./style/default/global.css">
+<link rel="stylesheet" href="./style/default/inputs/boolean.css">
+<link rel="stylesheet" href="./style/default/inputs/color.css">
+<link rel="stylesheet" href="./style/default/inputs/expandable.css">
+<link rel="stylesheet" href="./style/default/inputs/field.css">
+<link rel="stylesheet" href="./style/default/inputs/file.css">
+<link rel="stylesheet" href="./style/default/inputs/global-input.css">
+<link rel="stylesheet" href="./style/default/inputs/number.css">
+<link rel="stylesheet" href="./style/default/inspectors/inspector-view.css">
+<link rel="stylesheet" href="./style/default/inspectors/inspector-widget.css">
+<link rel="stylesheet" href="./style/default/lists/breadcrum-item.css">
+<link rel="stylesheet" href="./style/default/lists/breadcrum.css">
+<link rel="stylesheet" href="./style/default/lists/tree-group.css">
+<link rel="stylesheet" href="./style/default/lists/tree-item.css">
+<link rel="stylesheet" href="./style/default/lists/tree-root.css">
+<link rel="stylesheet" href="./style/default/views/drawer-overlay.css">
+<link rel="stylesheet" href="./style/default/views/drawer.css">
+<link rel="stylesheet" href="./style/default/views/explorer.css">
+<link rel="stylesheet" href="./style/default/views/inspector-shell.css">
+<link rel="stylesheet" href="./style/default/views/overlay.css">
+<link rel="stylesheet" href="./style/default/views/shelf-nav.css">
+<link rel="stylesheet" href="./style/default/views/shelf.css">
+<link rel="stylesheet" href="./style/default/views/workspace-cell-nav.css">
+<link rel="stylesheet" href="./style/default/views/workspace-cell.css">
+<link rel="stylesheet" href="./style/default/views/workspace.css">
+<link rel="stylesheet" href="./style/default/widgets/tag.css">
+<link rel="stylesheet" href="./style/default/widgets/widget-bar.css">
+<link rel="preload" href="lib-external-nkmjs-core.js" as="script" type="application/javascript">
+<link rel="preload" href="steam-game-finder.js" as="script" type="application/javascript">
+
+<!-- ICONS -->
+<link rel="icon" sizes="16x16" href="icons/16x16.png"></link>
+<link rel="icon" sizes="32x32" href="icons/32x32.png"></link>
+<link rel="icon" sizes="48x48" href="icons/48x48.png"></link>
+<link rel="icon" sizes="64x64" href="icons/64x64.png"></link>
+<link rel="icon" sizes="72x72" href="icons/72x72.png"></link>
+<link rel="icon" sizes="96x96" href="icons/96x96.png"></link>
+<link rel="icon" sizes="128x128" href="icons/128x128.png"></link>
+<link rel="icon" sizes="120x120" href="icons/120x120.png"></link>
+<link rel="apple-touch-icon" href="icons/512x512-maskable.png">
+
+
+<!-- DEFAULT STYLE -->
+<style>
+    html, body
+    {
+        margin:0;
+        padding:0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        font-size: 0.9375rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #aaa;
+        text-align: left;
+        background-color:#1e1e1e;
+        overflow: hidden;
+    }
+
+    #__loading__ 
+    {
+        padding:0;
+        margin:0;
+        position:absolute;
+        width:100%;
+        height:100%;
+        z-index:99999;
+    }
+
+    @keyframes __loading__fadeOut 
+    {
+        to {
+            transform: scale(2);
+            opacity: 0;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+%build-uid%
+<div id="__loading__"><style>
+
+    .loading-container{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        align-items: center;
+        justify-content: center;
+        /*flex:0 0 auto;*/
+
+        --color_d: #999999;
+        --color_a: #ffffff;
+        --color_b: #ed1e79;
+        --color_c: #3ec188;
+        
+
+        background-color: #1e1e1e;
+
+    }
+
+    .sk-folding-cube {
+        flex:0 0 auto;
+        margin: 20px auto;
+        width: 40px;
+        height: 40px;
+        position: relative;
+        -webkit-transform: rotateZ(45deg);
+        transform: rotateZ(45deg);
+    }
+
+    .sk-folding-cube .sk-cube {
+        float: left;
+        width: 50%;
+        height: 50%;
+        position: relative;
+        -webkit-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        transform: scale(1.1);
+    }
+
+    .sk-folding-cube .sk-cube:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: calc(100% - 4px);
+        height: calc(100% - 4px);
+        background-color: var(--color_d);
+        -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;
+        animation: sk-foldCubeAngle 2.4s infinite linear both;
+        -webkit-transform-origin: 100% 100%;
+        -ms-transform-origin: 100% 100%;
+        transform-origin: 100% 100%;
+        border-radius: 3px;
+    }
+
+    .sk-folding-cube .sk-cube2 {
+        
+        -webkit-transform: scale(1.1) rotateZ(90deg);
+        transform: scale(1.1) rotateZ(90deg);
+    }
+
+    .sk-folding-cube .sk-cube3 {
+        
+        -webkit-transform: scale(1.1) rotateZ(180deg);
+        transform: scale(1.1) rotateZ(180deg);
+    }
+
+    .sk-folding-cube .sk-cube4 {
+        -webkit-transform: scale(1.1) rotateZ(270deg);
+        transform: scale(1.1) rotateZ(270deg);
+    }
+
+    .sk-folding-cube .sk-cube2:before {
+        background-color: var(--color_a);
+        -webkit-animation-delay: 0.3s;
+        animation-delay: 0.3s;
+    }
+
+    .sk-folding-cube .sk-cube3:before {
+        background-color: var(--color_b);
+        -webkit-animation-delay: 0.6s;
+        animation-delay: 0.6s;
+    }
+
+    .sk-folding-cube .sk-cube4:before {        
+        background-color: var(--color_c);
+        -webkit-animation-delay: 0.9s;
+        animation-delay: 0.9s;
+    }
+
+    @-webkit-keyframes sk-foldCubeAngle {
+
+        0%,
+        10% {
+            -webkit-transform: perspective(140px) rotateX(-180deg);
+            transform: perspective(140px) rotateX(-180deg);
+            opacity: 0;
+        }
+
+        25%,
+        75% {
+            -webkit-transform: perspective(140px) rotateX(0deg);
+            transform: perspective(140px) rotateX(0deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            -webkit-transform: perspective(140px) rotateY(180deg);
+            transform: perspective(140px) rotateY(180deg);
+            opacity: 0;
+        }
+    }
+
+    @keyframes sk-foldCubeAngle {
+
+        0%,
+        10% {
+            -webkit-transform: perspective(140px) rotateX(-180deg);
+            transform: perspective(140px) rotateX(-180deg);
+            opacity: 0;
+        }
+
+        25%,
+        75% {
+            -webkit-transform: perspective(140px) rotateX(0deg);
+            transform: perspective(140px) rotateX(0deg);
+            opacity: 1;
+        }
+
+        90%,
+        100% {
+            -webkit-transform: perspective(140px) rotateY(180deg);
+            transform: perspective(140px) rotateY(180deg);
+            opacity: 0;
+        }
+    }
+</style>
+<div class="loading-container">
+<div class="sk-folding-cube">
+    <div class="sk-cube1 sk-cube"></div>
+    <div class="sk-cube2 sk-cube"></div>
+    <div class="sk-cube4 sk-cube"></div>
+    <div class="sk-cube3 sk-cube"></div>
+</div>
+</div></div>
+<!-- SCRIPTS -->
+<!-- externals -->
+<script defer="defer" type="application/javascript" src="lib-external-nkmjs-core.js"></script>
+<!-- main -->
+<script defer="defer" type="application/javascript" src="steam-game-finder.js"></script>
+
+<noscript>
+<h1>Oh no ! Steam : Game finder doesn't work properly without JavaScript enabled :(</h1>
+<p>Have a look at <a href="https://www.enable-javascript.com/">enable-javascript.com</a> to fix the issue.</p>
+</noscript>
+</body>
+
+</html>

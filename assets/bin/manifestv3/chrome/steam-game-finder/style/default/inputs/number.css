@@ -1,0 +1,1 @@
+.field{height:var(--size)}.field::-webkit-slider-thumb{-webkit-appearance:none;width:3px;height:15.5px;background:#7f7f7f;cursor:pointer;border-radius:3px}.field:focus{box-shadow:none}.field.slider::before{content:"";position:absolute;width:calc(100% - 12px);height:1px;background-color:rgba(127,127,127,.5);top:50%}

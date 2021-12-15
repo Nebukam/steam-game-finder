@@ -21,26 +21,32 @@ class UserCard extends uilib.cards.Media {
         this._Bind(this._OnLogoLoadError);
 
         this._flags.Add(this, _flag_noProfile);
+        this._flags.Add(this, `inactive`);
     }
 
     _OnPaintChange() {
         super._OnPaintChange();
 
         if (this._isPainted) {
-            this.style.opacity = 1;
+            this.style.setProperty(`--op`, `var(--currentOpacity)`);
         } else {
-            this.style.opacity = 0;
+            this.style.setProperty(`--op`, 0);
         }
     }
 
     _Style() {
         return nkm.style.Extends({
             ':host': {
-                'opacity': 0,
+                '--currentOpacity':1,
+                '--op':0,
+                'opacity': `var(--op)`,
                 'transition': 'opacity 0.5s',
                 'height': '115px',
                 //margin:'10px'
                 '--header-size': '115px'
+            },
+            ':host(.inactive)':{
+                '--currentOpacity':'0.5'
             },
             '.header': {
                 'min-height': '80px',
@@ -54,7 +60,7 @@ class UserCard extends uilib.cards.Media {
             },
             ':host(.no-profile) .header': {
                 //'height':'80px',
-                'opacity': 0.5
+                '--currentOpacity': '0.3'
             },
             '.btn-delete': {
                 'position': 'absolute',
@@ -112,6 +118,8 @@ class UserCard extends uilib.cards.Media {
 
         if (this._toggle)
             this._toggle.currentValue = p_data.active;
+
+        this._flags.Set(`inactive`, !p_data.active);
 
         this.media = (p_data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
         this.title = p_data._personaID;
