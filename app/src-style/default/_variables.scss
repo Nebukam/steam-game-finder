@@ -156,11 +156,11 @@ $size_varnames:
 
 // Halves
 
-$size_xs_half: _round($size_xs/2);
-$size_s_half: _round($size_s/2);
-$size_m_half: _round($size_m/2);
-$size_l_half: _round($size_l/2);
-$size_xl_half: _round($size_xl/2);
+$size_xs_half: _round($size_xs*0.5);
+$size_s_half: _round($size_s*0.5);
+$size_m_half: _round($size_m*0.5);
+$size_l_half: _round($size_l*0.5);
+$size_xl_half: _round($size_xl*0.5);
 
 $suffix: '-half';
 $varname_size_xs_half: $varname_size_xs+$suffix;

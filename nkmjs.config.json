@@ -29,9 +29,7 @@
             "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/*"
         ]
     },
-    "dirs": {
-        
-    },
+    "dirs": {},
     "builds": [
         {
             "platform": "www"
@@ -47,6 +45,9 @@
         },
         {
             "platform": "edge"
+        },
+        {
+            "platform": "node"
         }
     ]
 }
