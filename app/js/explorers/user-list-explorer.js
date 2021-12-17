@@ -1,7 +1,5 @@
 const nkm = require(`@nkmjs/core`);
-const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
 const uilib = nkm.uilib;
 
 const comps = require(`../components`);
@@ -9,7 +7,7 @@ const SIGNAL = require(`../data/signal`);
 
 const RemoteDataBlock = require(`../data/remote-data-block`);
 
-class UserListExplorer extends uiworkspace.Explorer {
+class UserListExplorer extends nkm.uiworkspace.Explorer {
     constructor() { super(); }
 
     _Init() {
@@ -100,11 +98,11 @@ class UserListExplorer extends uiworkspace.Explorer {
 
         
 
-        this._infoCard = this.Add(nkm.uilib.cards.Icon, 'info-card', this._body);
+        this._infoCard = this.Add(uilib.cards.Icon, 'info-card', this._body);
         this._infoCard._optionsHandler.Process(
             this._infoCard,
             {
-                [`header-placement`]: nkm.ui.FLAGS.TOP,
+                [`header-placement`]: ui.FLAGS.TOP,
                 title: "Add friends !",
                 subtitle:"<b>Just type their nickname and click [+] !</b></br></br>If that doesn't work, try with their unique profile ID; it's a 17-long number you can find when visiting your friend profile page on the Steam community website.</br>You can also paste the whole url.",
                 label:"</br>Note that if you are loggued to the steam community website while using the Steam Game Finder, you should be able to load your friends profile even if private.",

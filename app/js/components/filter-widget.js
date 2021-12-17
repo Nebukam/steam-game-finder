@@ -1,8 +1,5 @@
 const nkm = require(`@nkmjs/core`);
-const RemoteDataBlock = require("../data/remote-data-block");
-const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
 const uilib = nkm.uilib;
 
 const __flag_toggled = `toggled`;

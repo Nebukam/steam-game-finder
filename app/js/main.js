@@ -3,9 +3,8 @@
 //"builds": "D:/wamp/www/SGF"
 
 const nkm = require(`@nkmjs/core`);
+const com = nkm.com;
 const ui = nkm.ui;
-const com = nkm.common;
-const app = nkm.app;
 
 const sgfViews = require(`./views`);
 const sgfExplorers = require(`./explorers`);
@@ -16,7 +15,7 @@ const Database = require(`./data/database`);
 /**
  * SteamGameFinder allows you to find which multiplayer games are shared within a group of steam users
  */
-class SteamGameFinder extends app.AppBase {
+class SteamGameFinder extends nkm.app.AppBase {
 
     constructor() { super(); }
 
@@ -151,7 +150,7 @@ class SteamGameFinder extends app.AppBase {
             ],
             origin: this,
             [ui.IDS.ICON]: `warning`,
-            [ui.IDS.FLAVOR]: nkm.common.FLAGS.WARNING,
+            [ui.IDS.FLAVOR]: com.FLAGS.WARNING,
             [ui.IDS.VARIANT]: ui.FLAGS.FRAME
         });
     }

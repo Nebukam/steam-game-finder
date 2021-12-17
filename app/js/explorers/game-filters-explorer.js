@@ -1,14 +1,12 @@
 const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
-const uilib = nkm.uilib;
 
 const comps = require(`../components`);
 const SIGNAL = require(`../data/signal`);
 
 
-class GameFiltersExplorer extends uiworkspace.Explorer {
+class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
     constructor() { super(); }
 
     _Init() {

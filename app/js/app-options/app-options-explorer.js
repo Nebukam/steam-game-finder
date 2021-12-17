@@ -1,9 +1,8 @@
 const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
 
-class AppOptionsExplorer extends uiworkspace.Explorer {
+class AppOptionsExplorer extends nkm.uiworkspace.Explorer {
     constructor() { super(); }
 
     _Style() {
@@ -16,7 +15,7 @@ class AppOptionsExplorer extends uiworkspace.Explorer {
 
     _Render(){
         super._Render();
-        new ui.manipulators.Text(u.El(`p`, {}, this._header)).Set(u.tils.CamelSplit(this.constructor.name));
+        new ui.manipulators.Text(ui.dom.El(`p`, {}, this._header)).Set(u.tils.CamelSplit(this.constructor.name));
     }
 
 }

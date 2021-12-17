@@ -1,7 +1,5 @@
 const nkm = require(`@nkmjs/core`);
-const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
 const uilib = nkm.uilib;
 
 const RemoteDataBlock = require(`../data/remote-data-block`);
@@ -51,7 +49,6 @@ class GameCard extends uilib.cards.Media {
     _Render() {
         super._Render();
         this.media = nkm.style.URLImgs(`placeholder-dark.png`);
-        //new ui.manipulators.Text(u.El(`p`, {}, this._header)).Set(u.tils.CamelSplit(this.constructor.name));
     }
 
     _OnPaintChange() {
@@ -89,17 +86,17 @@ class GameCard extends uilib.cards.Media {
         //let label = p_data._privacy;
         switch (this._data.state) {
             case RemoteDataBlock.STATE_NONE:
-                flavor = nkm.common.FLAGS.WARNING;
+                flavor = nkm.com.FLAGS.WARNING;
                 break;
             case RemoteDataBlock.STATE_LOADING:
                 subtitle = `loading...`;
-                flavor = nkm.common.FLAGS.LOADING;
+                flavor = nkm.com.FLAGS.LOADING;
                 break;
             case RemoteDataBlock.STATE_READY:
                 //subtitle = `${p_data.gamesCount} games in library`;
                 break;
             case RemoteDataBlock.STATE_INVALID:
-                flavor = nkm.common.FLAGS.ERROR;
+                flavor = nkm.com.FLAGS.ERROR;
                 break;
         }
 

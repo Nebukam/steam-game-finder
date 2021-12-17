@@ -1,4 +1,3 @@
-const { uilib } = require("@nkmjs/core");
 const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const ui = nkm.ui;
@@ -20,9 +19,9 @@ class GamesListView extends ui.views.View {
         nkm.env.APP.database.Watch(SIGNAL.INFOS_UPDATED, this._OnInfosUpdated, this);
 
         this._gameListQueue = new Array();
-        nkm.common.time.TIME.Watch( nkm.common.SIGNAL.TICK, this._OnTick, this );
+        nkm.com.time.TIME.Watch( nkm.com.SIGNAL.TICK, this._OnTick, this );
 
-        //nkm.common.Preload(comps.GameCard, 1000);
+        //nkm.com.Preload(comps.GameCard, 1000);
 
     }
 
@@ -67,8 +66,8 @@ class GamesListView extends ui.views.View {
         super._Render();
 
         
-        this._cardCtnr = u.dom.El('div', { class:'card-ctnr' }, this);
-        this._header = u.dom.El('div', { class:'header' }, this);        
+        this._cardCtnr = ui.dom.El('div', { class:'card-ctnr' }, this);
+        this._header = ui.dom.El('div', { class:'header' }, this);        
 
         this._infoCard = this.Add(comps.InfoCard, 'info-card', this._header);
 

@@ -13,7 +13,7 @@ const SIGNAL = require(`./signal`);
 const ID_USER_LIST = `userlist`;
 const ID_FILTER_LIST = `filterlist`;
 
-class Database extends nkm.common.pool.DisposableObjectEx {
+class Database extends nkm.com.pool.DisposableObjectEx {
 
     constructor() { super(); }
 
@@ -32,8 +32,8 @@ class Database extends nkm.common.pool.DisposableObjectEx {
 
         this._userStatuses = RemoteDataBlock.STATE_NONE;
 
-        this._delayedUpdate = new nkm.common.time.DelayedCall(this._Bind(this._UpdateInfos));
-        this._delayedComputeOverlap = new nkm.common.time.DelayedCall(this._Bind(this._ComputeLibrariesOverlap));
+        this._delayedUpdate = new nkm.com.time.DelayedCall(this._Bind(this._UpdateInfos));
+        this._delayedComputeOverlap = new nkm.com.time.DelayedCall(this._Bind(this._ComputeLibrariesOverlap));
 
         this._enums = [];
         this._enums.push({ key: "21", id: `DLC`, flag: false }); // 0
@@ -119,7 +119,7 @@ class Database extends nkm.common.pool.DisposableObjectEx {
 
                 this._applist.push(p_game);
                 this._Broadcast(SIGNAL.GAME_ADDED, p_game);
-                p_game.Watch(nkm.common.SIGNAL.UPDATED, this._OnGameUpdated, this);
+                p_game.Watch(nkm.com.SIGNAL.UPDATED, this._OnGameUpdated, this);
                 this._delayedComputeOverlap.Schedule();
 
             }
@@ -151,13 +151,13 @@ class Database extends nkm.common.pool.DisposableObjectEx {
         if (!user) {
 
             user = new UserData();
-            user.Watch(nkm.common.SIGNAL.RELEASED, this._OnUserReleased, this);
+            user.Watch(nkm.com.SIGNAL.RELEASED, this._OnUserReleased, this);
             user.userid = p_userID;
             user.active = p_active;
             user._db = this;
             this._userMap.Set(p_userID, user);
             this._Broadcast(SIGNAL.USER_ADDED, user);
-            user.Watch(nkm.common.SIGNAL.UPDATED, this._OnUserUpdate, this);
+            user.Watch(nkm.com.SIGNAL.UPDATED, this._OnUserUpdate, this);
             user.RequestLoad();
 
         }
@@ -241,7 +241,7 @@ class Database extends nkm.common.pool.DisposableObjectEx {
         for (var i = 0; i < this._applist.length; i++) {
 
             let app = this._applist[i];
-            let appid = app.appid;
+            let appid = nkm.appid;
             let shared = true;
 
             for (var a = 0; a < this._userReadyList.count; a++) {
@@ -251,7 +251,7 @@ class Database extends nkm.common.pool.DisposableObjectEx {
             if (shared) {
                 this._currentOverlap.push(app);
             } else {
-                app.shouldShow = false;
+                nkm.shouldShow = false;
             }
         }
 

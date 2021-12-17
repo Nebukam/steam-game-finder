@@ -1,9 +1,8 @@
 const nkm = require(`@nkmjs/core`);
-const RemoteDataBlock = require("../data/remote-data-block");
-const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
 const uilib = nkm.uilib;
+
+const RemoteDataBlock = require("../data/remote-data-block");
 
 const _flag_noProfile = 'no-profile';
 
@@ -141,18 +140,18 @@ class UserCard extends uilib.cards.Media {
 
         switch (this._data.state) {
             case RemoteDataBlock.STATE_NONE:
-                flavor = nkm.common.FLAGS.WARNING;
+                flavor = nkm.com.FLAGS.WARNING;
                 showToolbar = false;
                 break;
             case RemoteDataBlock.STATE_LOADING:
                 subtitle = `loading...`;
-                flavor = nkm.common.FLAGS.LOADING;
+                flavor = nkm.com.FLAGS.LOADING;
                 showToolbar = false;
                 break;
             case RemoteDataBlock.STATE_READY:
                 if (p_data._privacy == `private`) {
                     subtitle = `Profile is private`;
-                    flavor = nkm.common.FLAGS.WARNING;
+                    flavor = nkm.com.FLAGS.WARNING;
                     //variant = ui.FLAGS.MINIMAL;
                 } else {
                     subtitle = `${p_data.gamesCount} products in library`;
@@ -162,11 +161,11 @@ class UserCard extends uilib.cards.Media {
             case RemoteDataBlock.STATE_INVALID:
                 if (p_data._privacy == `private`) {
                     subtitle = `Profile is private`;
-                    flavor = nkm.common.FLAGS.WARNING;
+                    flavor = nkm.com.FLAGS.WARNING;
                     //variant = ui.FLAGS.MINIMAL;
                 } else {
                     subtitle = `Profile could not be loaded.`;
-                    flavor = nkm.common.FLAGS.ERROR;
+                    flavor = nkm.com.FLAGS.ERROR;
                     showToolbar = false;
                     noProfile = true;
                 }

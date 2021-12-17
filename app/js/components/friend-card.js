@@ -1,8 +1,5 @@
 const nkm = require(`@nkmjs/core`);
-const RemoteDataBlock = require("../data/remote-data-block");
-const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
 const uilib = nkm.uilib;
 
 const _flag_noProfile = 'no-profile';
@@ -104,7 +101,7 @@ class FriendCard extends uilib.cards.Media {
         this.label = null;
 
         if(p_data.existingUser){
-            this.flavor = nkm.ui.FLAGS.CTA;
+            this.flavor = ui.FLAGS.CTA;
             this._deleteBtn.visible = true;
         }else{
             this.flavor = null;

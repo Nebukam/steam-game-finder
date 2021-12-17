@@ -3,7 +3,10 @@
     "version": "1.0.1",
     "description": "Steam : Game Finder allows you to find which multiplayer games are shared within a group of steam users",
     "main": "index.js",
-    "author": "Timothé Lapetite",
+    "author": {
+        "name":"Timothé Lapetite",
+        "email":"nebukam@gmail.com"
+    },
     "license": "none",
     "private": true,
     "dependencies": {

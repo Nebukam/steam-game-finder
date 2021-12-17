@@ -1,11 +1,12 @@
 const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const ui = nkm.ui;
+const uilib = nkm.uilib;
 
 const comps = require(`../components`);
 const FriendData = require(`../data/friend-data`);
 
-class FriendsListView extends nkm.uilib.overlays.Drawer {
+class FriendsListView extends uilib.overlays.Drawer {
     constructor() { super(); }
 
     _Init() {
@@ -57,11 +58,11 @@ class FriendsListView extends nkm.uilib.overlays.Drawer {
     _Render() {
         super._Render();
 
-        this._header = u.dom.El('div', { class: 'header' }, this._body);
-        this._cardCtnr = u.dom.El('div', { class: 'card-ctnr' }, this._body);
+        this._header = ui.dom.El('div', { class: 'header' }, this._body);
+        this._cardCtnr = ui.dom.El('div', { class: 'card-ctnr' }, this._body);
 
-        this._infoCard = this.Add(nkm.uilib.cards.Icon, 'info-card', this._body);
-        this._infoCard._mediaPlacement.Set(nkm.ui.FLAGS.TOP);
+        this._infoCard = this.Add(uilib.cards.Icon, 'info-card', this._body);
+        this._infoCard._mediaPlacement.Set(ui.FLAGS.TOP);
     }
 
     _OnDataChanged(p_oldData) {
@@ -137,7 +138,7 @@ class FriendsListView extends nkm.uilib.overlays.Drawer {
         this._infoCard.icon = `search`;
         this._infoCard.title = `Loading`;
         this._infoCard.subtitle = `loading friendlist, please be patient`;
-        this._infoCard.flavor = null;// nkm.common.FLAGS.INFOS;
+        this._infoCard.flavor = null;// nkm.com.FLAGS.INFOS;
         this._infoCard.variant = ui.FLAGS.MINIMAL;
     }
 
@@ -146,7 +147,7 @@ class FriendsListView extends nkm.uilib.overlays.Drawer {
         this._infoCard.icon = `error`;
         this._infoCard.title = `Nope !`;
         this._infoCard.subtitle = `Could not retrieve friend infos.`;
-        this._infoCard.flavor = nkm.common.FLAGS.ERROR;
+        this._infoCard.flavor = nkm.com.FLAGS.ERROR;
         this._infoCard.variant = ui.FLAGS.MINIMAL;
     }
 

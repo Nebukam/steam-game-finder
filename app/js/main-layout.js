@@ -1,8 +1,6 @@
 const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
-const sgfViews = require(`./views`);
 
 const MainShelf = require(`./main-shelf`);
 
@@ -34,7 +32,7 @@ class MainLayout extends ui.views.Layer {
         new ui.manipulators.Grid(this, [`max-content`, 0], [`max-content`, 0]);
 
         // Header
-        let header = u.El(`div`, { class: `header` }, this);
+        let header = ui.dom.El(`div`, { class: `header` }, this);
         new ui.manipulators.GridItem(header, 1, 1, 2, 1);
         this.header = header;
 

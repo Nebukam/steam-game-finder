@@ -1,13 +1,6 @@
 const nkm = require(`@nkmjs/core`);
-const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
 const uilib = nkm.uilib;
-
-const comps = require(`../components`);
-const SIGNAL = require(`../data/signal`);
-
-const RemoteDataBlock = require(`../data/remote-data-block`);
 
 class UserInputField extends ui.DisplayObjectContainer {
     constructor() { super(); }

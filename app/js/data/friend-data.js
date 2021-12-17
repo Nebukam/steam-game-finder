@@ -33,13 +33,13 @@ class FriendData extends nkm.data.DataBlock {
         let oldUser = this._existingUser;
 
         if(oldUser){
-            oldUser.Unwatch(nkm.common.SIGNAL.RELEASED, this._OnExistingReleased, this);
+            oldUser.Unwatch(nkm.com.SIGNAL.RELEASED, this._OnExistingReleased, this);
         }
 
         this._existingUser = p_value;
 
         if(this._existingUser){
-            this._existingUser.Watch(nkm.common.SIGNAL.RELEASED, this._OnExistingReleased, this);
+            this._existingUser.Watch(nkm.com.SIGNAL.RELEASED, this._OnExistingReleased, this);
         }
 
         this.CommitUpdate();

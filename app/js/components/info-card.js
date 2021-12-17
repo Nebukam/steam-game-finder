@@ -1,8 +1,7 @@
 const nkm = require(`@nkmjs/core`);
-const u = nkm.utils;
 const ui = nkm.ui;
-const uiworkspace = nkm.uiworkspace;
 const uilib = nkm.uilib;
+
 const SIGNAL = require(`../data/signal`);
 
 class InfoCard extends uilib.cards.Icon {
@@ -29,7 +28,7 @@ class InfoCard extends uilib.cards.Icon {
         this.label = '<i>Certain things such as films, apps, and other outlier products are omitted.</i>';
         this.actions = [{
             cl:uilib.buttons.Button,
-            label:'Open filters', flavor:nkm.common.FLAGS.ERROR,
+            label:'Open filters', flavor:nkm.com.FLAGS.ERROR,
             trigger: { fn:()=>{nkm.env.APP.mainLayout.shelf.RequestView(1);} }
         }];
     }
@@ -74,7 +73,7 @@ class InfoCard extends uilib.cards.Icon {
         this.title = "Oops";
         this.subtitle ="The current settings (active users & active filters) produces no overlap.";
         this.variant = ui.FLAGS.FRAME;
-        this.flavor = nkm.common.FLAGS.ERROR;
+        this.flavor = nkm.com.FLAGS.ERROR;
         this.icon = `hidden`;
         this._toolbar.visible = true;
     }
