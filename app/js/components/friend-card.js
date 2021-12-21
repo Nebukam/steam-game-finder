@@ -12,10 +12,10 @@ class FriendCard extends uilib.cards.Media {
 
     _Init() {
         super._Init();
-        
+
         this._Bind(this._OnToggleUserActivation);
-        this._Bind(this._OnLogoLoadSuccess);
-        this._Bind(this._OnLogoLoadError);
+        this._Bind(this._OnThumbLoadSuccess);
+        this._Bind(this._OnThumbLoadError);
 
         this._flags.Add(this, _flag_noProfile);
     }
@@ -23,9 +23,9 @@ class FriendCard extends uilib.cards.Media {
     _OnPaintChange() {
         super._OnPaintChange();
 
-        if(this._isPainted){
+        if (this._isPainted) {
             this.style.opacity = 1;
-        }else{
+        } else {
             this.style.opacity = 0;
         }
     }
@@ -33,16 +33,16 @@ class FriendCard extends uilib.cards.Media {
     _Style() {
         return nkm.style.Extends({
             ':host': {
-                'opacity':0,
+                'opacity': 0,
                 'transition': 'opacity 0.5s',
-                'height':'55px',
+                'height': '55px',
                 //margin:'10px'
                 '--header-size': '55px'
             },
             '.header': {
-                'width':'var(--header-size)',
-                'min-height':'var(--header-size)',
-                'min-width':'var(--header-size)',
+                'width': 'var(--header-size)',
+                'min-height': 'var(--header-size)',
+                'min-width': 'var(--header-size)',
             },
             '.body': {
                 'padding-bottom': '0px'
@@ -56,7 +56,7 @@ class FriendCard extends uilib.cards.Media {
             },
             ':host(.no-profile) .header': {
                 //'height':'80px',
-                'opacity':0.5
+                'opacity': 0.5
             },
             '.btn-delete': {
                 'position': 'absolute',
@@ -80,19 +80,6 @@ class FriendCard extends uilib.cards.Media {
         this.subtitle = `hahah`;
     }
 
-    _OnDataChanged(p_oldData){
-        super._OnDataChanged(p_oldData);
-        if(this._data){
-            nkm.io.Read(this._data._avatarURL,
-                { cl: nkm.io.resources.BlobResource },
-                {
-                    success: this._OnLogoLoadSuccess,
-                    error: this._OnLogoLoadError,
-                    parallel:true
-                });
-        }
-    }
-
     _OnDataUpdated(p_data) {
 
         super._OnDataUpdated(p_data);
@@ -100,21 +87,57 @@ class FriendCard extends uilib.cards.Media {
         this.subtitle = null;
         this.label = null;
 
-        if(p_data.existingUser){
+        if (p_data.existingUser) {
             this.flavor = ui.FLAGS.CTA;
             this._deleteBtn.visible = true;
-        }else{
+        } else {
             this.flavor = null;
             this._deleteBtn.visible = false;
         }
+        
+        this._UpdateMedia();
+
+    }
+
+    _UpdateMedia() {
+
+        if (this._mediaLoaded || !this._isPainted) { return; }
+        if (!this._data) { return; }
+        if (this._data.state != RemoteDataBlock.STATE_READY) { return; }
+
+        this._mediaLoaded = true;
+
+        "#if WEB";
+        if (!nkm.env.isExtension || !nkm.env.isNodeEnabled) {
+            this.media = (this._data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
+        }
+        "#endif";
+        
+        "#if EXT";
+        nkm.io.Read(this._data._avatarURL,
+            { cl: nkm.io.resources.BlobResource },
+            {
+                success: this._OnThumbLoadSuccess,
+                error: this._OnThumbLoadError,
+                parallel: true
+            });
+        "#endif";
+    }
+
+    _OnThumbLoadSuccess(p_rsc) {
+        this.media = p_rsc.objectURL;
+    }
+
+    _OnThumbLoadError(p_rsc) {
+        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
     }
 
     _OnToggleUserActivation(p_input, p_value) {
         this._data.active = p_value;
     }
 
-    Activate(p_evt){
-        if(!super.Activate(p_evt) || this._data.existingUser || this._deleteBtn._pointer.isMouseOver ){ return false; }
+    Activate(p_evt) {
+        if (!super.Activate(p_evt) || this._data.existingUser || this._deleteBtn._pointer.isMouseOver) { return false; }
         this._data.existingUser = nkm.env.APP.database.GetUser(this._data._profileID64);
         return true;
     }
@@ -123,13 +146,6 @@ class FriendCard extends uilib.cards.Media {
         this._data.existingUser.Release();
     }
 
-    _OnLogoLoadSuccess(p_rsc) {
-        this.media = p_rsc.objectURL;
-    }
-
-    _OnLogoLoadError(p_rsc) {
-        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
-    }
 }
 
 module.exports = FriendCard;

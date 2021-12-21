@@ -67,7 +67,7 @@ class UserData extends RemoteDataBlock {
 
     get active() { return this._active; }
     set active(p_value) {
-        if(this._active == p_value){return;}
+        if (this._active == p_value) { return; }
         this._active = p_value;
         this.CommitUpdate();
     }
@@ -76,13 +76,12 @@ class UserData extends RemoteDataBlock {
         if (this._profileID64 == p_value || !this._isID64(p_value)) { return; }
         this._profileID64 = p_value;
         this.userid = p_value;
-        //this._dataPath = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${ENV.APP._APIKEY}&steamid=${p_value}&format=json`;
-        this._dataPath = `https://steamcommunity.com/profiles/${p_value}/games/?tab=all`;
+        this._dataPath = nkm.env.APP._GetURLLibrary(p_value);
 
     }
     get profileID64() { return this._profileID64; }
 
-    
+
 
     //
     //  Data loading
@@ -90,7 +89,7 @@ class UserData extends RemoteDataBlock {
 
     // Profile
 
-    RequestRefresh(){
+    RequestRefresh() {
         if (this._state != RemoteDataBlock.STATE_READY) { return; }
         let cachePath = `users._${this.userid}.gamelist`;
         nkm.env.prefs.Delete(cachePath);
@@ -111,8 +110,9 @@ class UserData extends RemoteDataBlock {
 
             this._personaID = this.userid;
             this.state = RemoteDataBlock.STATE_LOADING;
+
             io.Read(
-                `https://steamcommunity.com/id/${this.userid}?xml=1`,
+                nkm.env.APP._GetURLProfile(this.userid),
                 { cl: io.resources.TextResource },
                 {
                     success: this._OnProfileByIDRequestSuccess,
@@ -148,7 +148,7 @@ class UserData extends RemoteDataBlock {
 
         // TODO : Check cache here
         io.Read(
-            `https://steamcommunity.com/profiles/${this._profileID64}?xml=1`,
+            nkm.env.APP._GetURLProfile64(this._profileID64),
             { cl: io.resources.TextResource },
             {
                 success: this._OnXMLProfileLoaded,
@@ -187,7 +187,7 @@ class UserData extends RemoteDataBlock {
     }
 
     _OnXMLProfileError(p_err) {
-        console.error(p_err);
+        //console.error(p_err);
         this.state = RemoteDataBlock.STATE_INVALID;
     }
 
@@ -225,21 +225,6 @@ class UserData extends RemoteDataBlock {
         nkm.env.prefs.Set(cachePath, gamelist);
         this._ProcessGameList(gamelist);
         super._OnLoadRequestSuccess(p_rsc);
-
-    }
-
-    _OnLoadRequestError(p_err){
-
-        if(!this._triedWithPersona){
-            this._triedWithPersona = true;
-            //Last attempt using personaID which sometimes works
-            this._dataPath = `https://steamcommunity.com/id/${this._personaID}/games/?tab=all`;
-
-            super.RequestLoad(true);
-            return;
-        }
-        
-        super._OnLoadRequestError(p_err);
 
     }
 

@@ -1,78 +1,49 @@
 const nkm = require(`@nkmjs/core`);
+const com = nkm.com;
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-const __flag_toggled = `toggled`;
-const __flag_notused = `not-used`;
-
-class FilterWidget extends ui.Widget {
+class FilterWidget extends uilib.inputs.Boolean {
     constructor() { super(); }
-
-    static __usePaintCallback = true;
 
     _Init() {
         super._Init();
-        this._flags.Add(this, __flag_toggled, __flag_notused);
-    }
 
-    _OnPaintChange() {
-        super._OnPaintChange();
+        this._updateFn = null;
 
-        if(this._isPainted){
-            this.style.opacity = 1;
-        }else{
-            this.style.opacity = 0;
-        }
+        this._flavor = new ui.helpers.FlagEnum(ui.FLAGS.flavorsExtended, true);
+        this._flavor.Add(this);
+        this._flavor.Set(ui.FLAGS.CTA);
+
+        this._handler.Watch(ui.inputs.SIGNAL.VALUE_SUBMITTED, this._OnToggle, this);
+
     }
 
     _Style() {
         return nkm.style.Extends({
             ':host': {
-                'opacity':0,
                 'transition': 'opacity 0.5s',
-                'height':'30px',
-                'position':`relative`,
-                'display':'flex',
-                'flex-flow':'row nowrap',
-                'border-radius':`30px`,
-                'padding': '4px',
-                'padding-left': '30px',
-                'padding-right': '10px',
-                'font-weight': '900'
+                'border-radius': `3px`,
+                'padding': '5px',
+                'background-color': 'rgba(140, 140, 140, 0.15)'
             },
-            ':host(.toggled)': {
-                'background':'var(--fcol-10-0-i)'
-            },
-            '.toggle': {
-                'flex':'1 1 auto'
-            },
-            ':host(.not-used)':{
-                'opacity':'0.2 !important'
+            ':host(.checked)': {
+                'background-color': 'var(--flavor-primary-idle)',
+                'font-weight': '900',
+
             }
         }, super._Style());
     }
 
-    set sourceEnum(p_value){
+    set sourceEnum(p_value) {
         this._sourceEnum = p_value;
-        this._toggle.label = p_value.id;
-        this.toggle = p_value.flag;
+        this.label = (p_value.label || p_value.id);
+        this.currentValue = p_value.flag;
     }
 
-    set toggle(p_value){
-        this._toggle.currentValue = p_value;
+    _OnToggle(p_input, p_value) {
         this._sourceEnum.flag = p_value;
-        this._flags.Set(__flag_toggled, p_value);
-    }
-
-    _Render() {
-        super._Render();
-        this._toggle = this.Add(uilib.inputs.Boolean, `toggle`);
-        this._toggle.handler.Watch(ui.inputs.SIGNAL.VALUE_SUBMITTED, this._OnToggleUserActivation, this); 
-    }
-
-    _OnToggleUserActivation(p_input, p_value) {
-        this.toggle = p_value;
-        nkm.env.APP.database._UpdateFilters();
+        if (this._updateFn) { this._updateFn(); }
     }
 
 }

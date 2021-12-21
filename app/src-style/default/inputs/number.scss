@@ -12,35 +12,4 @@
 
 .field{
     height: var(--size);
-
-    &::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 3px;
-        height: 15.5px;
-        background: rgba(127,127,127,1);
-        cursor: pointer;
-        border-radius: 3px;
-    }
-
-    &:focus {
-        box-shadow: none;
-    }
-
-    &.slider{
-
-        &::before {
-            content: "";
-            position: absolute;
-            width: calc(100% - 12px);
-            height: 1px;
-            background-color: rgba(127,127,127,0.5);
-            top: 50%;
-        }
-
-        &:focus::before {
-    
-        }
-
-    }
-
 }

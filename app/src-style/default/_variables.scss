@@ -59,7 +59,7 @@ $font_size_xl: 1.95rem;
 $font_size_tag: $font_size_xs * 0.75;
 
 $varname_font_size_tag: '--font-size-tag';
-$varname_font_size_xs: '--fontvsize-xs';
+$varname_font_size_xs: '--font-size-xs';
 $varname_font_size_s: '--font-size-s';
 $varname_font_size_m: '--font-size-m';
 $varname_font_size_l: '--font-size-l';
@@ -184,11 +184,11 @@ $size_varnames_half:
 
 // Thirds
 
-$size_xs_third: _round($size_xs/3);
-$size_s_third: _round($size_s/3);
-$size_m_third: _round($size_m/3);
-$size_l_third: _round($size_l/3);
-$size_xl_third: _round($size_xl/3);
+$size_xs_third: _round($size_xs*0.333);
+$size_s_third: _round($size_s*0.333);
+$size_m_third: _round($size_m*0.333);
+$size_l_third: _round($size_l*0.333);
+$size_xl_third: _round($size_xl*0.333);
 
 $suffix: '-third';
 $varname_size_xs_third: $varname_size_xs+$suffix;

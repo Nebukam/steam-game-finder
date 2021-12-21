@@ -6,7 +6,7 @@ class HandlerUserFriendlist extends HandlerUserBase{
     constructor(){super();}
 
     Handle(){
-        this.Fetch(`https://steamcommunity.com/profiles/${this._request.params.id}/friends`);
+        this.Fetch(`https://steamcommunity.com/profiles/${this._id}/friends`);
     }
 
 }

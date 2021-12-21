@@ -77,7 +77,7 @@ class FriendsListView extends uilib.overlays.Drawer {
         this._SetInfosLoading();
         // Load user' friendlist
         nkm.io.Read(
-            `https://steamcommunity.com/profiles/${userData.profileID64}/friends`,
+            nkm.env.APP._GetURLFriendlist(userData.profileID64),
             { cl: nkm.io.resources.TextResource },
             {
                 success: this._OnFriendlistLoadSuccess,

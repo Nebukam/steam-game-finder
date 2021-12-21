@@ -12,6 +12,8 @@ const RemoteDataBlock = require(`./remote-data-block`);
 const SIGNAL = require(`./signal`);
 const ID_USER_LIST = `userlist`;
 const ID_FILTER_LIST = `filterlist`;
+const ID_COOP_FILTER_LIST = `cooptimusFilterlist`;
+const ID_GLOBAL_TOGGLE = `globalTogglelist`;
 
 class Database extends nkm.com.pool.DisposableObjectEx {
 
@@ -36,18 +38,18 @@ class Database extends nkm.com.pool.DisposableObjectEx {
         this._delayedComputeOverlap = new nkm.com.time.DelayedCall(this._Bind(this._ComputeLibrariesOverlap));
 
         this._enums = [];
-        this._enums.push({ key: "21", id: `DLC`, flag: false }); // 0
-        //this._enums.push({ key: "1", id: `multiplayer`, flag: true }); // 1
+        this._enums.push({ key: "1", id: `Multiplayer`, flag: true }); // 1
         this._enums.push({ key: "2", id: `Single Player`, flag: false }); // 2
-        //this._enums.push({ key: "49", id: `PVP`, flag: true }); // 3
-        //this._enums.push({ key: "9", id: `Co-op`, flag: true }); // 4
+        this._enums.push({ key: "49", id: `PVP`, flag: true }); // 3
+        this._enums.push({ key: "36", id: `PvP - Online`, flag: true, label: `Online` }); // PvP Online
+        this._enums.push({ key: "47", id: `PvP - LAN`, flag: false, label: `LAN` }); // PvP LAN
+        this._enums.push({ key: "37", id: `PvP - Splitscreen`, flag: false, label: `Splitscreen` }); // PvP Splitscreen
+        this._enums.push({ key: "9", id: `Co-op`, flag: true }); // Coop
+        this._enums.push({ key: "38", id: `Co-op - Online`, flag: true, label: `Online` }); // Coop Online
+        this._enums.push({ key: "48", id: `Co-op - LAN`, flag: false, label: `LAN` }); // Coop LAN
+        this._enums.push({ key: "39", id: `Co-op - Splitscreen`, flag: false, label: `Splitscreen` }); // Coop Splitscreen
+        this._enums.push({ key: "21", id: `DLC`, flag: false }); // 0
         this._enums.push({ key: "20", id: `MMO`, flag: false }); // 5
-        this._enums.push({ key: "36", id: `Online PvP`, flag: true }); // 6
-        this._enums.push({ key: "38", id: `Online Coop`, flag: true }); // 7
-        this._enums.push({ key: "47", id: `LAN PvP`, flag: false }); // 8
-        this._enums.push({ key: "48", id: `LAN Coop`, flag: false }); // 9
-        this._enums.push({ key: "37", id: `Split screen PvP`, flag: false }); // 10
-        this._enums.push({ key: "39", id: `Split screen Coop`, flag: false }); // 11
         //    this._enums.push({ key:"27", id:`cross_platform_mp`, flag:false }); // 12
         //    this._enums.push({ key:"29", id:`trading_cards`, flag:false }); // 13
         //    this._enums.push({ key:"35", id:`in_app_purchase`, flag:false }); // 14
@@ -62,17 +64,49 @@ class Database extends nkm.com.pool.DisposableObjectEx {
         //    this._enums.push({ key:"30", id:`steam_workshop`, flag:false }); // 23
         //    this._enums.push({ key:"32", id:`steam_turn_notification`, flag:false }); // 24
 
-        this._filterShowAll = { id: `Show all`, flag: false };
+        this._extraEnums = [];
 
+        this._filterExclusive = { key: "90000", id: `Show only exclusive matches`, flag: false };
+        this._filterShowAll = { key: "90001", id: `Show all`, flag: false };
+        this._filterUseCooptimus = { key: "90002", id: `Enable Co-optimus`, flag: false };
+
+        this._extraEnums.push(this._filterExclusive);
+        this._extraEnums.push(this._filterShowAll);
+        this._extraEnums.push(this._filterUseCooptimus);
+
+        let localValues = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12];
+        let onlineValues = [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 20, 24, 26, 30, 32, 35, 64, 100, 255, 500];
+        let lanValues = [0, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 14, 16, 20, 24, 30, 32, 35, 64, 255, 256, 500];
+
+        this._cooptimusEnums = [];
+        this._cooptimusEnums.push({ key: "91001", id: `Max local`, flag: false, label: `Min`, values: localValues, selection: 0 });
+        this._cooptimusEnums.push({ key: "91002", id: `Min local`, flag: false, label: `Max`, values: localValues, selection: localValues.length - 1 });
+        this._cooptimusEnums.push({ key: "91003", id: `Max online`, flag: false, label: `Min`, values: onlineValues, selection: 0 });
+        this._cooptimusEnums.push({ key: "91004", id: `Min online`, flag: false, label: `Max`, values: onlineValues, selection: onlineValues.length - 1 });
+        this._cooptimusEnums.push({ key: "91005", id: `Max lan`, flag: false, label: `Min`, values: lanValues, selection: 0 });
+        this._cooptimusEnums.push({ key: "91006", id: `Min lan`, flag: false, label: `Max`, values: lanValues, selection: lanValues.length - 1 });
+
+        this._cooptimusEnums.push({ key: "91101", id: `Max local`, flag: false, label: `Splitscreen` });
+        this._cooptimusEnums.push({ key: "91102", id: `Min local`, flag: false, label: `Drop-in/Drop-out` });
+        this._cooptimusEnums.push({ key: "91102", id: `Min local`, flag: false, label: `Co-op Campaign` });
+
+        this._Bind(this._UpdateFilters);
         this._filters = new Array();
-
         let cachedFilters = nkm.env.prefs.Get(ID_FILTER_LIST, this._filters);
+        if (cachedFilters == this._filters) { this._UpdateFilters(); }
+        else { this._LoadStoredFilterList(cachedFilters); }
 
-        if (cachedFilters == this._filters) {
-            this._UpdateFilters();
-        } else {
-            this._LoadStoredFilterList(cachedFilters);
-        }
+        this._Bind(this._UpdateCoopFilters);
+        this._coopfilters = new Array();
+        let cachedCoopFilters = nkm.env.prefs.Get(ID_COOP_FILTER_LIST, this._coopfilters);
+        if (cachedCoopFilters == this._coopfilters) { this._UpdateCoopFilters(); }
+        else { this._LoadStoredCoopFilterList(cachedFilters); }
+
+        this._Bind(this._UpdateToggles);
+        this._toggles = new Array();
+        let cachedToggles = nkm.env.prefs.Get(ID_GLOBAL_TOGGLE, this._toggles);
+        if (cachedToggles == this._toggles) { this._UpdateToggles(); }
+        else { this._LoadStoredToggleList(cachedFilters); }
 
     }
 
@@ -84,6 +118,43 @@ class Database extends nkm.com.pool.DisposableObjectEx {
         }
 
         this._UpdateFilters();
+
+    }
+
+    _LoadStoredCoopFilterList(coopFilterlist) {
+
+        for (var i = 0; i < coopFilterlist.length; i++) {
+            let stored = coopFilterlist[i];
+            innerloop:
+            for (var e = 0; e < this._cooptimusEnums.length; e++) {
+                let en = this._cooptimusEnums[e];
+                if (stored.key == en.key) {
+                    en.flag = stored.flag; 
+                    if (stored.selection) { en.selection = stored.selection; }
+                    break innerloop;
+                }
+            }
+        }
+
+        this._UpdateCoopFilters();
+
+    }
+
+    _LoadStoredToggleList(togglelist) {
+
+        for (var i = 0; i < togglelist.length; i++) {
+            let stored = togglelist[i];
+            innerloop:
+            for (var e = 0; e < this._extraEnums.length; e++) {
+                let en = this._extraEnums[e];
+                if (stored.key == en.key) {
+                    en.flag = stored.flag;
+                    break innerloop;
+                }
+            }
+        }
+
+        this._UpdateToggles();
 
     }
 
@@ -236,12 +307,11 @@ class Database extends nkm.com.pool.DisposableObjectEx {
     _ComputeLibrariesOverlap() {
 
         this._currentOverlap.length = 0;
-
         // For each game in ref library, check if it is present in others'
         for (var i = 0; i < this._applist.length; i++) {
 
             let app = this._applist[i];
-            let appid = nkm.appid;
+            let appid = app.appid;
             let shared = true;
 
             for (var a = 0; a < this._userReadyList.count; a++) {
@@ -251,7 +321,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
             if (shared) {
                 this._currentOverlap.push(app);
             } else {
-                nkm.shouldShow = false;
+                app.shouldShow = false;
             }
         }
 
@@ -262,10 +332,6 @@ class Database extends nkm.com.pool.DisposableObjectEx {
     _UpdateFilters() {
 
         this._filters.length = 0;
-
-        if(!this._filterShowAll.flag){
-            this._ComputeLibrariesOverlap();
-        }
 
         for (let i = 0, n = this._enums.length; i < n; i++) {
             let en = this._enums[i];
@@ -282,24 +348,48 @@ class Database extends nkm.com.pool.DisposableObjectEx {
 
     }
 
+    _UpdateCoopFilters() {
+
+        this._coopfilters.length = 0;
+
+        for (let i = 0, n = this._cooptimusEnums.length; i < n; i++) {
+            let en = this._cooptimusEnums[i];
+            this._coopfilters.push({ key: en.key, flag: en.flag, selection: en.selection });
+        }
+
+        //TODO : manage selection etc, DO NOT STORE A NUMBER >.<
+
+        nkm.env.prefs.Delete(ID_COOP_FILTER_LIST);
+        nkm.env.prefs.Set(ID_COOP_FILTER_LIST, this._coopfilters);
+
+        this._Broadcast(SIGNAL.FILTERS_UPDATED, this);
+        this._delayedUpdate.Schedule();
+
+    }
+
+    _UpdateToggles() {
+
+        this._toggles.length = 0;
+
+        for (let i = 0, n = this._extraEnums.length; i < n; i++) {
+            let en = this._extraEnums[i];
+            this._toggles.push({ key: en.key, flag: en.flag });
+        }
+
+        // TODO : Manage a more complex object than a number, just in case
+
+        nkm.env.prefs.Delete(ID_GLOBAL_TOGGLE);
+        nkm.env.prefs.Set(ID_GLOBAL_TOGGLE, this._toggles);
+
+        this._Broadcast(SIGNAL.FILTERS_UPDATED, this);
+        this._delayedUpdate.Schedule();
+
+    }
+
     _UpdateInfos() {
 
         let game;
         this._filteredCount = 0;
-
-        if(this._filterShowAll.flag){
-            for(var i = 0; i < this._applist.length; i++){
-                game = this._applist[i];
-                if(game.HasAnyActiveUsers()){
-                    this._filteredCount ++;
-                    game.shouldShow = true;
-                }else{
-                    game.shouldShow = false;
-                }
-            }
-            this._Broadcast(SIGNAL.INFOS_UPDATED, this);
-            return;
-        }
 
         // Update game infos, when available
         if (this._currentOverlap.length == 0) {
@@ -316,7 +406,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
         // Flag overlapped games that meet filter criterias
         for (let i = 0, n = this._currentOverlap.length; i < n; i++) {
             game = this._currentOverlap[i];
-            let hasFlags = game.HasFlags(this._filters);
+            let hasFlags = this._filterShowAll.flag ? true : game.HasFlags(this._filters);
             game.shouldShow = hasFlags;
             if (hasFlags) { this._filteredCount++; }
         }

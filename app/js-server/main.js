@@ -1,29 +1,35 @@
 const server = require(`@nkmjs/core/server`);
+const handlers = require(`./handlers`);
+class ServerProcess extends server.core.ServerBase {
+    constructor(p_config) { super(p_config); }
 
-const __api_get_user = `get_user`;
-const __api_get_friendlist = `get_friendlist`;
-const __api_get_library = `get_library`;
+    _Init() {
 
-class ServerProcess extends server.core.ServerBase{
-    constructor(p_config){super(p_config);}
-
-    _Init(){
         super._Init();
-        this._apis = {
-            [__api_get_user]:{
-                route:`/user/:id`
-            },
-            [__api_get_friendlist]:{
-                route:`/friendlist/:id`
-            },
-            [__api_get_library]:{
-                route:`/library/:id`
-            }
-        }
-    }
 
-    _Boot(){
-        super._Boot();
+        this._RegisterAPIs({
+            getUserProfile: {
+                route: `/user/profile/:id`,
+                handler: handlers.UserProfile,
+                start: true
+            },
+            getUserProfile64: {
+                route: `/user/profile64/:id`,
+                handler: handlers.UserProfile64,
+                start: true
+            },
+            getFriendlist: {
+                route: `/user/friendlist/:id`,
+                handler: handlers.UserFriendlist,
+                start: true
+            },
+            getLibrary: {
+                route: `/user/library/:id`,
+                handler: handlers.UserLibrary,
+                start: true
+            }
+        });
+
     }
 
 }

@@ -110,7 +110,7 @@ $th: 4px;
     border-radius: 10px;
 
     top: auto;
-    bottom: -$th/2; // Default state ~= top
+    bottom: -$th*0.5; // Default state ~= top
 }
 
 // ----> Horizontal placement
@@ -118,18 +118,18 @@ $th: 4px;
 
 :host(#{$TOGGLABLE}#{$TOP})::after{
     top: auto;
-    bottom: -$th/2;
+    bottom: -$th*0.5;
 }
 
 :host(#{$TOGGLABLE}#{$BOTTOM})::after{
-    top: -$th/2;
+    top: -$th*0.5;
     bottom: auto;
 }
 
 :host(#{$TOGGLABLE}#{$FOCUSED})::after,
 :host(#{$TOGGLABLE}#{$FOCUSED}#{$TOP})::after,
 :host(#{$TOGGLABLE}#{$FOCUSED}#{$BOTTOM})::after{
-    left:calc(50% - #{$th/2});
+    left:calc(50% - #{$th*0.5});
 }
 
 :host(#{$TOGGLABLE}#{$TOGGLED})::after,
@@ -144,17 +144,17 @@ $th: 4px;
 
 :host(#{$TOGGLABLE}#{$LEFT})::after{
     left:auto;
-    right: -$th/2;
+    right: -$th*0.5;
 }
 
 :host(#{$TOGGLABLE}#{$RIGHT})::after{
-    left: -$th/2;
+    left: -$th*0.5;
     right:auto;
 }
 
 :host(#{$TOGGLABLE}#{$FOCUSED}#{$LEFT})::after,
 :host(#{$TOGGLABLE}#{$FOCUSED}#{$RIGHT})::after{
-    bottom:calc(50% - #{$th/2});
+    bottom:calc(50% - #{$th*0.5});
 }
 
 :host(#{$TOGGLABLE}#{$TOGGLED}#{$LEFT})::after, 

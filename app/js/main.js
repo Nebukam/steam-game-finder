@@ -1,4 +1,3 @@
-'use strict';
 
 //"builds": "D:/wamp/www/SGF"
 
@@ -21,11 +20,7 @@ class SteamGameFinder extends nkm.app.AppBase {
 
     _Init() {
         super._Init();
-/*
-        this._defaultUserPreferences = {
-            gamelist:{}
-        };
-*/
+
         // Setup Steam cookies
 
         this._fiftyYearsAgo = ((Date.now() - 1576800000000) / 1000).toFixed();
@@ -47,7 +42,7 @@ class SteamGameFinder extends nkm.app.AppBase {
 
     AppReady() {
         super.AppReady();
-        
+
         this._DB = new Database();
 
         this._mainCatalog = nkm.data.catalogs.CreateFrom({
@@ -68,7 +63,7 @@ class SteamGameFinder extends nkm.app.AppBase {
 
         let mainShelf = this.mainLayout.shelf;
         mainShelf.catalog = this._mainCatalog;
-        mainShelf.RequestView(0);
+        mainShelf.RequestView(1);
 
         /*
         mainShelf.nav.toolbar.CreateHandle({
@@ -80,7 +75,7 @@ class SteamGameFinder extends nkm.app.AppBase {
                 arg: ui.UI.Rent(AppOptionsExplorer)
             }
         });
-        */ 
+        */
 
         /*
         this._gamesList = this.mainLayout.workspace.Host({
@@ -105,8 +100,8 @@ class SteamGameFinder extends nkm.app.AppBase {
 
 
         let cachedUserList = nkm.env.prefs.Get(`userlist`, null);
-        if(cachedUserList){
-            for(var i = 0; i < cachedUserList.length; i++){
+        if (cachedUserList) {
+            for (var i = 0; i < cachedUserList.length; i++) {
                 let data = cachedUserList[i];
                 let user = this._DB.GetUser(data.id);
                 user.active = data.active;
@@ -125,20 +120,20 @@ class SteamGameFinder extends nkm.app.AppBase {
 
     }
 
-    _RequestFriendList(p_user){
-       
-       // this._friendsList.options.view.LoadFriendlist(p_user);
+    _RequestFriendList(p_user) {
 
-        let opts = { 
-            orientation: ui.FLAGS.HORIZONTAL, 
+        // this._friendsList.options.view.LoadFriendlist(p_user);
+
+        let opts = {
+            orientation: ui.FLAGS.HORIZONTAL,
             placement: ui.FLAGS.LEFT,
             title: `Friendlist`,
-            user:p_user,
-            contentClass:sgfViews.FriendsList
+            user: p_user,
+            contentClass: sgfViews.FriendsList
         };
 
         nkm.actions.Emit(nkm.uilib.REQUEST.DRAWER, opts, this);
-    
+
     }
 
     _429() {
@@ -155,6 +150,49 @@ class SteamGameFinder extends nkm.app.AppBase {
         });
     }
 
+    _GetURLProfile(p_id) {
+        let url;
+        "#if WEB";
+        url = `https://steam-game-finder-server.glitch.me/user/profile/${p_id}`
+        "#elif EXT";
+        url = `https://steamcommunity.com/id/${p_id}?xml=1`;
+        "#endif";
+        return url;
+    }
+
+    _GetURLProfile64(p_id) {
+        let url;
+        "#if WEB";
+        url = `https://steam-game-finder-server.glitch.me/user/profile64/${p_id}`
+        "#elif EXT";
+        url =  `https://steamcommunity.com/profiles/${p_id}?xml=1`;
+        "#endif";
+        return url;
+    }
+
+    _GetURLLibrary(p_id) {
+        let url;
+        "#if WEB";
+        url = `https://steam-game-finder-server.glitch.me/user/library/${p_id}`;
+        "#elif EXT";
+        url = `https://steamcommunity.com/profiles/${p_id}/games/?tab=all`;
+        "#endif";
+        return url;
+    }
+
+
+    _GetURLFriendlist(p_id) {
+        let url;
+        "#if WEB";
+        url = `https://steam-game-finder-server.glitch.me/user/friendlist/${p_id}`;
+        "#elif EXT";
+        url = `https://steamcommunity.com/profiles/${p_id}/friends`;
+        "#endif";
+        return url;
+    }
+
+    IAmNode(){}
+    IAmNOTNode(){}
 
 }
 

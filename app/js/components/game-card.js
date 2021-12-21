@@ -16,18 +16,18 @@ class GameCard extends uilib.cards.Media {
         this._orientation.Set(ui.FLAGS.VERTICAL);
         this._mediaPlacement.Set(ui.FLAGS.TOP);
         this._flags.Add(this, _flag_dlc);
-        this._logoLoaded = false;
+        this._thumbLoaded = false;
 
-        this._Bind(this._OnLogoLoadSuccess);
-        this._Bind(this._OnLogoLoadError);
+        this._Bind(this._OnThumbLoadSuccess);
+        this._Bind(this._OnThumbLoadError);
 
     }
 
     _Style() {
         return nkm.style.Extends({
             ':host': {
-                'cursor':'pointer',
-                'opacity':0,
+                'cursor': 'pointer',
+                'opacity': 0,
                 'transition': 'opacity 0.5s',
                 'width': '140px',
                 'max-width': '180px',
@@ -52,18 +52,18 @@ class GameCard extends uilib.cards.Media {
     }
 
     _OnPaintChange() {
-        this._CheckLogoStatus();
+        this._UpdateThumb();
         super._OnPaintChange();
 
-        if(this._isPainted){
+        if (this._isPainted) {
             this.style.opacity = 1;
-        }else{
+        } else {
             this.style.opacity = 0;
         }
     }
 
     _OnDataChanged(p_oldData) {
-        this._logoLoaded = false;
+        this._thumbLoaded = false;
         super._OnDataChanged(p_oldData);
     }
 
@@ -76,7 +76,6 @@ class GameCard extends uilib.cards.Media {
         if (this._toggle)
             this._toggle.currentValue = p_data.active;
 
-        //this.media = (p_data._logo || nkm.style.URLImgs(`placeholder-dark.png`));
         this.title = p_data.name;
 
         let subtitle = null;
@@ -105,53 +104,67 @@ class GameCard extends uilib.cards.Media {
         this.subtitle = subtitle;
 
         let childCount = p_data._childs.length;
-        if(childCount > 0){
-            if(childCount == 1){
+        if (childCount > 0) {
+            if (childCount == 1) {
                 this.label = `${childCount} DLC`;
-            }else{
+            } else {
                 this.label = `${childCount} DLCs`;
-            }            
+            }
         }
 
         this._flags.Set(_flag_dlc, p_data._parentGame ? true : false);
-        this._CheckLogoStatus();
+        this._UpdateThumb();
 
     }
 
-    _CheckLogoStatus() {
-        if (this._logoLoaded || !this._isPainted) { return; }
+    _UpdateThumb() {
+
+        if (this._thumbLoaded || !this._isPainted) { return; }
         if (!this._data) { return; }
         if (this._data.state != RemoteDataBlock.STATE_READY) { return; }
 
-        this._logoLoaded = true;
+        this._thumbLoaded = true;
 
+        "#if WEB";
+        if (!nkm.env.isExtension || !nkm.env.isNodeEnabled) {
+            this.media = (this._data._logo || nkm.style.URLImgs(`placeholder-dark.png`));
+        }
+        "#endif";
+        
+        "#if EXT";
         nkm.io.Read(this._data.logo,
             { cl: nkm.io.resources.BlobResource },
             {
-                success: this._OnLogoLoadSuccess,
-                error: this._OnLogoLoadError,
-                parallel:true
+                success: this._OnThumbLoadSuccess,
+                error: this._OnThumbLoadError,
+                parallel: true
             });
-
+        "#endif";
     }
 
-    _OnLogoLoadSuccess(p_rsc) {
+    _OnThumbLoadSuccess(p_rsc) {
         this.media = p_rsc.objectURL;
     }
 
-    _OnLogoLoadError(p_rsc) {
+    _OnThumbLoadError(p_rsc) {
         this.media = nkm.style.URLImgs(`placeholder-dark.png`);
     }
 
-    Activate(p_evt){
-        if(!super.Activate(p_evt)){return false;}
+    Activate(p_evt) {
+        if (!super.Activate(p_evt)) { return false; }
         this._Launch();
         return true;
     }
 
-    _Launch(){
+    _Launch() {
         var url = `steam://run/${this._data.appid}/`;
         window.open(url);
+    }
+
+    _Cleanup() {
+        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
+        this._mediaLoaded = false;
+        super._Cleanup();
     }
 
 }

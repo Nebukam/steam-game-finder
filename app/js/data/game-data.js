@@ -130,7 +130,7 @@ class GameData extends RemoteDataBlock {
             this.CommitUpdate();
         }
     }
-
+    
     /////
 
     AddUser(p_user) {

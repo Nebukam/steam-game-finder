@@ -5,4 +5,5 @@ module.exports = {
     InfoCard: require(`./info-card`),
     UserInputField: require(`./user-input-field`),
     FilterWidget: require(`./filter-widget`),
+    SliderFilterWidget: require(`./slider-filter-widget`),
 }

@@ -16,11 +16,13 @@ class UserCard extends uilib.cards.Media {
         super._Init();
 
         this._Bind(this._OnToggleUserActivation);
-        this._Bind(this._OnLogoLoadSuccess);
-        this._Bind(this._OnLogoLoadError);
+        this._Bind(this._OnThumbLoadSuccess);
+        this._Bind(this._OnThumbLoadError);
 
         this._flags.Add(this, _flag_noProfile);
         this._flags.Add(this, `inactive`);
+
+        this._mediaLoaded = false;
     }
 
     _OnPaintChange() {
@@ -36,16 +38,16 @@ class UserCard extends uilib.cards.Media {
     _Style() {
         return nkm.style.Extends({
             ':host': {
-                '--currentOpacity':1,
-                '--op':0,
+                '--currentOpacity': 1,
+                '--op': 0,
                 'opacity': `var(--op)`,
                 'transition': 'opacity 0.5s',
                 'height': '115px',
                 //margin:'10px'
                 '--header-size': '115px'
             },
-            ':host(.inactive)':{
-                '--currentOpacity':'0.5'
+            ':host(.inactive)': {
+                '--currentOpacity': '0.5'
             },
             '.header': {
                 'min-height': '80px',
@@ -104,19 +106,6 @@ class UserCard extends uilib.cards.Media {
 
     }
 
-    _OnDataChanged(p_oldData) {
-        super._OnDataChanged(p_oldData);
-        if (this._data) {
-            nkm.io.Read(this._data._avatarURL,
-                { cl: nkm.io.resources.BlobResource },
-                {
-                    success: this._OnLogoLoadSuccess,
-                    error: this._OnLogoLoadError,
-                    parallel: true
-                });
-        }
-    }
-
     _OnDataUpdated(p_data) {
 
         super._OnDataUpdated(p_data);
@@ -126,7 +115,7 @@ class UserCard extends uilib.cards.Media {
 
         this._flags.Set(`inactive`, !p_data.active);
 
-        this.media = (p_data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
+//        this.media = (p_data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
         this.title = p_data._personaID;
 
 
@@ -180,8 +169,42 @@ class UserCard extends uilib.cards.Media {
         this._refreshCache.visible = p_data._isUsingCache;
 
         this.subtitle = subtitle;
-        //this.label = label;
+        
+        this._UpdateMedia();
 
+    }
+
+    _UpdateMedia() {
+
+        if (this._mediaLoaded || !this._isPainted) { return; }
+        if (!this._data) { return; }
+        if (this._data.state != RemoteDataBlock.STATE_READY) { return; }
+
+        this._mediaLoaded = true;
+
+        "#if WEB";
+        if (!nkm.env.isExtension || !nkm.env.isNodeEnabled) {
+            this.media = (this._data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
+        }
+        "#endif";
+        
+        "#if EXT";
+        nkm.io.Read(this._data._avatarURL,
+            { cl: nkm.io.resources.BlobResource },
+            {
+                success: this._OnThumbLoadSuccess,
+                error: this._OnThumbLoadError,
+                parallel: true
+            });
+        "#endif";
+    }
+
+    _OnThumbLoadSuccess(p_rsc) {
+        this.media = p_rsc.objectURL;
+    }
+
+    _OnThumbLoadError(p_rsc) {
+        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
     }
 
     _OnToggleUserActivation(p_input, p_value) {
@@ -192,7 +215,7 @@ class UserCard extends uilib.cards.Media {
         nkm.env.APP._RequestFriendList(this._data);
     }
 
-    _RefreshCache(){
+    _RefreshCache() {
         this._data.RequestRefresh();
     }
 
@@ -201,13 +224,10 @@ class UserCard extends uilib.cards.Media {
         this._data.Release();
     }
 
-
-    _OnLogoLoadSuccess(p_rsc) {
-        this.media = p_rsc.objectURL;
-    }
-
-    _OnLogoLoadError(p_rsc) {
+    _Cleanup() {
         this.media = nkm.style.URLImgs(`placeholder-dark.png`);
+        this._mediaLoaded = false;
+        super._Cleanup();
     }
 
 }
