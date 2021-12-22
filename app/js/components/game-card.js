@@ -3,6 +3,7 @@ const ui = nkm.ui;
 const uilib = nkm.uilib;
 
 const RemoteDataBlock = require(`../data/remote-data-block`);
+const SIGNAL = require(`../signal`);
 
 const _flag_dlc = 'dlc';
 
@@ -16,7 +17,7 @@ class GameCard extends uilib.cards.Media {
         this._orientation.Set(ui.FLAGS.VERTICAL);
         this._mediaPlacement.Set(ui.FLAGS.TOP);
         this._flags.Add(this, _flag_dlc);
-        this._thumbLoaded = false;
+        this._mediaLoaded = false;
 
         this._Bind(this._OnThumbLoadSuccess);
         this._Bind(this._OnThumbLoadError);
@@ -52,7 +53,7 @@ class GameCard extends uilib.cards.Media {
     }
 
     _OnPaintChange() {
-        this._UpdateThumb();
+        this._UpdateMedia();
         super._OnPaintChange();
 
         if (this._isPainted) {
@@ -63,8 +64,18 @@ class GameCard extends uilib.cards.Media {
     }
 
     _OnDataChanged(p_oldData) {
-        this._thumbLoaded = false;
+        this._mediaLoaded = false;
+        this.media = nkm.style.URLImgs(`placeholder-dark.png`); 
         super._OnDataChanged(p_oldData);
+
+        if(p_oldData){
+            p_oldData.Unwatch(SIGNAL.INFOS_UPDATED, this._OnDataUpdated, this);
+        }
+
+        if(this._data){
+            this._data.Watch(SIGNAL.INFOS_UPDATED, this._OnDataUpdated, this);
+        }
+
     }
 
     _OnDataUpdated(p_data) {
@@ -113,17 +124,21 @@ class GameCard extends uilib.cards.Media {
         }
 
         this._flags.Set(_flag_dlc, p_data._parentGame ? true : false);
-        this._UpdateThumb();
+        this._UpdateMedia();
+
+        //TODO : Change this based on 'display mode ?'
+        this.visible = p_data.passFilters && p_data.passOverlap;
+        this.order = p_data.order;
 
     }
 
-    _UpdateThumb() {
+    _UpdateMedia() {
 
-        if (this._thumbLoaded || !this._isPainted) { return; }
-        if (!this._data) { return; }
+        if (this._mediaLoaded) { return; }
+        if (!this._isPainted || !this._data) { return; }
         if (this._data.state != RemoteDataBlock.STATE_READY) { return; }
 
-        this._thumbLoaded = true;
+        this._mediaLoaded = true;
 
         "#if WEB";
         if (!nkm.env.isExtension || !nkm.env.isNodeEnabled) {

@@ -27,6 +27,7 @@ class UserData extends RemoteDataBlock {
 
         this._loadPriority = true;
         this._loadParallel = true;
+
         this._triedWithPersona = false;
 
         this._userID = "";
@@ -254,20 +255,20 @@ class UserData extends RemoteDataBlock {
     // Second profile fetch
 
     _CleanUp() {
-
-        this._isUsingCache = false;
+        this._ClearGameList();
+        this._gameList.Clear();
+        
+        this._triedWithPersona = false;
 
         this._userID = "";
-        this._profileID64 = "";
+        this._active = true;
 
+        this._profileID64 = "";
         this._personaID = "";
         this._avatarURL = "";
         this._privacy = "";
+        this._isUsingCache = false;
 
-        this._ClearGameList();
-
-        this._triedWithPersona = false;
-        this._gameList.Clear();
         super._CleanUp();
     }
 

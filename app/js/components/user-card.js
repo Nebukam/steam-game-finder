@@ -16,8 +16,8 @@ class UserCard extends uilib.cards.Media {
         super._Init();
 
         this._Bind(this._OnToggleUserActivation);
-        this._Bind(this._OnThumbLoadSuccess);
-        this._Bind(this._OnThumbLoadError);
+        this._Bind(this._OnMediaLoadSuccess);
+        this._Bind(this._OnMediaLoadError);
 
         this._flags.Add(this, _flag_noProfile);
         this._flags.Add(this, `inactive`);
@@ -27,6 +27,7 @@ class UserCard extends uilib.cards.Media {
 
     _OnPaintChange() {
         super._OnPaintChange();
+        this._UpdateMedia();
 
         if (this._isPainted) {
             this.style.setProperty(`--op`, `var(--currentOpacity)`);
@@ -84,21 +85,28 @@ class UserCard extends uilib.cards.Media {
 
         this.actions = [
             {
-                htitle: `Browser friendlist`, label: 'Friendlist',
-                trigger: { fn: this._Bind(this._OpenFriendlist) },
-                variant: ui.FLAGS.FRAME
-            },
-            {
                 htitle: `Refresh game list`, icon: 'refresh',
                 trigger: { fn: this._Bind(this._RefreshCache) },
-                member: { owner: this, id: '_refreshCache' },
+                member: { owner: this, id: '_btnRefresh' },
                 variant: ui.FLAGS.MINIMAL
+            },
+            {
+                htitle: `Browser friendlist`, label: 'Friendlist',
+                trigger: { fn: this._Bind(this._OpenFriendlist) },
+                member: { owner: this, id: '_btnFriendlist' },
+                variant: ui.FLAGS.FRAME
             },
             {
                 cl: uilib.inputs.Boolean,
                 inputWatchers: [{ signal: ui.inputs.SIGNAL.VALUE_SUBMITTED, fn: this._OnToggleUserActivation }],
-                member: { owner: this, id: '_toggle' },
+                member: { owner: this, id: '_btnToggle' },
                 currentValue: true
+            },
+            {
+                label: `Try a search`, icon: 'search',
+                trigger: { fn: this._Bind(this._OpenSearch) },
+                member: { owner: this, id: '_btnSearch' },
+                variant: ui.FLAGS.MINIMAL
             }
         ];
 
@@ -106,16 +114,22 @@ class UserCard extends uilib.cards.Media {
 
     }
 
+    _OnDataChanged(p_oldData) {
+        this._mediaLoaded = false;
+        this.media = nkm.style.URLImgs(`placeholder-dark.png`); 
+        super._OnDataChanged(p_oldData);
+    }
+
     _OnDataUpdated(p_data) {
 
         super._OnDataUpdated(p_data);
 
-        if (this._toggle)
-            this._toggle.currentValue = p_data.active;
+        if (this._btnToggle)
+            this._btnToggle.currentValue = p_data.active;
 
         this._flags.Set(`inactive`, !p_data.active);
 
-//        this.media = (p_data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
+        //        this.media = (p_data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
         this.title = p_data._personaID;
 
 
@@ -127,7 +141,7 @@ class UserCard extends uilib.cards.Media {
 
         //let label = p_data._privacy;
 
-        switch (this._data.state) {
+        switch (p_data.state) {
             case RemoteDataBlock.STATE_NONE:
                 flavor = nkm.com.FLAGS.WARNING;
                 showToolbar = false;
@@ -139,7 +153,7 @@ class UserCard extends uilib.cards.Media {
                 break;
             case RemoteDataBlock.STATE_READY:
                 if (p_data._privacy == `private`) {
-                    subtitle = `Profile is private`;
+                    subtitle = `Library is private`;
                     flavor = nkm.com.FLAGS.WARNING;
                     //variant = ui.FLAGS.MINIMAL;
                 } else {
@@ -149,35 +163,38 @@ class UserCard extends uilib.cards.Media {
                 break;
             case RemoteDataBlock.STATE_INVALID:
                 if (p_data._privacy == `private`) {
-                    subtitle = `Profile is private`;
-                    flavor = nkm.com.FLAGS.WARNING;
+                    subtitle = `Could not be loaded.`;
+                    flavor = nkm.com.FLAGS.ERROR;
                     //variant = ui.FLAGS.MINIMAL;
                 } else {
-                    subtitle = `Profile could not be loaded.`;
+                    subtitle = `Could not be found.`;
                     flavor = nkm.com.FLAGS.ERROR;
                     showToolbar = false;
-                    noProfile = true;
                 }
+                noProfile = true;
                 break;
         }
 
-        this._toolbar.visible = showToolbar;
+        //this._toolbar.visible = showToolbar;
         this.flavor = flavor;
         this.variant = variant;
         this._flags.Set(_flag_noProfile, noProfile);
 
-        this._refreshCache.visible = p_data._isUsingCache;
+        this._btnRefresh.visible = p_data._isUsingCache;
+        this._btnToggle.visible = p_data.state == RemoteDataBlock.STATE_READY;
+        this._btnFriendlist.visible = p_data.state == RemoteDataBlock.STATE_READY;
+        this._btnSearch.visible = noProfile;
 
         this.subtitle = subtitle;
-        
+
         this._UpdateMedia();
 
     }
 
     _UpdateMedia() {
 
-        if (this._mediaLoaded || !this._isPainted) { return; }
-        if (!this._data) { return; }
+        if (this._mediaLoaded) { return; }
+        if (!this._isPainted || !this._data) { return; }
         if (this._data.state != RemoteDataBlock.STATE_READY) { return; }
 
         this._mediaLoaded = true;
@@ -187,23 +204,23 @@ class UserCard extends uilib.cards.Media {
             this.media = (this._data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
         }
         "#endif";
-        
+
         "#if EXT";
         nkm.io.Read(this._data._avatarURL,
             { cl: nkm.io.resources.BlobResource },
             {
-                success: this._OnThumbLoadSuccess,
-                error: this._OnThumbLoadError,
+                success: this._OnMediaLoadSuccess,
+                error: this._OnMediaLoadError,
                 parallel: true
             });
         "#endif";
     }
 
-    _OnThumbLoadSuccess(p_rsc) {
+    _OnMediaLoadSuccess(p_rsc) {
         this.media = p_rsc.objectURL;
     }
 
-    _OnThumbLoadError(p_rsc) {
+    _OnMediaLoadError(p_rsc) {
         this.media = nkm.style.URLImgs(`placeholder-dark.png`);
     }
 
@@ -213,6 +230,10 @@ class UserCard extends uilib.cards.Media {
 
     _OpenFriendlist() {
         nkm.env.APP._RequestFriendList(this._data);
+    }
+
+    _OpenSearch() {
+        nkm.env.APP._RequestSearchList(this._data);
     }
 
     _RefreshCache() {

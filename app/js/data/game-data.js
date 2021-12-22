@@ -2,6 +2,7 @@
 const nkm = require(`@nkmjs/core`);
 
 const RemoteDataBlock = require("./remote-data-block");
+const SIGNAL = require(`../signal`);
 
 class GameData extends RemoteDataBlock {
 
@@ -14,20 +15,51 @@ class GameData extends RemoteDataBlock {
 
         this._appid = "";
         this._parentGame = null;
+        
         this._flags = null;
         this._tags = null;
+        this._cooptimus = false;
+
         this._users = new Array();
         this._childs = new Array();
+
+        this._order = 0;
 
         this._name = ``;
         this._logo = ``;
 
-        this._shouldShow = false;
+        this._filterCache = {};
+
+        this._passFilters = false;
+        this._passOverlap = false;
+
+        this._delayedInfoUpdate = new nkm.com.time.DelayedCall(this._Bind(this._DispatchInfosUpdate));
+        this._delayedCommitUpdate = new nkm.com.time.DelayedCall(this._Bind(this.CommitUpdate));
 
     }
 
-    get shouldShow() { return this._shouldShow; }
-    set shouldShow(p_value) { this._shouldShow = p_value; }
+    get passFilters() { return this._passFilters; }
+    set passFilters(p_value) {
+        if (this._passFilters == p_value) { return; }
+        this._passFilters = p_value;
+        this._delayedInfoUpdate.Schedule();
+    }
+
+    get passOverlap() { return this._passOverlap; }
+    set passOverlap(p_value) {
+        if (this._passOverlap == p_value) { return; }
+        this._passOverlap = p_value;
+        this._delayedInfoUpdate.Schedule();
+    }
+
+    get order() { return this._order; }
+    set order(p_value) {
+        if (this._order == p_value) { return; }
+        this._order = p_value;
+        this._delayedInfoUpdate.Schedule();
+    }
+
+    _DispatchInfosUpdate(){ this._Broadcast(SIGNAL.INFOS_UPDATED, this); }
 
     get usercount() { return this._users.length; }
 
@@ -36,21 +68,21 @@ class GameData extends RemoteDataBlock {
         this._appid = p_value;
         this._name = `${p_value}`;
         this._logo = `https://steamcdn-a.akamaihd.net/steam/apps/${p_value}/library_600x900.jpg`;
-        this._dataPath = `https://nebukam.github.io/steam/app/${p_value}/infos.json`;
+        this._dataPath = `https://nebukam.github.io/steam-db/app/${p_value}/infos.json`;
     }
 
     get name() { return this._name; }
     set name(p_value) {
         if (this._name == p_value) { return; }
         this._name = p_value;
-        this.CommitUpdate();
+        this._delayedCommitUpdate.Schedule();
     }
 
     get logo() { return this._logo; }
     set logo(p_value) {
         if (this._logo == p_value) { return; }
         this._logo = p_value;
-        this.CommitUpdate();
+        this._delayedCommitUpdate.Schedule();
     }
 
     /////
@@ -107,6 +139,7 @@ class GameData extends RemoteDataBlock {
         this._flags = p_rsc.content.flags;
         this._tags = p_rsc.content.tags;
         this._name = p_rsc.content.name;
+        this._cooptimus = p_rsc.content.cooptimus;
 
         let parentID = p_rsc.content.parentappid;
         if (parentID != ``) {
@@ -124,28 +157,26 @@ class GameData extends RemoteDataBlock {
 
             if (p_game._flags && !p_game._flags.includes("21")) {
                 p_game._flags.push("21");
-                p_game.CommitUpdate();
+                p_game._delayedCommitUpdate.Schedule();
             }
 
-            this.CommitUpdate();
+            this._delayedCommitUpdate.Schedule();
         }
     }
-    
-    /////
 
     AddUser(p_user) {
         let index = this._users.indexOf(p_user);
-        if (index == -1) { 
-            this._users.push(p_user); 
-            this.CommitUpdate();
+        if (index == -1) {
+            this._users.push(p_user);
+            this._delayedCommitUpdate.Schedule();
         }
     }
 
     RemoveUser(p_user) {
         let index = this._users.indexOf(p_user);
-        if (index != -1) { 
-            this._users.splice(index, 1); 
-            this.CommitUpdate();
+        if (index != -1) {
+            this._users.splice(index, 1);
+            this._delayedCommitUpdate.Schedule();
         }
     }
 

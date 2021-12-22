@@ -44,15 +44,11 @@ class MainLayout extends ui.views.Layer {
         };
         new ui.manipulators.GridItem(shelf, 1, 2, 1, 1);
         this.shelf = shelf;
-/*
+
         // Workspace
-        let wkspace = this.Add(uiworkspace.WorkspaceRoot, `workspace`);
+        let wkspace = this.Add(nkm.uiworkspace.WorkspaceRoot, `workspace`);
         new ui.manipulators.GridItem(wkspace, 2, 2, 1, 1);
         this.workspace = wkspace;
-        */
-
-        
-        
 
     }
 

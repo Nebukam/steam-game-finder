@@ -144,10 +144,10 @@ class FriendsListView extends uilib.overlays.Drawer {
 
     _SetInfosError(){
         this._infoCard.visible = true;
-        this._infoCard.icon = `error`;
-        this._infoCard.title = `Nope !`;
+        this._infoCard.icon = `warning`;
+        this._infoCard.title = `PRIVATE`;
         this._infoCard.subtitle = `Could not retrieve friend infos.`;
-        this._infoCard.flavor = nkm.com.FLAGS.ERROR;
+        this._infoCard.flavor = nkm.com.FLAGS.WARNING;
         this._infoCard.variant = ui.FLAGS.MINIMAL;
     }
 

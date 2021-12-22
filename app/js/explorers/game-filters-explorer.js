@@ -4,7 +4,7 @@ const u = nkm.utils;
 const ui = nkm.ui;
 
 const comps = require(`../components`);
-const SIGNAL = require(`../data/signal`);
+const SIGNAL = require(`../signal`);
 
 const _flag_showAll = `show-all`;
 const _flag_showCooptimus = `show-cooptimus`;
@@ -19,10 +19,15 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
         this._filtermap = new nkm.collections.Dictionary();
 
         nkm.env.features.Watch(nkm.env.SIGNAL.DISPLAY_TYPE_CHANGED, this._OnDisplayTypeChanged, this);
-        nkm.env.APP.database.Watch(SIGNAL.INFOS_UPDATED, this._OnInfosUpdated, this);
+        nkm.env.APP.filters.Watch(nkm.com.SIGNAL.UPDATED, this._OnFiltersUpdated, this);
 
         this._flags.Add(this, _flag_showAll, _flag_showCooptimus);
 
+    }
+
+    _PostInit() {
+        super._PostInit();
+        this._OnFiltersUpdated(nkm.env.APP.filters);
     }
 
     _OnDisplayTypeChanged(p_newMode, p_oldMode) {
@@ -67,10 +72,13 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
             '.filter-item': {
                 'min-height': 0,
                 'margin': '4px',
-                'flex': '1 1 33%'
+                'flex': '1 1 auto'
             },
             '.small-filter': {
-                'flex': ''
+                'flex': '1 1 auto'
+            },
+            '.large-filter': {
+                'flex': '1 1 66%'
             },
             '.label': {
                 'margin': '10px',
@@ -106,36 +114,24 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
 
         super._Render();
 
+        let filters = nkm.env.APP.filters;
+
         //#region Regular filters
 
         let label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `label` }, this._body));
-        label.Set(`Basic filters`);
+        label.Set(`Basic filters`); this._labelBasicFilters = label;
 
         // Show all
-
-        let showAll = this.Add(comps.FilterWidget, `filter-item`, this._body);
-        showAll.size = ui.FLAGS.SIZE_XS;
-        showAll.sourceEnum = nkm.env.APP.database._filterShowAll;
-        showAll._flavor.Set(nkm.com.FLAGS.WARNING);
-        showAll._updateFn = nkm.env.APP.database._UpdateToggles;
+        this._AddToggle(filters.toggles._toggleBasics, this.regFBox);
 
         this.regFBox = ui.dom.El(`div`, { class: `box regular` }, this._body);
 
         // Exclusive
-        let fExc = this.Add(comps.FilterWidget, `filter-item`, this.regFBox);
-        fExc.size = ui.FLAGS.SIZE_XS;
-        fExc.sourceEnum = nkm.env.APP.database._filterExclusive;
-        fExc._flavor.Set(nkm.com.FLAGS.WARNING);
-        fExc._updateFn = nkm.env.APP.database._UpdateToggles;
+        this._AddToggle(filters.toggles._toggleExclusive, this.regFBox);
 
-        let enums = nkm.env.APP.database._enums;
-        let labels = ["Basics", "PVP", "Co-Op", "Misc"], labelIndex = 0;
+        let enums = filters.regular._filters;
         for (var i = 0; i < enums.length; i++) {
-            if (i == 0 || i == 2 || i == 6 || i == 10) {
-                label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `small-label` }, this.regFBox));
-                label.Set(labels[labelIndex++]);
-            }
-            this._AddFilter(enums[i], this.regFBox, nkm.env.APP.database._UpdateFilters);
+            this._AddFilter(enums[i], this.regFBox);
         }
 
         //#endregion
@@ -143,7 +139,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
         //#region Cooptimus filters
 
         label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `label` }, this._body));
-        label.Set(`Co-optimus`);
+        label.Set(`Co-optimus`); this._labelCoopFilters = label;
 
         let cooptimusLink = this.Add(uilib.buttons.Tool, `btn`, label.element);
         cooptimusLink.options = {
@@ -152,49 +148,71 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
             htitle: 'Go to Co-optimus website'
         }
 
-        let enableCooptimus = this.Add(comps.FilterWidget, `filter-item show-all`, this._body);
-        enableCooptimus.size = ui.FLAGS.SIZE_XS;
-        enableCooptimus.sourceEnum = nkm.env.APP.database._filterUseCooptimus;
-        enableCooptimus._flavor.Set(nkm.com.FLAGS.WARNING);
-        enableCooptimus._updateFn = nkm.env.APP.database._UpdateToggles;
+        this._AddToggle(filters.toggles._toggleCooptimus);
 
         this.coopFBox = ui.dom.El(`div`, { class: `box cooptimus` }, this._body);
 
-        enums = nkm.env.APP.database._cooptimusEnums;
-        labels = ["Local", "Online", "LAN", "Other"]; labelIndex = 0;
+        enums = filters.cooptimus._filters;
         for (var i = 0; i < enums.length; i++) {
-            if (i == 0 || i == 2 || i == 4 || i == 6) {
-                label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `small-label` }, this.coopFBox));
-                label.Set(labels[labelIndex++]);
-            }
-            this._AddFilter(enums[i], this.coopFBox, nkm.env.APP.database._UpdateCoopFilters);
+            this._AddFilter(enums[i], this.coopFBox);
         }
 
         //#endregion
 
     }
 
-    _AddFilter(p_enum, p_parent, p_updateFn) {
+    _AddToggle(p_enum, p_ctnr) {
+        let toggle = this.Add(comps.FilterWidget, `filter-item`, (p_ctnr || this._body));
+        toggle.size = ui.FLAGS.SIZE_XS;
+        toggle.sourceEnum = p_enum;
+        toggle._flavor.Set(nkm.com.FLAGS.WARNING);
+        return toggle;
+    }
 
+    _AddFilter(p_enum, p_parent) {
+
+
+        let classes = `filter-item `;
         let type = comps.FilterWidget;
-        if (p_enum.values) { type = comps.SliderFilterWidget; }
 
-        let toggle = this.Add(type, `filter-item small-filter`, p_parent);
+        if (p_enum.values) { type = comps.SliderFilterWidget; classes += `large-filter`; }
+        else { classes += `small-filter` }
+
+        this._GroupLabel(p_enum.group, p_parent);
+
+        let toggle = this.Add(type, classes, p_parent);
 
         toggle.size = ui.FLAGS.SIZE_XS;
         toggle.sourceEnum = p_enum;
-        toggle._updateFn = p_updateFn;
         this._filtermap.Set(p_enum, toggle);
 
     }
 
-    _OnInfosUpdated() {
+    _GroupLabel(p_label, p_container) {
+        if (this._lastLabel == p_label) { return; }
+        this._lastLabel = p_label;
+        let label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `small-label` }, p_container));
+        label.Set(p_label);
+    }
 
-        let showAll = nkm.env.APP.database._filterShowAll.flag;
-        let useCooptimus = nkm.env.APP.database._filterUseCooptimus.flag;
+    _OnFiltersUpdated(p_filters) {
 
-        this._flags.Set(_flag_showAll, showAll);
+        let useBasics = p_filters.toggles.isBasicsEnabled;
+        let useCooptimus = p_filters.toggles.isCooptimusEnabled;
+
+        this._flags.Set(_flag_showAll, !useBasics);
         this._flags.Set(_flag_showCooptimus, !useCooptimus);
+
+        /*
+        this._labelBasicFilters.Set(`Basic filters (${p_filters.regular._lastMatchCount} results)`);
+
+        if (useCooptimus) {
+            this._labelCoopFilters.Set(`Co-optimus (${p_filters.cooptimus._lastMatchCount} results)`);
+        } else {
+            this._labelCoopFilters.Set(`Co-optimus`);
+        }
+*/
+
 
     }
 

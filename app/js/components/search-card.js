@@ -6,7 +6,7 @@ const RemoteDataBlock = require(`../data/remote-data-block`);
 
 const _flag_noProfile = 'no-profile';
 
-class FriendCard extends uilib.cards.Media {
+class SearchCard extends uilib.cards.Media {
     constructor() { super(); }
 
     static __default_headerPlacement = ui.FLAGS.LEFT;
@@ -26,6 +26,7 @@ class FriendCard extends uilib.cards.Media {
     _Style() {
         return nkm.style.Extends({
             ':host': {
+                'cursor':'pointer',
                 'transition': 'opacity 0.5s',
                 'height': '55px',
                 //margin:'10px'
@@ -145,5 +146,5 @@ class FriendCard extends uilib.cards.Media {
 
 }
 
-module.exports = FriendCard;
-ui.Register(`sgf-friendcard`, FriendCard);
+module.exports = SearchCard;
+ui.Register(`sgf-searchcard`, SearchCard);

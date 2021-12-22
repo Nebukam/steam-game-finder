@@ -10,6 +10,7 @@ const sgfExplorers = require(`./explorers`);
 
 const AppOptionsExplorer = require(`./app-options/app-options-explorer`);
 const Database = require(`./data/database`);
+const FilterManager = require("./filtering/filter-manager");
 
 /**
  * SteamGameFinder allows you to find which multiplayer games are shared within a group of steam users
@@ -39,11 +40,13 @@ class SteamGameFinder extends nkm.app.AppBase {
     }
 
     get database() { return this._DB; }
+    get filters() { return this._filters; }
 
     AppReady() {
         super.AppReady();
 
         this._DB = new Database();
+        this._filters = new FilterManager();
 
         this._mainCatalog = nkm.data.catalogs.CreateFrom({
             [com.IDS.NAME]: `SGF`
@@ -63,7 +66,7 @@ class SteamGameFinder extends nkm.app.AppBase {
 
         let mainShelf = this.mainLayout.shelf;
         mainShelf.catalog = this._mainCatalog;
-        mainShelf.RequestView(1);
+        mainShelf.RequestView(0);
 
         /*
         mainShelf.nav.toolbar.CreateHandle({
@@ -77,26 +80,25 @@ class SteamGameFinder extends nkm.app.AppBase {
         });
         */
 
-        /*
+        
         this._gamesList = this.mainLayout.workspace.Host({
             [ui.IDS.VIEW_CLASS]: sgfViews.GamesList,
             [ui.IDS.NAME]: `Shared Games`,
+            [ui.IDS.ICON]: `visible`,
             [ui.IDS.STATIC]: true
         });
-        */
 
-        /*
-        this._friendsList = this.mainLayout.workspace.Host({
-            [ui.IDS.VIEW_CLASS]: sgfViews.FriendsList,
-            [ui.IDS.NAME]: `Friends`,
+        this._gamesGroup = this.mainLayout.workspace.Host({
+            [ui.IDS.VIEW_CLASS]: sgfViews.GamesGroups,
+            [ui.IDS.NAME]: `Grouped Games`,
+            [ui.IDS.ICON]: `dots`,
             [ui.IDS.STATIC]: true
         });
-        */
 
-        //this._gamesList.options.view.RequestDisplay();
+        this._gamesList.options.view.RequestDisplay();
 
-        this._gamesList = this.mainLayout.Add(sgfViews.GamesList, `workspace`);
-        new ui.manipulators.GridItem(this._gamesList, 2, 2, 1, 1);
+        //this._gamesList = this.mainLayout.Add(sgfViews.GamesList, `workspace`);
+        //new ui.manipulators.GridItem(this._gamesList, 2, 2, 1, 1);
 
 
         let cachedUserList = nkm.env.prefs.Get(`userlist`, null);
@@ -130,6 +132,22 @@ class SteamGameFinder extends nkm.app.AppBase {
             title: `Friendlist`,
             user: p_user,
             contentClass: sgfViews.FriendsList
+        };
+
+        nkm.actions.Emit(nkm.uilib.REQUEST.DRAWER, opts, this);
+
+    }
+
+    _RequestSearchList(p_user) {
+
+        // this._friendsList.options.view.LoadFriendlist(p_user);
+
+        let opts = {
+            orientation: ui.FLAGS.HORIZONTAL,
+            placement: ui.FLAGS.LEFT,
+            title: `User search`,
+            user: p_user,
+            contentClass: sgfViews.SearchResult
         };
 
         nkm.actions.Emit(nkm.uilib.REQUEST.DRAWER, opts, this);
@@ -191,8 +209,15 @@ class SteamGameFinder extends nkm.app.AppBase {
         return url;
     }
 
-    IAmNode(){}
-    IAmNOTNode(){}
+    _GetURLSearch(p_id) {
+        let url;
+        "#if WEB";
+        url = `https://steam-game-finder-server.glitch.me/user/search/${p_id}`;
+        "#elif EXT";
+        url = `https://steamcommunity.com/search/users/#text=${p_id}`;
+        "#endif";
+        return url;
+    }
 
 }
 

@@ -5,7 +5,7 @@ const io = nkm.io;
 
 //const axios = require(`axios`);
 
-const SIGNAL = require(`./signal`);
+const SIGNAL = require(`../signal`);
 
 class RemoteDataBlock extends nkm.data.DataBlock{
 

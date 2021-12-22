@@ -5,7 +5,7 @@ const ui = nkm.ui;
 const comps = require(`../components`);
 const SIGNAL = require(`../signal`);
 
-class GamesListView extends ui.views.View {
+class GamesGroupsView extends ui.views.View {
     constructor() { super(); }
 
     _Init() {
@@ -115,5 +115,5 @@ class GamesListView extends ui.views.View {
 
 }
 
-module.exports = GamesListView;
-ui.Register(`sgf-gameslist`, GamesListView);
+module.exports = GamesGroupsView;
+ui.Register(`sgf-gamesgroup`, GamesGroupsView);

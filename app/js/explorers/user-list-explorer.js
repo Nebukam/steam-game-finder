@@ -3,7 +3,7 @@ const ui = nkm.ui;
 const uilib = nkm.uilib;
 
 const comps = require(`../components`);
-const SIGNAL = require(`../data/signal`);
+const SIGNAL = require(`../signal`);
 
 const RemoteDataBlock = require(`../data/remote-data-block`);
 
@@ -16,10 +16,11 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
 
         this._usermap = new nkm.collections.Dictionary();
 
-        nkm.env.APP.database.Watch(SIGNAL.USER_ADDED, this._OnUserAdded, this);
-        nkm.env.APP.database.Watch(SIGNAL.USER_REMOVED, this._OnUserRemoved, this);
-        nkm.env.APP.database.Watch(SIGNAL.USER_UPDATED, this._OnUserUpdated, this);
-        nkm.env.APP.database.Watch(SIGNAL.INFOS_UPDATED, this._OnInfosUpdated, this);
+        let database = nkm.env.APP.database;
+
+        database.Watch(SIGNAL.USER_ADDED, this._OnUserAdded, this);
+        database.Watch(SIGNAL.USER_REMOVED, this._OnUserRemoved, this);
+        database.Watch(SIGNAL.USER_UPDATED, this._OnUserUpdated, this);
 
         nkm.env.features.Watch(nkm.env.SIGNAL.DISPLAY_TYPE_CHANGED, this._OnDisplayTypeChanged, this);
 
@@ -141,47 +142,8 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
     }
 
     _OnUserUpdated(p_user) {
-        this._OnInfosUpdated();
-    }
-
-    //#endregion
-
-    //#region infos
-    _OnInfosUpdated() {
-
-        var statusText = `Add some users to start !`;
-        var substatus = ``;
-        //this._submitBtn.visible = false;
-
-        switch (nkm.env.APP.database._userStatuses) {
-
-            case RemoteDataBlock.STATE_NONE:
-            case RemoteDataBlock.STATE_INVALID:
-                statusText = `Need some more valid profiles...`;
-                break;
-            case RemoteDataBlock.STATE_LOADING:
-                statusText = `Loading...`;
-                break;
-            case RemoteDataBlock.STATE_READY:
-
-                var l = nkm.env.APP.database._currentOverlap.length;
-                substatus = `${l} products in common`;
-
-                var m = nkm.env.APP.database._filteredCount;
-                if (m > 0) { statusText = `${m} games matches filters`; }
-                else { statusText = `0 games matches filters`; }
-
-                //this._submitBtn.visible = (l != 0);
-                break;
-            case RemoteDataBlock.STATE_INVALID:
-                statusText = `Something went wrong`;
-                break;
-
-        }
 
     }
-
-
 
     //#endregion
 

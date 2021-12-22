@@ -43,7 +43,7 @@ class FilterWidget extends uilib.inputs.Boolean {
 
     _OnToggle(p_input, p_value) {
         this._sourceEnum.flag = p_value;
-        if (this._updateFn) { this._updateFn(); }
+        this._sourceEnum._updateFn();
     }
 
 }

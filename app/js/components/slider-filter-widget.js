@@ -30,11 +30,17 @@ class SliderFilterWidget extends ui.Widget {
                 'align-items': 'center',
                 'align-content': 'flex-start'
             },
-            '.toggle': {
+            '.toggle': {                
                 'flex': '1 1 100%'
             },
             '.slider': {
-                'flex': '1 1 auto'
+                'display':'none',
+                'flex': '1 1 auto',
+                'margin-top':'4px'
+            },
+
+            ':host(.checked) .slider':{
+                'display':'inline-flex'
             },
             '.label-value': {
                 'flex': '0 0 25px',
@@ -45,7 +51,7 @@ class SliderFilterWidget extends ui.Widget {
             },
             ':host(.checked)': {
                 'background-color': 'var(--flavor-primary-idle)',
-                'font-weight': '900',
+                //'font-weight': '900',
 
             }
         }, super._Style());
@@ -58,7 +64,7 @@ class SliderFilterWidget extends ui.Widget {
         this._toggle.size = ui.FLAGS.SIZE_XS;
         this._selector = this.Add(uilib.inputs.SliderOnly, `slider`, this);
         this._selector.size = ui.FLAGS.SIZE_XS;
-        this._label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `label-value` }, this));
+        //this._label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `label-value` }, this));
 
         this._toggle._handler.Watch(ui.inputs.SIGNAL.VALUE_SUBMITTED, this._OnToggle, this);
         this._selector._handler.Watch(ui.inputs.SIGNAL.VALUE_SUBMITTED, this._OnSlider, this);
@@ -74,7 +80,8 @@ class SliderFilterWidget extends ui.Widget {
 
         this._selector.options = { min: 0, max: p_value.values.length - 1, step: 1 };
         this._selector._handler.currentValue = p_value.selection;
-        this._label.Set(`${p_value.values[p_value.selection]}`);
+        
+        this._toggle.label = this._parse((this._sourceEnum.label || this._sourceEnum.id), this._sourceEnum.values[this._sourceEnum.selection]);
 
         this._flags.Set(`checked`, p_value.flag);
     }
@@ -82,12 +89,20 @@ class SliderFilterWidget extends ui.Widget {
     _OnToggle(p_input, p_value) {
         this._flags.Set(`checked`, p_value);
         this._sourceEnum.flag = p_value;
-        if (this._updateFn) { this._updateFn(); }
+        this._sourceEnum._updateFn();
     }
 
     _OnSlider(p_input, p_value) {
+        this._toggle.label = this._parse((this._sourceEnum.label || this._sourceEnum.id), this._sourceEnum.values[p_value]);
+        //this._label.Set(`${this._sourceEnum.values[p_value]}`);
         this._sourceEnum.selection = p_value;
-        this._label.Set(`${this._sourceEnum.values[p_value]}`);
+        this._sourceEnum._updateFn();
+    }
+
+    _parse(str, ...args) {
+        var i = 0;
+    
+        return str.replace('%s', () => `<b>${args[i++]}</b>`);
     }
 
 }
