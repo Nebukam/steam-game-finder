@@ -15,6 +15,10 @@ class SIGNAL {
     static USER_REMOVED = Symbol(`user-removed`);
     static USER_UPDATED = Symbol(`user-updated`);
 
+    static USER_READY_ADDED = Symbol(`user-ready_added`);
+    static USER_READY_REMOVED = Symbol(`user-ready_removed`);
+    static USER_READY_UPDATED = Symbol(`user-ready-updated`);
+
     static GAME_ADDED = Symbol(`game-added`);
     static GAME_REMOVED = Symbol(`game-removed`);
     static GAME_UPDATED = Symbol(`game-updated`);

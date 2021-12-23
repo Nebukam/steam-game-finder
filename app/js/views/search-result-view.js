@@ -4,7 +4,7 @@ const ui = nkm.ui;
 const uilib = nkm.uilib;
 
 const comps = require(`../components`);
-const SearchData = require("../data/search-data");
+const SearchData = require(`../data/search-data`);
 
 class SearchResultView extends uilib.overlays.Drawer {
     constructor() { super(); }

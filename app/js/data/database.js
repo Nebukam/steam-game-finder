@@ -4,8 +4,8 @@ const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const collections = nkm.collections;
 
-const GameData = require("./game-data");
-const UserData = require("./user-data");
+const GameData = require(`./game-data`);
+const UserData = require(`./user-data`);
 const FilterManager = require(`../filtering/filter-manager`);
 
 const RemoteDataBlock = require(`./remote-data-block`);
@@ -79,7 +79,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
             return (ta < tb) ? -1 : (ta > tb) ? 1 : 0;
         });
 
-        for(let i = 0; i < this._applist.length; i++){
+        for (let i = 0; i < this._applist.length; i++) {
             this._applist[i].order = i;
         }
 
@@ -138,6 +138,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
 
         if (this._userReadyList.Contains(p_user)) {
             this._userReadyList.Remove(p_user);
+            this._Broadcast(SIGNAL.USER_READY_REMOVED, p_user);
         }
 
         this._Broadcast(SIGNAL.USER_REMOVED, p_user);
@@ -148,24 +149,25 @@ class Database extends nkm.com.pool.DisposableObjectEx {
 
         if (p_user.state == RemoteDataBlock.STATE_READY) {
 
-            //TODO: If game count > 0 -> add to readylist
-            //otherwise ignore or remove
-            let recompute = false;
             if (p_user.gamesCount > 0 && p_user.active) {
                 if (!this._userReadyList.Contains(p_user)) {
                     this._userReadyList.Add(p_user);
-                    recompute = true;
+                    this._Broadcast(SIGNAL.USER_READY_ADDED, p_user);
                 }
             } else {
                 if (this._userReadyList.Contains(p_user)) {
                     this._userReadyList.Remove(p_user);
-                    recompute = true;
+                    console.log(`User ready removed`);
+                    this._Broadcast(SIGNAL.USER_READY_REMOVED, p_user);
                 }
             }
 
-            this._UpdateStoredUserlist();
             this._Broadcast(SIGNAL.USER_UPDATED, p_user);
+            this._UpdateStoredUserlist();
 
+        } else if (p_user.state == RemoteDataBlock.STATE_INVALID
+            && p_user._privacy == `friendsonly`) {
+            this._UpdateStoredUserlist();
         }
 
     }

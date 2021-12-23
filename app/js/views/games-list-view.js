@@ -33,12 +33,13 @@ class GamesListView extends ui.views.View {
             '.header':{
                 'position':'sticky',
                 //'flex':'0 0 100px',
-                //'top':'0',
+                'bottom':'0',
                 'display':'flex',
                 'flex-flow':'row wrap',
                 'padding':'20px',
                 //'backdrop-filter':'blur(10px)',
-                //'background-color':'rgba(0,0,0,0.35)'
+                //'background-color':'rgba(35,35,35,0.5)',
+                //'width':'-webkit-fill-available'
             },
             '.info-card':{
                 'flex':'1 1 auto',
@@ -48,11 +49,12 @@ class GamesListView extends ui.views.View {
                 'flex':'1 1 auto',
                 'display':'flex',
                 'align-content': 'start',
-                //'justify-content':'space-between',
+                //'justify-content':'space-evenly',
                 'flex-flow':'row wrap',
                 'padding':'8px 8px 0px 4px',
                 'overflow-x': 'hidden',
                 'overflow-y': 'overlay',
+                //'padding-bottom': '300px',
             },            
             '.game-card': {
                 'flex':'1 0 auto',
@@ -102,7 +104,7 @@ class GamesListView extends ui.views.View {
     _OnTick(){
 
         //Check if items in queue
-        let max = 10;
+        let max = 5;
         let count = this._gameListQueue.length;
         if(count > max){ count = max; }
 

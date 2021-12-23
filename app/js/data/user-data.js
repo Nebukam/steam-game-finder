@@ -4,7 +4,7 @@ const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const io = nkm.io;
 
-const RemoteDataBlock = require("./remote-data-block");
+const RemoteDataBlock = require(`./remote-data-block`);
 
 //const axios = require('axios');
 

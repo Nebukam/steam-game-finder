@@ -24,7 +24,7 @@ class FilterGroupRegular extends FilterGroup {
         this._Add({ key: 39, flag: false, id: `Co-op - Splitscreen`, label: `Splitscreen`, group:`Co-op` });
         this._Add({ key: 48, flag: false, id: `Co-op - LAN`, label: `LAN`, group:`Co-op` });
         this._Add({ key: 38, flag: false, id: `Co-op - Online`, label: `Online`, group:`Co-op` });
-        this._Add({ key: 21, flag: false, id: `DLC`, group:`Misc` });
+        this._dlc = this._Add({ key: 21, flag: false, id: `DLC`, group:`Misc` });
         this._Add({ key: 20, flag: false, id: `MMO`, group:`Misc` });
         //this._Add({ key:27, flag: false, id:`cross_platform_mp`});
         //this._Add({ key:29, flag: false, id:`trading_cards`});
@@ -49,6 +49,8 @@ class FilterGroupRegular extends FilterGroup {
         let appFlags = p_app._flags;
         if (!appFlags) { return false; }
         if (appFlags.length == 0) { return false; }
+
+        if(!this._dlc.flag && appFlags.includes(this._dlc.key)){ return false; }
 
         if (this._toggles.isExclusiveEnabled) {
 

@@ -1,7 +1,7 @@
 'use strict';
 const nkm = require(`@nkmjs/core`);
 
-const RemoteDataBlock = require("./remote-data-block");
+const RemoteDataBlock = require(`./remote-data-block`);
 const SIGNAL = require(`../signal`);
 
 class GameData extends RemoteDataBlock {
@@ -24,6 +24,7 @@ class GameData extends RemoteDataBlock {
         this._childs = new Array();
 
         this._order = 0;
+        this._activeUserCount = 0;
 
         this._name = ``;
         this._logo = ``;
@@ -56,6 +57,13 @@ class GameData extends RemoteDataBlock {
     set order(p_value) {
         if (this._order == p_value) { return; }
         this._order = p_value;
+        this._delayedInfoUpdate.Schedule();
+    }
+
+    get activeUserCount() { return this._activeUserCount; }
+    set activeUserCount(p_value) {
+        if (this._activeUserCount == p_value) { return; }
+        this._activeUserCount = p_value;
         this._delayedInfoUpdate.Schedule();
     }
 
@@ -94,44 +102,6 @@ class GameData extends RemoteDataBlock {
         return false;
     }
 
-    HasFlags(p_flags, p_any = true) {
-
-        if (!this.isReady) { return false; }
-
-        if (!p_flags.includes("21") && this._flags.includes("21")) { return false; }
-
-        let flag = null;
-        let count = p_flags.length;
-        let matchCount = 0;
-        for (let i = 0, n = count; i < n; i++) {
-            if (this._flags.includes(p_flags[i])) { matchCount++; }
-        }
-
-        if (p_any) { return matchCount > 0; }
-        else { return matchCount == count; }
-
-    }
-
-    HasTags(p_tags, p_any = true) {
-
-        if (!this.isReady) { return false; }
-
-
-        let tag = null;
-        let count = p_tags.length;
-        let matchCount = 0;
-        for (let i = 0, n = count; i < n; i++) {
-            tag = p_tags[i];
-            for (let j = 0, n = this._tags.length; j < n; j++) {
-                if (this._flags[i] == tag) { matchCount++; }
-            }
-        }
-
-        if (p_any) { return matchCount > 0; }
-        else { return matchCount == count; }
-
-    }
-
     /////
 
     _OnLoadRequestSuccess(p_rsc) {
@@ -143,20 +113,24 @@ class GameData extends RemoteDataBlock {
 
         let parentID = p_rsc.content.parentappid;
         if (parentID != ``) {
-            if (!this._flags.includes("21")) { this._flags.push("21"); } //DLC
+            if (!this._flags.includes(21)) { this._flags.push(21); } //DLC
             this._parentGame = nkm.env.APP.database.GetGame(parentID);
             this._parentGame.AddChild(this);
         }
 
-        super._OnLoadRequestSuccess(p_rsc);
+        if(this._tags.includes(`Movie`)){
+            this._OnLoadRequestError();
+        }else{
+            super._OnLoadRequestSuccess(p_rsc);
+        }
     }
 
     AddChild(p_game) {
         if (!this._childs.includes(p_game)) {
             this._childs.push(p_game);
 
-            if (p_game._flags && !p_game._flags.includes("21")) {
-                p_game._flags.push("21");
+            if (p_game._flags && !p_game._flags.includes(21)) {
+                p_game._flags.push(21);
                 p_game._delayedCommitUpdate.Schedule();
             }
 

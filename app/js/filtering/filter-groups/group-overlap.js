@@ -22,16 +22,19 @@ class FilterGroupOverlap extends FilterGroup {
 
         let
             playerlist = nkm.env.APP.database._userReadyList,
-            pass = true;
+            pass = true,
+            activeUserCount = 0;
 
         for (let i = 0; i < playerlist.count; i++) {
             let user = playerlist.At(i);
             if (!p_app._users.includes(user)) {
                 pass = false;
-                break;
+            }else{
+                activeUserCount++;
             }
         }
         
+        p_app.activeUserCount = activeUserCount;
         p_app.passOverlap = pass;
         return pass;
 

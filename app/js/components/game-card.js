@@ -10,17 +10,20 @@ const _flag_dlc = 'dlc';
 class GameCard extends uilib.cards.Media {
     constructor() { super(); }
 
+    static __default_headerPlacement = ui.FLAGS.TOP;
     static __usePaintCallback = true;
 
     _Init() {
         super._Init();
-        this._orientation.Set(ui.FLAGS.VERTICAL);
-        this._mediaPlacement.Set(ui.FLAGS.TOP);
+        //this._orientation.Set(ui.FLAGS.VERTICAL);
+        //this._mediaPlacement.Set(ui.FLAGS.TOP);
         this._flags.Add(this, _flag_dlc);
         this._mediaLoaded = false;
 
         this._Bind(this._OnThumbLoadSuccess);
         this._Bind(this._OnThumbLoadError);
+        
+        this._delayedInfosUpdate = new nkm.com.time.DelayedCall(this._Bind(this._UpdateInfos));
 
     }
 
@@ -53,11 +56,11 @@ class GameCard extends uilib.cards.Media {
     }
 
     _OnPaintChange() {
-        this._UpdateMedia();
+        
         super._OnPaintChange();
-
         if (this._isPainted) {
             this.style.opacity = 1;
+            this._UpdateInfos();
         } else {
             this.style.opacity = 0;
         }
@@ -81,20 +84,29 @@ class GameCard extends uilib.cards.Media {
     _OnDataUpdated(p_data) {
 
         super._OnDataUpdated(p_data);
+        this.visible = this._ShouldShow(p_data);
+        this._delayedInfosUpdate.Schedule();
+    }
 
-        this.htitle = `Launch ${p_data.name}`;
+    _UpdateInfos() {
+
+        if(!this._isPainted){ return; }
+
+        let data = this._data;
+
+        this.htitle = `Launch ${data.name}`;
 
         if (this._toggle)
-            this._toggle.currentValue = p_data.active;
+            this._toggle.currentValue = data.active;
 
-        this.title = p_data.name;
+        this.title = data.name;
 
         let subtitle = null;
         let variant = null;
         let flavor = null;
 
         //let label = p_data._privacy;
-        switch (this._data.state) {
+        switch (data.state) {
             case RemoteDataBlock.STATE_NONE:
                 flavor = nkm.com.FLAGS.WARNING;
                 break;
@@ -114,7 +126,7 @@ class GameCard extends uilib.cards.Media {
         this.variant = variant;
         this.subtitle = subtitle;
 
-        let childCount = p_data._childs.length;
+        let childCount = data._childs.length;
         if (childCount > 0) {
             if (childCount == 1) {
                 this.label = `${childCount} DLC`;
@@ -123,13 +135,20 @@ class GameCard extends uilib.cards.Media {
             }
         }
 
-        this._flags.Set(_flag_dlc, p_data._parentGame ? true : false);
+        this._flags.Set(_flag_dlc, data._parentGame ? true : false);
         this._UpdateMedia();
 
-        //TODO : Change this based on 'display mode ?'
-        this.visible = p_data.passFilters && p_data.passOverlap;
-        this.order = p_data.order;
+        this.order = data.order;
 
+        return true;
+
+    }
+
+    _ShouldShow(p_data){ 
+        return p_data.state == RemoteDataBlock.STATE_READY
+        && p_data.activeUserCount > 0 
+        && p_data.passFilters 
+        && p_data.passOverlap; 
     }
 
     _UpdateMedia() {
@@ -141,7 +160,7 @@ class GameCard extends uilib.cards.Media {
         this._mediaLoaded = true;
 
         "#if WEB";
-        if (!nkm.env.isExtension || !nkm.env.isNodeEnabled) {
+        if (!nkm.env.isExtension && !nkm.env.isNodeEnabled) {
             this.media = (this._data._logo || nkm.style.URLImgs(`placeholder-dark.png`));
         }
         "#endif";
@@ -153,6 +172,7 @@ class GameCard extends uilib.cards.Media {
                 success: this._OnThumbLoadSuccess,
                 error: this._OnThumbLoadError,
                 parallel: true
+                
             });
         "#endif";
     }

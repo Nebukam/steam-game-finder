@@ -10,7 +10,7 @@ const sgfExplorers = require(`./explorers`);
 
 const AppOptionsExplorer = require(`./app-options/app-options-explorer`);
 const Database = require(`./data/database`);
-const FilterManager = require("./filtering/filter-manager");
+const FilterManager = require(`./filtering/filter-manager`);
 
 /**
  * SteamGameFinder allows you to find which multiplayer games are shared within a group of steam users
@@ -21,6 +21,8 @@ class SteamGameFinder extends nkm.app.AppBase {
 
     _Init() {
         super._Init();
+
+        this._ping = new nkm.io.helpers.Ping(`https://httpstat.us/200`);
 
         // Setup Steam cookies
 
@@ -33,7 +35,7 @@ class SteamGameFinder extends nkm.app.AppBase {
         //axios.defaults.withCredentials = true;
 
         this._layers = [
-            { id: `mainLayout`, cl: require("./main-layout") }
+            { id: `mainLayout`, cl: require(`./main-layout`) }
         ];
 
 
@@ -43,6 +45,7 @@ class SteamGameFinder extends nkm.app.AppBase {
     get filters() { return this._filters; }
 
     AppReady() {
+
         super.AppReady();
 
         this._DB = new Database();
@@ -80,7 +83,7 @@ class SteamGameFinder extends nkm.app.AppBase {
         });
         */
 
-        
+
         this._gamesList = this.mainLayout.workspace.Host({
             [ui.IDS.VIEW_CLASS]: sgfViews.GamesList,
             [ui.IDS.NAME]: `Shared Games`,
@@ -90,7 +93,7 @@ class SteamGameFinder extends nkm.app.AppBase {
 
         this._gamesGroup = this.mainLayout.workspace.Host({
             [ui.IDS.VIEW_CLASS]: sgfViews.GamesGroups,
-            [ui.IDS.NAME]: `Grouped Games`,
+            [ui.IDS.NAME]: `Grouped by Owners`,
             [ui.IDS.ICON]: `dots`,
             [ui.IDS.STATIC]: true
         });
@@ -155,9 +158,10 @@ class SteamGameFinder extends nkm.app.AppBase {
     }
 
     _429() {
+
         nkm.dialog.Push({
-            [ui.IDS.TITLE]: `Ewwww.`,
-            [ui.IDS.MESSAGE]: `It appears that Steam has temporarily locked out your IP from requesting data.</br><b>Wait a few minutes and come back.</b>`,
+            [ui.IDS.TITLE]: `Dang.`,
+            [ui.IDS.MESSAGE]: `Too many requests at the moment; server can't handle it.</br><b>Wait a few minutes and come back.</b>`,
             actions: [
                 { label: `Ok` }
             ],
@@ -166,6 +170,7 @@ class SteamGameFinder extends nkm.app.AppBase {
             [ui.IDS.FLAVOR]: com.FLAGS.WARNING,
             [ui.IDS.VARIANT]: ui.FLAGS.FRAME
         });
+
     }
 
     _GetURLProfile(p_id) {
@@ -183,7 +188,7 @@ class SteamGameFinder extends nkm.app.AppBase {
         "#if WEB";
         url = `https://steam-game-finder-server.glitch.me/user/profile64/${p_id}`
         "#elif EXT";
-        url =  `https://steamcommunity.com/profiles/${p_id}?xml=1`;
+        url = `https://steamcommunity.com/profiles/${p_id}?xml=1`;
         "#endif";
         return url;
     }
@@ -218,6 +223,77 @@ class SteamGameFinder extends nkm.app.AppBase {
         "#endif";
         return url;
     }
+
+    //#region server ping
+
+    _IsReadyForDisplay() {
+
+        if (!nkm.env.isExtension && !nkm.env.isNodeEnabled) {
+
+            if (this._ping.Ping()) {
+
+                if (!this._ping.success) {
+                    nkm.dialog.Push({
+                        [ui.IDS.TITLE]: `Server not responding`,
+                        [ui.IDS.MESSAGE]:
+                            `The Glitch server is not responding, `
+                            + `it is highly likely that it has exceeded its quotas for this month : not much can be done about it.<br><br>`
+                            + `You can still use the <a href="https://github.com/Nebukam/steam-game-finder">browser extensions</a>, they don't need the server ;)`,
+                        origin: this,
+                        [ui.IDS.ICON]: `warning`,
+                        [ui.IDS.FLAVOR]: com.FLAGS.WARNING,
+                        //[ui.IDS.VARIANT]: ui.FLAGS.FRAME
+                    });
+                } else {
+                    if (!nkm.env.prefs.Get(`popups.hide-disclaimer-v1`, false)) {
+                        nkm.dialog.Push({
+                            [ui.IDS.TITLE]: `Howdy!`,
+                            [ui.IDS.MESSAGE]:
+                                `The Steam Game Finder web app has one major limitation : it cannot see private profiles.`
+                                + `<br><br>Use the <a href="https://github.com/Nebukam/steam-game-finder">browser extensions</a> for the full experience.`,
+                            actions: [
+                                { label: `Ok, don't remind me.`, trigger:{ fn:() => { nkm.env.prefs.Set(`popups.hide-disclaimer-v1`, true)} } },
+                                { label: `Ok`, flavor: nkm.com.FLAGS.INFOS } //, variant:ui.FLAGS.FRAME
+                            ],
+                            origin: this,
+                            [ui.IDS.ICON]: `infos`,
+                            [ui.IDS.FLAVOR]: com.FLAGS.INFOS,
+                            //[ui.IDS.VARIANT]: ui.FLAGS.FRAME
+                        });
+                    }
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        } else {
+            if (!nkm.env.prefs.Get(`popups.hide-note-v1`, false)) {
+                nkm.dialog.Push({
+                    [ui.IDS.TITLE]: `Note on private profiles`,
+                    [ui.IDS.MESSAGE]:
+                        `In order to view private friend profiles, you need to be signed-in to <a href="https://steamcommunity.com/">steamcommunity.com</a>. `
+                        + `Please note that some profiles may remain private anyway.`,
+                    actions: [
+                        { label: `Ok, don't remind me.`, trigger:{ fn:() => { nkm.env.prefs.Set(`popups.hide-note-v1`, true) }} },
+                        { label: `Ok`, flavor: nkm.com.FLAGS.INFOS } //, variant:ui.FLAGS.FRAME
+                    ],
+                    origin: this,
+                    [ui.IDS.ICON]: `infos`,
+                    [ui.IDS.FLAVOR]: com.FLAGS.INFOS,
+                    //[ui.IDS.VARIANT]: ui.FLAGS.FRAME
+                });
+            }
+        }
+
+        return true;
+
+    }
+
+    //#endregion
+
 
 }
 

@@ -105,7 +105,7 @@ class FriendCard extends uilib.cards.Media {
         this._mediaLoaded = true;
 
         "#if WEB";
-        if (!nkm.env.isExtension || !nkm.env.isNodeEnabled) {
+        if (!nkm.env.isExtension && !nkm.env.isNodeEnabled) {
             this.media = (this._data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
         }
         "#endif";

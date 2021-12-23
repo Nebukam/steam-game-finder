@@ -2,7 +2,7 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-const RemoteDataBlock = require("../data/remote-data-block");
+const RemoteDataBlock = require(`../data/remote-data-block`);
 
 const _flag_noProfile = 'no-profile';
 
@@ -23,6 +23,8 @@ class UserCard extends uilib.cards.Media {
         this._flags.Add(this, `inactive`);
 
         this._mediaLoaded = false;
+        this._delayedInfosUpdate = new nkm.com.time.DelayedCall(this._Bind(this._UpdateInfos));
+
     }
 
     _OnPaintChange() {
@@ -116,21 +118,27 @@ class UserCard extends uilib.cards.Media {
 
     _OnDataChanged(p_oldData) {
         this._mediaLoaded = false;
-        this.media = nkm.style.URLImgs(`placeholder-dark.png`); 
+        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
         super._OnDataChanged(p_oldData);
     }
 
     _OnDataUpdated(p_data) {
 
         super._OnDataUpdated(p_data);
+        this._delayedInfosUpdate.Schedule();
+    }
+
+    _UpdateInfos() {
+
+        let data = this._data;
 
         if (this._btnToggle)
-            this._btnToggle.currentValue = p_data.active;
+            this._btnToggle.currentValue = data.active;
 
-        this._flags.Set(`inactive`, !p_data.active);
+        this._flags.Set(`inactive`, !data.active);
 
         //        this.media = (p_data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
-        this.title = p_data._personaID;
+        this.title = data._personaID;
 
 
         let subtitle = `...`;
@@ -141,37 +149,41 @@ class UserCard extends uilib.cards.Media {
 
         //let label = p_data._privacy;
 
-        switch (p_data.state) {
+        switch (data.state) {
             case RemoteDataBlock.STATE_NONE:
-                flavor = nkm.com.FLAGS.WARNING;
-                showToolbar = false;
-                break;
             case RemoteDataBlock.STATE_LOADING:
                 subtitle = `loading...`;
                 flavor = nkm.com.FLAGS.LOADING;
                 showToolbar = false;
                 break;
             case RemoteDataBlock.STATE_READY:
-                if (p_data._privacy == `private`) {
+                if (data._privacy == `private`) {
                     subtitle = `Library is private`;
                     flavor = nkm.com.FLAGS.WARNING;
                     //variant = ui.FLAGS.MINIMAL;
                 } else {
-                    subtitle = `${p_data.gamesCount} products in library`;
+                    subtitle = `${data.gamesCount} products in library`;
                 }
 
                 break;
             case RemoteDataBlock.STATE_INVALID:
-                if (p_data._privacy == `private`) {
-                    subtitle = `Could not be loaded.`;
+                console.log(data);
+                if (data._privacy == `friendsonly`) {
+                    subtitle = `Only visible to his friends.`;
+                    flavor = nkm.com.FLAGS.ERROR;
+                    this.label = `Sign-in to <a href="https://steamcommunity.com/">steamcommunity.com</a>`
+                }
+                else if (data._privacy == `private`) {
+                    subtitle = `Profile is private.`;
                     flavor = nkm.com.FLAGS.ERROR;
                     //variant = ui.FLAGS.MINIMAL;
                 } else {
-                    subtitle = `Could not be found.`;
+                    subtitle = `Could not be loaded.`;
                     flavor = nkm.com.FLAGS.ERROR;
                     showToolbar = false;
+                    noProfile = true;
                 }
-                noProfile = true;
+
                 break;
         }
 
@@ -180,9 +192,9 @@ class UserCard extends uilib.cards.Media {
         this.variant = variant;
         this._flags.Set(_flag_noProfile, noProfile);
 
-        this._btnRefresh.visible = p_data._isUsingCache;
-        this._btnToggle.visible = p_data.state == RemoteDataBlock.STATE_READY;
-        this._btnFriendlist.visible = p_data.state == RemoteDataBlock.STATE_READY;
+        this._btnRefresh.visible = data._isUsingCache;
+        this._btnToggle.visible = data.state == RemoteDataBlock.STATE_READY;
+        this._btnFriendlist.visible = data.state == RemoteDataBlock.STATE_READY;
         this._btnSearch.visible = noProfile;
 
         this.subtitle = subtitle;
@@ -195,12 +207,18 @@ class UserCard extends uilib.cards.Media {
 
         if (this._mediaLoaded) { return; }
         if (!this._isPainted || !this._data) { return; }
-        if (this._data.state != RemoteDataBlock.STATE_READY) { return; }
+        if (this._data.state != RemoteDataBlock.STATE_READY) {
+            if (this._data.state == RemoteDataBlock.STATE_INVALID) {
+                if (this._data._avatarURL == ``) { return; }
+            } else {
+                return;
+            }
+        }
 
         this._mediaLoaded = true;
 
         "#if WEB";
-        if (!nkm.env.isExtension || !nkm.env.isNodeEnabled) {
+        if (!nkm.env.isExtension && !nkm.env.isNodeEnabled) {
             this.media = (this._data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
         }
         "#endif";
