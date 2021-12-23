@@ -22,7 +22,7 @@ class SteamGameFinder extends nkm.app.AppBase {
     _Init() {
         super._Init();
 
-        this._ping = new nkm.io.helpers.Ping(`https://httpstat.us/200`);
+        this._ping = new nkm.io.helpers.Ping(`https://steam-game-finder-server.glitch.me/user/profile/Nebukam`);
 
         // Setup Steam cookies
 
