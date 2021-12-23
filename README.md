@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/dynamic/json?color=ed1e79&label=version&query=version&url=https://github.com/Nebukam/steam-game-finder/package.json)
+![version](https://img.shields.io/badge/dynamic/json?color=ed1e79&label=version&query=version&url=https://github.com/Nebukam/steam-game-finder/raw/main//package.json)
 ![release](https://img.shields.io/badge/license-MIT-black.svg)
 
 # Steam : Game Finder
