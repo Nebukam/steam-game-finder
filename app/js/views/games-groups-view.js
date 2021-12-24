@@ -29,7 +29,7 @@ class GamesGroupsView extends ui.views.View {
         nkm.com.time.TIME.Watch(nkm.com.SIGNAL.TICK, this._OnTick, this);
 
         //nkm.com.Preload(comps.cards.GameCard, 1000);
-        this._delayedDistribution = new nkm.com.time.DelayedCall(this._Bind(this._Distribute));
+        this._delayedDistribution = nkm.com.DelayedCall(this._Bind(this._Distribute));
 
     }
 
@@ -62,7 +62,7 @@ class GamesGroupsView extends ui.views.View {
             '.shortcut-ctnr': {
                 'flex': '0 0 50px',
                 'padding-top':'50px',
-                //'padding-bottom':'50px',
+                'padding-bottom':'50px',
                 'display': 'flex',
                 'flex-flow': 'column-reverse nowrap',
                 'align-content': 'center',

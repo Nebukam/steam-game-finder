@@ -15,7 +15,7 @@ class FilterGroup extends nkm.com.pool.DisposableObjectEx {
         this._filters = new Array();
         this._map = new collections.Dictionary();
         this._Bind(this._OnFilterUpdated);
-        this._delayedSave = new nkm.com.time.DelayedCall(this._Bind(this.Save));
+        this._delayedSave = nkm.com.DelayedCall(this._Bind(this.Save));
         this._id = null;
 
         this._manager = null;

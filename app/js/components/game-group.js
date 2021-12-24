@@ -11,13 +11,14 @@ class GamesGroup extends ui.Widget {
         super._Init();
 
         this._gamelist = new nkm.collections.List();
-        this._delayedUpdate = new nkm.com.time.DelayedCall(this._Bind(this._UpdateInfos));
+        this._delayedUpdate = nkm.com.DelayedCall(this._Bind(this._UpdateInfos));
 
         nkm.com.time.TIME.Watch(nkm.com.SIGNAL.TICK, this._Bind(this._OnTick));
         nkm.env.APP.database.Watch(nkm.com.SIGNAL.UPDATED, this._delayedUpdate.Schedule);
         nkm.env.APP.filters.Watch(nkm.com.SIGNAL.UPDATED, this._delayedUpdate.Schedule);
 
         this._flags.Add(this, `sticky`);
+        this._flags.Add(this, `redundant`);
         //TODO : 
 
         // - Group stats
@@ -68,6 +69,12 @@ class GamesGroup extends ui.Widget {
                 'flex-flow': 'row wrap',
                 //'justify-content':'space-evenly',
             },
+            ':host(.redundant)':{
+                'opacity': '0.5',
+            },
+            ':host(.redundant) .group-body':{
+                'display': 'none',
+            },
             '.game-card': {
                 'flex': '1 0 auto',
                 'margin': '4px'
@@ -107,6 +114,7 @@ class GamesGroup extends ui.Widget {
         this.Add(p_game, `game-card`, this._groupBody);
         if (p_game.group) { p_game.group.RemoveGame(p_game); }
         p_game.group = this;
+        p_game.order = this._offsetOrder++;
         this._delayedUpdate.Schedule();
     }
 
@@ -117,6 +125,15 @@ class GamesGroup extends ui.Widget {
     }
 
     _UpdateInfos() {
+
+        if((this._index+1) == nkm.env.APP.database._userReadyList.count){
+            this._subtitle.Set(`Everybody owns these games, they're shown in the other tab ;)`);
+            this._flags.Set(`redundant`, true);
+            return;
+        }
+
+        this._flags.Set(`redundant`, false);
+
         let
             groupTotal = this._gamelist.count,
             groupShown = 0;
@@ -124,7 +141,7 @@ class GamesGroup extends ui.Widget {
             let game = this._gamelist.At(i);
             if (game._ShouldShow(game.data)) { groupShown++; }
         }
-
+        
         if (groupShown == 0 && groupTotal != 0) {
             this._subtitle.Set(`Active filters have ruled out every game out of ${groupTotal} possibilities.`);
         } else if (groupShown == groupTotal) {
@@ -132,6 +149,7 @@ class GamesGroup extends ui.Widget {
         } else {
             this._subtitle.Set(`${groupShown}/${groupTotal}. (narrowed down through filters.)`);
         }
+        
 
     }
 
@@ -143,6 +161,7 @@ class GamesGroup extends ui.Widget {
             this._mainView._ReturnGame(game);
         }
 
+        this._offsetOrder = 0;
         this._gamelist.Clear();
         this._mainView = null;
         super._CleanUp();

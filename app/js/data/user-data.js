@@ -39,6 +39,8 @@ class UserData extends RemoteDataBlock {
         this._privacy = "";
         this._isUsingCache = false;
 
+        this._gameListQueue = [];
+
         this._gameList = new nkm.collections.Dictionary();
 
         this._xmlparser = new DOMParser();
@@ -48,6 +50,8 @@ class UserData extends RemoteDataBlock {
 
         this._Bind(this._OnXMLProfileLoaded);
         this._Bind(this._OnXMLProfileError);
+
+        this._delayedGameBatchLoad = nkm.com.DelayedCall(this._Bind(this._LoadNextGameBatch));
 
     }
 
@@ -231,6 +235,17 @@ class UserData extends RemoteDataBlock {
 
     _ProcessGameList(p_inputList) {
 
+        /*
+                this._gameListQueue = [...p_inputList];
+        
+                if (this._gameListQueue.length == 0) {
+                    this._privacy = `private`;
+                }else{
+                    this._LoadNextGameBatch();
+                }
+        */
+        //TODO : Stagger gamelist processing over time for huge libraries
+
         for (var i = 0, n = p_inputList.length; i < n; i++) {
             var appid = p_inputList[i];
             let game = this._db.GetGame(appid);
@@ -245,6 +260,22 @@ class UserData extends RemoteDataBlock {
 
     }
 
+    _LoadNextGameBatch() {
+
+        for (let i = 0; i < 10; i++) {
+            let appid = this._gameListQueue.pop();
+            if (u.isEmpty(appid)) { continue; }
+
+            let game = this._db.GetGame(appid);
+            game.AddUser(this);
+            this._gameList.Set(appid, game);
+        }
+
+        if (this._gameListQueue.length != 0) {
+            this._delayedGameBatchLoad.Schedule();
+        }
+    }
+
     _ClearGameList() {
         var keys = this._gameList.keys;
         for (var i = 0, n = keys.length; i < n; i++) {
@@ -255,9 +286,10 @@ class UserData extends RemoteDataBlock {
     // Second profile fetch
 
     _CleanUp() {
+        this._delayedGameBatchLoad.Cancel();
         this._ClearGameList();
         this._gameList.Clear();
-        
+
         this._triedWithPersona = false;
 
         this._userID = "";

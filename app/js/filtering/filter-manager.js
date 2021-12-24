@@ -27,8 +27,8 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
         this._cooptimus = this._AddGroup(filters.Cooptimus);
 
         // TODO : Only update filters when needed
-        this._delayedApply = new nkm.com.time.DelayedCall(this._Bind(this._ApplyFilters));
-        this._delayedUpdate = new nkm.com.time.DelayedCall(this._Bind(this._UpdateFilters));
+        this._delayedApply = nkm.com.DelayedCall(this._Bind(this._ApplyFilters));
+        this._delayedUpdate = nkm.com.DelayedCall(this._Bind(this._UpdateFilters));
 
         let database = nkm.env.APP.database;
         database.Watch(DATA_SIGNAL.GAME_ADDED, this._OnGameAdded, this);

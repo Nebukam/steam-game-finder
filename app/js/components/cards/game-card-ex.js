@@ -14,7 +14,7 @@ class GameCardEx extends GameCard {
     _Init() {
         super._Init();
         this._lastActiveUserCount = 0;
-        this._mainView = null;        
+        this._mainView = null;  
     }
 
     set mainView(p_value) {
@@ -122,8 +122,8 @@ class GameCardEx extends GameCard {
 
     _ShouldShow(p_data) { 
         return p_data.state == RemoteDataBlock.STATE_READY
-        && p_data._childs.length == 0 
         && p_data.activeUserCount > 0 
+        && !p_data._parentGame
         && p_data.passFilters; 
     }
 

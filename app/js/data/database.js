@@ -27,7 +27,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
         this._userMap = new collections.Dictionary();
         this._userReadyList = new nkm.collections.List();
 
-        this._delayedSort = new nkm.com.time.DelayedCall(this._Bind(this._SortGames));
+        this._delayedSort = nkm.com.DelayedCall(this._Bind(this._SortGames));
 
     }
 
@@ -42,6 +42,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
             game = new GameData();
             game.appid = p_appid;
             game._db = this;
+            game.Watch(nkm.com.SIGNAL.RELEASED, this._OnGameReleased, this);
             game.Watch(SIGNAL.STATE_CHANGED, this._OnGameStateChanged, this);
             this._gameMap.Set(p_appid, game);
             game.RequestLoad();
@@ -67,6 +68,12 @@ class Database extends nkm.com.pool.DisposableObjectEx {
 
         }
 
+    }
+
+    _OnGameReleased(p_game) {
+        this._gameMap.Remove(p_game.appid);
+        this._applist.splice(this._applist.indexOf(p_game), 1);
+        this._Broadcast(SIGNAL.GAME_REMOVED, p_game);
     }
 
     _SortGames() {

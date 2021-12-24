@@ -34,8 +34,8 @@ class GameData extends RemoteDataBlock {
         this._passFilters = false;
         this._passOverlap = false;
 
-        this._delayedInfoUpdate = new nkm.com.time.DelayedCall(this._Bind(this._DispatchInfosUpdate));
-        this._delayedCommitUpdate = new nkm.com.time.DelayedCall(this._Bind(this.CommitUpdate));
+        this._delayedInfoUpdate = nkm.com.DelayedCall(this._Bind(this._DispatchInfosUpdate));
+        this._delayedCommitUpdate = nkm.com.DelayedCall(this._Bind(this.CommitUpdate));
 
     }
 
@@ -152,6 +152,7 @@ class GameData extends RemoteDataBlock {
             this._users.splice(index, 1);
             this._delayedCommitUpdate.Schedule();
         }
+        
     }
 
     _CleanUp() {

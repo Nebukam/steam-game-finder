@@ -22,7 +22,7 @@ class MediaCardEx extends uilib.cards.Media {
         this._Bind(this._OnMediaLoadSuccess);
         this._Bind(this._OnMediaLoadError);
 
-        this._delayedInfosUpdate = new nkm.com.time.DelayedCall(this._Bind(this._UpdateInfos));
+        this._delayedInfosUpdate = nkm.com.DelayedCall(this._Bind(this._UpdateInfos));
 
     }
 

@@ -38,13 +38,20 @@ class GameCard extends MediaCardEx {
                 'text-align': 'center',
                 'padding-top': '10px',
                 'color': 'black'
+            },
+            '.tags':{
+                'display':'flex'
             }
         }, super._Style());
     }
 
     _Render() {
         super._Render();
-
+        this._tagsCtnr = ui.El(`div`, {class:`tags`}, this._frame.header.element);
+        this._tagDLC = this.Add(uilib.widgets.Tag, `tag dlc`, this._tagsCtnr);
+        this._tagDLC.visible = false;
+        this._tagDiskSize = this.Add(uilib.widgets.Tag, `tag disk-size`, this._tagsCtnr);
+        this._tagDiskSize.visible = false;
     }
 
     _UpdateInfos() {
@@ -96,7 +103,10 @@ class GameCard extends MediaCardEx {
 
         this._flags.Set(_flag_dlc, data._parentGame ? true : false);
 
-        this.order = data.order;
+        //this.order = data.order;
+        if(data._parentGame){
+            this._tagDLC.visible = true;
+        }
 
         return true;
 

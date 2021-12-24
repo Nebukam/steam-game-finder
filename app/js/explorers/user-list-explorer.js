@@ -22,23 +22,22 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
         database.Watch(SIGNAL.USER_REMOVED, this._OnUserRemoved, this);
         database.Watch(SIGNAL.USER_UPDATED, this._OnUserUpdated, this);
 
-        nkm.env.features.Watch(nkm.env.SIGNAL.DISPLAY_TYPE_CHANGED, this._OnDisplayTypeChanged, this);
+        //nkm.env.features.Watch(nkm.env.SIGNAL.DISPLAY_TYPE_CHANGED, this._OnDisplayTypeChanged, this);
 
     }
-
+/*
     _OnDisplayTypeChanged(p_newMode, p_oldMode) {
         if (p_newMode == nkm.env.ENV_DISPLAY.MOBILE) {
-            this.style.setProperty(`--panelWidth`, `100%-50px`);
+            this.style.setProperty(`--panelWidth`, `calc(100% - 25px)`);
         } else {
             delete this.style.removeProperty(`--panelWidth`);
         }
     }
-
+*/
     _Style() {
         return nkm.style.Extends({
             ':host': {
-                '--panelWidth': '325px',
-                'width': 'var(--panelWidth)'
+                'max-width': '325px',
             },
             '.header, .footer': {
                 'padding': '10px'

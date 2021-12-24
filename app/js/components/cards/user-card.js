@@ -24,6 +24,16 @@ class UserCard extends MediaCardEx {
 
     }
 
+    _OnPaintChange() {
+        super._OnPaintChange();
+
+        if (this._isPainted) {
+            this.style.setProperty(`--op`, `var(--currentOpacity)`);
+        } else {
+            this.style.setProperty(`--op`, 0);
+        }
+    }
+
 
     _Style() {
         return nkm.style.Extends({
@@ -139,7 +149,7 @@ class UserCard extends MediaCardEx {
                     flavor = nkm.com.FLAGS.WARNING;
                     //variant = ui.FLAGS.MINIMAL;
                 } else {
-                    subtitle = `${data.gamesCount} products in library`;
+                    subtitle = `${data.gamesCount} products`;
                 }
 
                 break;

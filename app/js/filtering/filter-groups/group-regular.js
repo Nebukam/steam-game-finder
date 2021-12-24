@@ -50,7 +50,7 @@ class FilterGroupRegular extends FilterGroup {
         if (!appFlags) { return false; }
         if (appFlags.length == 0) { return false; }
 
-        if(!this._dlc.flag && appFlags.includes(this._dlc.key)){ return false; }
+        if(!this._dlc.flag && ( appFlags.includes(this._dlc.key) || p_app._parentGame)){ return false; }
 
         if (this._toggles.isExclusiveEnabled) {
 

@@ -21,7 +21,16 @@ class GamesListView extends ui.views.View {
         nkm.com.time.TIME.Watch( nkm.com.SIGNAL.TICK, this._OnTick, this );
 
         //nkm.com.Preload(comps.cards.GameCard, 1000);
+        nkm.env.features.Watch(nkm.env.SIGNAL.DISPLAY_TYPE_CHANGED, this._OnDisplayTypeChanged, this);
 
+    }
+
+    _OnDisplayTypeChanged(p_newMode, p_oldMode) {
+        if (p_newMode == nkm.env.ENV_DISPLAY.MOBILE) {
+            this._header.style.setProperty(`display`, `none`);
+        } else {
+            this._header.style.removeProperty(`display`);
+        }
     }
 
     _Style() {
@@ -71,6 +80,8 @@ class GamesListView extends ui.views.View {
         this._header = ui.dom.El('div', { class:'header' }, this);        
 
         this._infoCard = this.Add(comps.cards.InfoCard, 'info-card', this._header);
+
+        this._OnDisplayTypeChanged(nkm.env.displayType, null);
 
     }
 
