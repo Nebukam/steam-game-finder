@@ -77,7 +77,7 @@ class MediaCardEx extends uilib.cards.Media {
 
     _ShouldShow(p_data) { return true; }
 
-    _ShouldLoadMedia(p_data){ return p_data.state == RemoteDataBlock.STATE_READY; }
+    _ShouldLoadMedia(p_data) { return p_data.state == RemoteDataBlock.STATE_READY; }
 
     _UpdateMedia(p_data) {
 
@@ -87,14 +87,22 @@ class MediaCardEx extends uilib.cards.Media {
 
         this._mediaLoaded = true;
 
+        "#if WEB";
+        if (!nkm.env.isExtension && !nkm.env.isNodeEnabled) {
+            this.mediaDirect = `url(${this._data._avatarURL}), url(${nkm.style.URLImgs(`placeholder-dark.png`)})`;
+        }
+        "#endif";
+
+        "#if EXT";
         nkm.io.Read(p_data[this._mediaPropertyName],
             { cl: nkm.io.resources.BlobResource },
             {
-                success: (p_rsc) =>{ this.media = p_rsc.objectURL; },
-                error: () =>{ this.media = nkm.style.URLImgs(`placeholder-dark.png`); },
+                success: (p_rsc) => { this.media = p_rsc.objectURL; },
+                error: () => { this.media = nkm.style.URLImgs(`placeholder-dark.png`); },
                 parallel: true
 
             });
+        "#endif";
     }
 
     _OnMediaLoadSuccess(p_rsc) {
