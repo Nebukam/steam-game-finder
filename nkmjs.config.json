@@ -11,7 +11,7 @@
         "theme": "default"
     },
     "extension": {
-        "manifest_version": 2,
+        "manifest_version": 3,
         "popup": {
             "width": 800,
             "height": 600

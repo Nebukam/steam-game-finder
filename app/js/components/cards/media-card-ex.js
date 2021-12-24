@@ -89,7 +89,7 @@ class MediaCardEx extends uilib.cards.Media {
 
         "#if WEB";
         if (!nkm.env.isExtension && !nkm.env.isNodeEnabled) {
-            this.mediaDirect = `url(${this._data._avatarURL}), url(${nkm.style.URLImgs(`placeholder-dark.png`)})`;
+            this.mediaDirect = `url(${p_data[this._mediaPropertyName]}), url(${nkm.style.URLImgs(`placeholder-dark.png`)})`;
         }
         "#endif";
 
