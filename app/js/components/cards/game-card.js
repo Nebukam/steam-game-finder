@@ -2,29 +2,21 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-const RemoteDataBlock = require(`../data/remote-data-block`);
-const SIGNAL = require(`../signal`);
+const RemoteDataBlock = require(`../../data/remote-data-block`);
+const SIGNAL = require(`../../signal`);
+const MediaCardEx = require(`./media-card-ex`);
 
 const _flag_dlc = 'dlc';
 
-class GameCard extends uilib.cards.Media {
+class GameCard extends MediaCardEx {
     constructor() { super(); }
 
     static __default_headerPlacement = ui.FLAGS.TOP;
-    static __usePaintCallback = true;
 
     _Init() {
         super._Init();
-        //this._orientation.Set(ui.FLAGS.VERTICAL);
-        //this._mediaPlacement.Set(ui.FLAGS.TOP);
+        this._mediaPropertyName = `logo`;
         this._flags.Add(this, _flag_dlc);
-        this._mediaLoaded = false;
-
-        this._Bind(this._OnThumbLoadSuccess);
-        this._Bind(this._OnThumbLoadError);
-        
-        this._delayedInfosUpdate = new nkm.com.time.DelayedCall(this._Bind(this._UpdateInfos));
-
     }
 
     _Style() {
@@ -52,45 +44,12 @@ class GameCard extends uilib.cards.Media {
 
     _Render() {
         super._Render();
-        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
-    }
 
-    _OnPaintChange() {
-        
-        super._OnPaintChange();
-        if (this._isPainted) {
-            this.style.opacity = 1;
-            this._UpdateInfos();
-        } else {
-            this.style.opacity = 0;
-        }
-    }
-
-    _OnDataChanged(p_oldData) {
-        this._mediaLoaded = false;
-        this.media = nkm.style.URLImgs(`placeholder-dark.png`); 
-        super._OnDataChanged(p_oldData);
-
-        if(p_oldData){
-            p_oldData.Unwatch(SIGNAL.INFOS_UPDATED, this._OnDataUpdated, this);
-        }
-
-        if(this._data){
-            this._data.Watch(SIGNAL.INFOS_UPDATED, this._OnDataUpdated, this);
-        }
-
-    }
-
-    _OnDataUpdated(p_data) {
-
-        super._OnDataUpdated(p_data);
-        this.visible = this._ShouldShow(p_data);
-        this._delayedInfosUpdate.Schedule();
     }
 
     _UpdateInfos() {
 
-        if(!this._isPainted){ return; }
+        if (!super._UpdateInfos()) { return false; }
 
         let data = this._data;
 
@@ -136,7 +95,6 @@ class GameCard extends uilib.cards.Media {
         }
 
         this._flags.Set(_flag_dlc, data._parentGame ? true : false);
-        this._UpdateMedia();
 
         this.order = data.order;
 
@@ -144,45 +102,11 @@ class GameCard extends uilib.cards.Media {
 
     }
 
-    _ShouldShow(p_data){ 
+    _ShouldShow(p_data) {
         return p_data.state == RemoteDataBlock.STATE_READY
-        && p_data.activeUserCount > 0 
-        && p_data.passFilters 
-        && p_data.passOverlap; 
-    }
-
-    _UpdateMedia() {
-
-        if (this._mediaLoaded) { return; }
-        if (!this._isPainted || !this._data) { return; }
-        if (this._data.state != RemoteDataBlock.STATE_READY) { return; }
-
-        this._mediaLoaded = true;
-
-        "#if WEB";
-        if (!nkm.env.isExtension && !nkm.env.isNodeEnabled) {
-            this.media = (this._data._logo || nkm.style.URLImgs(`placeholder-dark.png`));
-        }
-        "#endif";
-        
-        "#if EXT";
-        nkm.io.Read(this._data.logo,
-            { cl: nkm.io.resources.BlobResource },
-            {
-                success: this._OnThumbLoadSuccess,
-                error: this._OnThumbLoadError,
-                parallel: true
-                
-            });
-        "#endif";
-    }
-
-    _OnThumbLoadSuccess(p_rsc) {
-        this.media = p_rsc.objectURL;
-    }
-
-    _OnThumbLoadError(p_rsc) {
-        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
+            && p_data.activeUserCount > 0
+            && p_data.passFilters
+            && p_data.passOverlap;
     }
 
     Activate(p_evt) {
@@ -194,12 +118,6 @@ class GameCard extends uilib.cards.Media {
     _Launch() {
         var url = `steam://run/${this._data.appid}/`;
         window.open(url);
-    }
-
-    _Cleanup() {
-        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
-        this._mediaLoaded = false;
-        super._Cleanup();
     }
 
 }

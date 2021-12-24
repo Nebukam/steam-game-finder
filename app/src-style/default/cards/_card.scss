@@ -31,7 +31,6 @@ $cardBorderRadius: 5px;
         #{'--flavor-contrast-'+$st}: $c;
     }
 
-    --size:350px;
     --header-size:150px;
 
     --flavor-primary-disabled:rgba(0,0,0,0.1);
@@ -41,7 +40,7 @@ $cardBorderRadius: 5px;
     background-color:rgba(0,0,0,0.5);
     border-radius: $cardBorderRadius;    
 
-    width:var(--size);
+    //width:var(--size);
     //min-width:var(--size);
     //max-width:var(--size);
 

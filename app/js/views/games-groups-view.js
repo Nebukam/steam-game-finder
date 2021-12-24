@@ -28,7 +28,7 @@ class GamesGroupsView extends ui.views.View {
         this._gameListQueue = new Array();
         nkm.com.time.TIME.Watch(nkm.com.SIGNAL.TICK, this._OnTick, this);
 
-        //nkm.com.Preload(comps.GameCard, 1000);
+        //nkm.com.Preload(comps.cards.GameCard, 1000);
         this._delayedDistribution = new nkm.com.time.DelayedCall(this._Bind(this._Distribute));
 
     }
@@ -107,7 +107,7 @@ class GamesGroupsView extends ui.views.View {
 
         //this._header = ui.dom.El('div', { class: 'header' }, this);
 
-        //this._infoCard = this.Add(comps.InfoCard, 'info-card', this._header);
+        //this._infoCard = this.Add(comps.cards.InfoCard, 'info-card', this._header);
 
     }
 
@@ -122,7 +122,7 @@ class GamesGroupsView extends ui.views.View {
 
         if (ctrl) { return; }
 
-        ctrl = this.Add(comps.GameCardEx, `game-card`, this._appCtrlPool);
+        ctrl = this.Add(comps.cards.GameCardEx, `game-card`, this._appCtrlPool);
 
         this._appmap.Set(p_app, ctrl);
         this._appctrls.push(ctrl);

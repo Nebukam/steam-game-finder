@@ -2,41 +2,28 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-const RemoteDataBlock = require(`../data/remote-data-block`);
+const RemoteDataBlock = require(`../../data/remote-data-block`);
+const MediaCardEx = require(`./media-card-ex`);
 
 const _flag_noProfile = 'no-profile';
 
-class UserCard extends uilib.cards.Media {
+class UserCard extends MediaCardEx {
     constructor() { super(); }
 
     static __default_headerPlacement = ui.FLAGS.LEFT;
-    static __usePaintCallback = true;
 
     _Init() {
         super._Init();
 
+        this._mediaPropertyName = `_avatarURL`;
+
         this._Bind(this._OnToggleUserActivation);
-        this._Bind(this._OnMediaLoadSuccess);
-        this._Bind(this._OnMediaLoadError);
 
         this._flags.Add(this, _flag_noProfile);
         this._flags.Add(this, `inactive`);
 
-        this._mediaLoaded = false;
-        this._delayedInfosUpdate = new nkm.com.time.DelayedCall(this._Bind(this._UpdateInfos));
-
     }
 
-    _OnPaintChange() {
-        super._OnPaintChange();
-        this._UpdateMedia();
-
-        if (this._isPainted) {
-            this.style.setProperty(`--op`, `var(--currentOpacity)`);
-        } else {
-            this.style.setProperty(`--op`, 0);
-        }
-    }
 
     _Style() {
         return nkm.style.Extends({
@@ -116,19 +103,9 @@ class UserCard extends uilib.cards.Media {
 
     }
 
-    _OnDataChanged(p_oldData) {
-        this._mediaLoaded = false;
-        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
-        super._OnDataChanged(p_oldData);
-    }
-
-    _OnDataUpdated(p_data) {
-
-        super._OnDataUpdated(p_data);
-        this._delayedInfosUpdate.Schedule();
-    }
-
     _UpdateInfos() {
+
+        if(!super._UpdateInfos()){ return false; }
 
         let data = this._data;
 
@@ -199,49 +176,21 @@ class UserCard extends uilib.cards.Media {
 
         this.subtitle = subtitle;
 
-        this._UpdateMedia();
+        return true;
 
     }
 
-    _UpdateMedia() {
-
-        if (this._mediaLoaded) { return; }
-        if (!this._isPainted || !this._data) { return; }
+    _ShouldLoadMedia(p_data){
         if (this._data.state != RemoteDataBlock.STATE_READY) {
             if (this._data.state == RemoteDataBlock.STATE_INVALID) {
-                if (this._data._avatarURL == ``) { return; }
+                if (this._data._avatarURL == ``) { return false; }
             } else {
-                return;
+                return false;
             }
         }
-
-        this._mediaLoaded = true;
-
-        "#if WEB";
-        if (!nkm.env.isExtension && !nkm.env.isNodeEnabled) {
-            this.media = (this._data._avatarURL || nkm.style.URLImgs(`placeholder-dark.png`));
-        }
-        "#endif";
-
-        "#if EXT";
-        nkm.io.Read(this._data._avatarURL,
-            { cl: nkm.io.resources.BlobResource },
-            {
-                success: this._OnMediaLoadSuccess,
-                error: this._OnMediaLoadError,
-                parallel: true
-            });
-        "#endif";
+        return true;
     }
-
-    _OnMediaLoadSuccess(p_rsc) {
-        this.media = p_rsc.objectURL;
-    }
-
-    _OnMediaLoadError(p_rsc) {
-        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
-    }
-
+    
     _OnToggleUserActivation(p_input, p_value) {
         this._data.active = p_value;
     }
@@ -261,12 +210,6 @@ class UserCard extends uilib.cards.Media {
     _DeleteUserEntry() {
         nkm.env.prefs.Delete(`users._${this._data.userid}.gamelist`);
         this._data.Release();
-    }
-
-    _Cleanup() {
-        this.media = nkm.style.URLImgs(`placeholder-dark.png`);
-        this._mediaLoaded = false;
-        super._Cleanup();
     }
 
 }

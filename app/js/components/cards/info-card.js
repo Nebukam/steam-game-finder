@@ -2,8 +2,6 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-const SIGNAL = require(`../signal`);
-
 class InfoCard extends uilib.cards.Icon {
     constructor() { super(); }
 

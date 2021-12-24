@@ -162,7 +162,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
     }
 
     _AddToggle(p_enum, p_ctnr) {
-        let toggle = this.Add(comps.FilterWidget, `filter-item`, (p_ctnr || this._body));
+        let toggle = this.Add(comps.filters.FilterWidget, `filter-item`, (p_ctnr || this._body));
         toggle.size = ui.FLAGS.SIZE_XS;
         toggle.sourceEnum = p_enum;
         toggle._flavor.Set(nkm.com.FLAGS.WARNING);
@@ -173,9 +173,9 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
 
 
         let classes = `filter-item `;
-        let type = comps.FilterWidget;
+        let type = comps.filters.FilterWidget;
 
-        if (p_enum.values) { type = comps.SliderFilterWidget; classes += `large-filter`; }
+        if (p_enum.values) { type = comps.filters.SliderFilterWidget; classes += `large-filter`; }
         else { classes += `small-filter` }
 
         this._GroupLabel(p_enum.group, p_parent);

@@ -77,7 +77,7 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
 
         /*
         for(let i = 0; i < 13; i++){
-            let card = this.Add(comps.UserCard, `user-card`);
+            let card = this.Add(comps.cards.UserCard, `user-card`);
             card.title = "Gamertag";
             card.subtitle = "Private profile";
             card.label = "{xxx} games in library";
@@ -119,7 +119,7 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
     _OnUserAdded(p_user) {
         var ctrl = this._usermap.Get(p_user);
         if (ctrl) { return; }
-        ctrl = this.Add(comps.UserCard, `user-card`);
+        ctrl = this.Add(comps.cards.UserCard, `user-card`);
         ctrl.data = p_user;
         ctrl._friendsCallback = this._friendsCallback;
         this._usermap.Set(p_user, ctrl);

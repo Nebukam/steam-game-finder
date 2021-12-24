@@ -2,8 +2,6 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-const RemoteDataBlock = require(`../data/remote-data-block`);
-
 const _flag_noProfile = 'no-profile';
 
 class SearchCard extends uilib.cards.Media {

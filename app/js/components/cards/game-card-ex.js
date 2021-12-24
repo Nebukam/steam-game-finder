@@ -2,8 +2,8 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-const RemoteDataBlock = require(`../data/remote-data-block`);
-const SIGNAL = require(`../signal`);
+const RemoteDataBlock = require(`../../data/remote-data-block`);
+const SIGNAL = require(`../../signal`);
 const GameCard = require(`./game-card`);
 
 class GameCardEx extends GameCard {
@@ -13,11 +13,8 @@ class GameCardEx extends GameCard {
 
     _Init() {
         super._Init();
-        //this._orientation.Set(ui.FLAGS.VERTICAL);
-        //this._mediaPlacement.Set(ui.FLAGS.LEFT);
         this._lastActiveUserCount = 0;
-        this._mainView = null;
-        
+        this._mainView = null;        
     }
 
     set mainView(p_value) {

@@ -109,7 +109,7 @@ class FriendsListView extends uilib.overlays.Drawer {
                 friend._avatarURL = profileAvatar;
                 friend.existingUser = nkm.env.APP.database.FindUser(profileID64);
                 
-                let card = this.Add(comps.FriendCard, `user-card`, this._cardCtnr);
+                let card = this.Add(comps.cards.FriendCard, `user-card`, this._cardCtnr);
                 card.data = friend;
 
                 this._friendlist.push(card);
