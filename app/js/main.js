@@ -306,6 +306,8 @@ class SteamGameFinder extends nkm.app.AppBase {
                     }
                 }
 
+                return true;
+
             }
 
             return false;
@@ -343,10 +345,11 @@ class SteamGameFinder extends nkm.app.AppBase {
         this._IPChecked = false;
 
         nkm.io.Read(
-            `http://ip-api.com/json`,
+            `https://ipinfo.io/json`,
             { cl: nkm.io.resources.JSONResource },
             {
                 success: this._Bind(this._OnIPRequestSuccess),
+                error: this._Bind(this._OnIPRequestEnd),
                 any:this._Bind(this._OnIPRequestEnd),
             }
         );
@@ -354,12 +357,13 @@ class SteamGameFinder extends nkm.app.AppBase {
     }
 
     _OnIPRequestSuccess(p_rsc){
+        this._IPChecked = true;
         this._IPInfos = p_rsc.content;
     }
 
     _OnIPRequestEnd(){
         this._IPChecked = true;
-        console.log(`IP DATA : `, this._IPInfos);
+        console.log(`Store location : `, this._IPInfos);
     }
     
 
