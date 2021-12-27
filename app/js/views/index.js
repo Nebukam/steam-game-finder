@@ -2,5 +2,6 @@ module.exports = {
     GamesList: require(`./games-list-view`),
     GamesGroups: require(`./games-groups-view`),
     FriendsList: require(`./friends-list-view`),
-    SearchResult: require(`./search-result-view`)
+    SearchResult: require(`./search-result-view`),
+    GameInfos: require(`./game-infos-view`)
 }

@@ -23,14 +23,22 @@ class SteamGameFinder extends nkm.app.AppBase {
         super._Init();
 
         this._ping = new nkm.io.helpers.Ping(`https://steam-game-finder-server.glitch.me/user/profile/Nebukam`);
+        this._locationRequest = null;
+        this._IPInfos = null;
 
         // Setup Steam cookies
-
+/*
         this._fiftyYearsAgo = ((Date.now() - 1576800000000) / 1000).toFixed();
+        document.cookie = `lastagecheckage=1-0-1919`;
         document.cookie = `wants_mature_content="1"`;
         document.cookie = `birthtime=${this._fiftyYearsAgo}`;
         document.cookie = `path=/`;
         document.cookie = `max-age=315360000`;
+*/
+
+        ui.dom.SetCookie(`wants_mature_content`, `"1"`);
+        ui.dom.SetCookie(`birthtime`, ((Date.now() - 1576800000000) / 1000).toFixed());
+        ui.dom.SetCookie(`max-age`, 315360000);
 
         //axios.defaults.withCredentials = true;
 
@@ -63,6 +71,11 @@ class SteamGameFinder extends nkm.app.AppBase {
                 [com.IDS.NAME]: `Filters`,
                 [com.IDS.ICON]: `search`,
                 [ui.IDS.VIEW_CLASS]: sgfExplorers.GameFilters
+            },
+            {
+                [com.IDS.NAME]: `Infos`,
+                [com.IDS.ICON]: `infos`,
+                [ui.IDS.VIEW_CLASS]: sgfExplorers.Infos
             }
         ]);
 
@@ -99,7 +112,7 @@ class SteamGameFinder extends nkm.app.AppBase {
         });
 
         this._gamesList.options.view.RequestDisplay();
-
+        this._gamesGroup.options.view.RequestDisplay();
         //this._gamesList = this.mainLayout.Add(sgfViews.GamesList, `workspace`);
         //new ui.manipulators.GridItem(this._gamesList, 2, 2, 1, 1);
 
@@ -151,6 +164,22 @@ class SteamGameFinder extends nkm.app.AppBase {
             title: `User search`,
             user: p_user,
             contentClass: sgfViews.SearchResult
+        };
+
+        nkm.actions.Emit(nkm.uilib.REQUEST.DRAWER, opts, this);
+
+    }
+
+    _RequestGameInfos(p_app) {
+
+        // this._friendsList.options.view.LoadFriendlist(p_user);
+
+        let opts = {
+            orientation: ui.FLAGS.HORIZONTAL,
+            placement: ui.FLAGS.RIGHT,
+            title: `${p_app.name}`,
+            app: p_app,
+            contentClass: sgfViews.GameInfos
         };
 
         nkm.actions.Emit(nkm.uilib.REQUEST.DRAWER, opts, this);
@@ -224,9 +253,23 @@ class SteamGameFinder extends nkm.app.AppBase {
         return url;
     }
 
+    _GetURLStore(p_id) {
+        let url;
+        "#if WEB";
+        url = `https://steam-game-finder-server.glitch.me/store/${p_id}`;
+        "#elif EXT";
+        url = `https://store.steampowered.com/app/${p_id}/`;
+        "#endif";
+        return url;
+    }
+
     //#region server ping
 
     _IsReadyForDisplay() {
+
+        if(!this._CheckIP()){ 
+            return false;
+        }
 
         if (!nkm.env.isExtension && !nkm.env.isNodeEnabled) {
 
@@ -263,13 +306,12 @@ class SteamGameFinder extends nkm.app.AppBase {
                     }
                 }
 
-                return true;
-
             }
 
             return false;
 
         } else {
+
             if (!nkm.env.prefs.Get(`popups.hide-note-v1`, false)) {
                 nkm.dialog.Push({
                     [ui.IDS.TITLE]: `Note on private profiles`,
@@ -291,6 +333,35 @@ class SteamGameFinder extends nkm.app.AppBase {
         return true;
 
     }
+
+    _CheckIP(){
+        if(this._checkinIP){ 
+            if(this._IPChecked){ return true; }
+            return false; 
+        }
+        this._checkinIP = true;
+        this._IPChecked = false;
+
+        nkm.io.Read(
+            `http://ip-api.com/json`,
+            { cl: nkm.io.resources.JSONResource },
+            {
+                success: this._Bind(this._OnIPRequestSuccess),
+                any:this._Bind(this._OnIPRequestEnd),
+            }
+        );
+        
+    }
+
+    _OnIPRequestSuccess(p_rsc){
+        this._IPInfos = p_rsc.content;
+    }
+
+    _OnIPRequestEnd(){
+        this._IPChecked = true;
+        console.log(`IP DATA : `, this._IPInfos);
+    }
+    
 
     //#endregion
 

@@ -19,6 +19,7 @@ class GamesGroup extends ui.Widget {
 
         this._flags.Add(this, `sticky`);
         this._flags.Add(this, `redundant`);
+        this._lastRect = null;
         //TODO : 
 
         // - Group stats
@@ -55,24 +56,31 @@ class GamesGroup extends ui.Widget {
                 'top': '0px',
                 'padding': '20px',
                 'border-radius': '10px',
-                'background-color': 'rgba(50,50,50,0.5)'
+                'background-color': 'rgba(50,50,50,0.5)',
+                '--order':0,
             },
             ':host(.sticky) .group-header': {
                 'position': 'fixed',
                 'top': '34px',
-                'z-index': 1,
+                
                 'backdrop-filter': 'blur(10px)',
                 'border-radius': '0 0 10px 10px',
+                '--order':1
+            },
+            ':host(.sticky) .group-body': {
+                '--order':0,
+                'z-index': 0,
             },
             '.group-body': {
+                '--order':1,
                 'display': 'flex',
                 'flex-flow': 'row wrap',
                 //'justify-content':'space-evenly',
             },
-            ':host(.redundant)':{
+            ':host(.redundant)': {
                 'opacity': '0.5',
             },
-            ':host(.redundant) .group-body':{
+            ':host(.redundant) .group-body': {
                 'display': 'none',
             },
             '.game-card': {
@@ -86,6 +94,8 @@ class GamesGroup extends ui.Widget {
 
     _Render() {
         super._Render();
+        
+        this._groupBody = ui.El(`div`, { class: `group-body` }, this._host);
 
         let header = ui.El(`div`, { class: `group-header` }, this._host);
 
@@ -95,18 +105,17 @@ class GamesGroup extends ui.Widget {
         let subtitle = new ui.manipulators.Text(ui.dom.El(`div`, { class: `label` }, header));
         subtitle.Set(`Waiting for data...`); this._subtitle = subtitle;
 
-        this._groupBody = ui.El(`div`, { class: `group-body` }, this._host);
     }
 
     set index(p_value) {
         this._index = p_value;
         this.style.setProperty(`--order`, 100 - p_value);
-        if(p_value == 0){
+        if (p_value == 0) {
             this._title.Set(`SINGLE OWNER`);
-        }else{
+        } else {
             this._title.Set(`${p_value + 1} OWNERS`);
         }
-        
+
     }
 
     AddGame(p_game) {
@@ -126,7 +135,7 @@ class GamesGroup extends ui.Widget {
 
     _UpdateInfos() {
 
-        if((this._index+1) == nkm.env.APP.database._userReadyList.count){
+        if ((this._index + 1) == nkm.env.APP.database._userReadyList.count) {
             this._subtitle.Set(`Everybody owns these games, they're shown in the other tab ;)`);
             this._flags.Set(`redundant`, true);
             return;
@@ -141,7 +150,7 @@ class GamesGroup extends ui.Widget {
             let game = this._gamelist.At(i);
             if (game._ShouldShow(game.data)) { groupShown++; }
         }
-        
+
         if (groupShown == 0 && groupTotal != 0) {
             this._subtitle.Set(`Active filters have ruled out every game out of ${groupTotal} possibilities.`);
         } else if (groupShown == groupTotal) {
@@ -149,7 +158,7 @@ class GamesGroup extends ui.Widget {
         } else {
             this._subtitle.Set(`${groupShown}/${groupTotal}. (narrowed down through filters.)`);
         }
-        
+
 
     }
 
@@ -161,6 +170,7 @@ class GamesGroup extends ui.Widget {
             this._mainView._ReturnGame(game);
         }
 
+        this._lastRect = null;
         this._offsetOrder = 0;
         this._gamelist.Clear();
         this._mainView = null;
@@ -173,6 +183,12 @@ class GamesGroup extends ui.Widget {
 
         let stick = false;
         let rect = ui.dom.Rect(this, this._parent);
+
+        
+        if (this._lastRect) {
+            if (this._lastRect.y == rect.y
+                && this._lastRect.height == rect.height) { return; }
+        }
 
         if (rect.y < 0) {
             let availSpace = rect.y + rect.height;
@@ -188,6 +204,10 @@ class GamesGroup extends ui.Widget {
 
         this._flags.Set(`sticky`, stick);
         this.style.setProperty(`--w`, `${rect.width}px`);
+
+        if (!this._lastRect) {
+            this._lastRect = rect;
+        }
 
     }
 

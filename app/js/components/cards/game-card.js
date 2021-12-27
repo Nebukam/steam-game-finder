@@ -16,7 +16,6 @@ class GameCard extends MediaCardEx {
     _Init() {
         super._Init();
         this._mediaPropertyName = `logo`;
-        this._flags.Add(this, _flag_dlc);
     }
 
     _Style() {
@@ -39,19 +38,35 @@ class GameCard extends MediaCardEx {
                 'padding-top': '10px',
                 'color': 'black'
             },
-            '.tags':{
-                'display':'flex'
+            '.tags': {
+                'display': 'flex',
+                'padding': '5px'
+            },
+            '.tag': {
+                'margin-right': '4px'
+            },
+            '.header': {
+                'display': 'flex',
+                'flex-flow': 'column nowrap',
             }
         }, super._Style());
     }
 
     _Render() {
+
         super._Render();
-        this._tagsCtnr = ui.El(`div`, {class:`tags`}, this._frame.header.element);
+
+        this._tagsCtnr = ui.El(`div`, { class: `tags` }, this._frame.header.element);
+
+        this._tagDiskSize = this.Add(uilib.widgets.Tag, `tag disk-size`, this._tagsCtnr);
+        //this._tagDiskSize.visible = false;
+        this._tagDiskSize.label = `50 GB`;
+
         this._tagDLC = this.Add(uilib.widgets.Tag, `tag dlc`, this._tagsCtnr);
         this._tagDLC.visible = false;
-        this._tagDiskSize = this.Add(uilib.widgets.Tag, `tag disk-size`, this._tagsCtnr);
-        this._tagDiskSize.visible = false;
+        this._tagDLC.flavor = nkm.com.FLAGS.INFOS;
+        this._tagDLC.label = `DLC`;
+
     }
 
     _UpdateInfos() {
@@ -59,6 +74,8 @@ class GameCard extends MediaCardEx {
         if (!super._UpdateInfos()) { return false; }
 
         let data = this._data;
+
+        if (data.state != RemoteDataBlock.STATE_READY) { return false; }
 
         this.htitle = `Launch ${data.name}`;
 
@@ -101,11 +118,21 @@ class GameCard extends MediaCardEx {
             }
         }
 
-        this._flags.Set(_flag_dlc, data._parentGame ? true : false);
+        this._tagDLC.visible = data._parentGame ? true : false;
 
         //this.order = data.order;
-        if(data._parentGame){
+        if (data._parentGame) {
             this._tagDLC.visible = true;
+        }
+
+        if (data._specs) {
+            this._tagDiskSize.visible = true;
+            let val = data._specs.storage;
+            if (val < 1) { val = `${val * 1000} MB`; }
+            else { val = `${val} GB`; }
+            this._tagDiskSize.label = val;
+        } else {
+            this._tagDiskSize.visible = false;
         }
 
         return true;

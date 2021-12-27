@@ -23,7 +23,7 @@
 // ----> Remove costly filters on (presumably) mobile
 @media (hover: none) and (pointer: coarse) {
     *{
-        filter:none;
+        //filter:none;
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;

@@ -18,17 +18,20 @@ class FilterGroupCooptimus extends FilterGroup {
         this._Bind(this._OnCoopUpdated);
 
         this._toggleExclusive = this._Add({ key: 1, flag: false, id: `Exact matches only` });
-        this._toggleBasics = this._Add({ key: 2, flag: false, id: `Enable basic filters` });
-        this._toggleCooptimus = this._Add({ key: 3, flag: false, id: `Enable Co-optimus` });
+        this._toggleBasics = this._Add({ key: 2, flag: false, id: `Enable` });
+        this._toggleCooptimus = this._Add({ key: 3, flag: false, id: `Enable` });
+        this._toggleSpecs = this._Add({ key: 4, flag: false, id: `Enable` });
 
         this._toggleExclusive._updateFn = this._OnRegularUpdated;
         this._toggleBasics._updateFn = this._OnRegularUpdated;
+        this._toggleSpecs._updateFn = this._OnRegularUpdated;
         this._toggleCooptimus._updateFn = this._OnCoopUpdated;
 
     }
 
     get isBasicsEnabled(){ return this._toggleBasics.flag; }
     get isExclusiveEnabled(){ return this._toggleExclusive.flag; }
+    get isSpecsEnabled(){ return this._toggleSpecs.flag; }
     get isCooptimusEnabled(){ return this._toggleCooptimus.flag; }    
 
     _Check(p_app) { return true; }

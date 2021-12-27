@@ -56,4 +56,4 @@ class MainLayout extends ui.views.Layer {
 }
 
 module.exports = MainLayout;
-ui.Register(`toolbox-main-layout`, MainLayout);
+ui.Register(`sgf-main-layout`, MainLayout);

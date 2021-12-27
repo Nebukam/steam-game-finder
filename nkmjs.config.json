@@ -26,7 +26,10 @@
             "https://steamcommunity.com/*",
             "https://cdn.akamai.steamstatic.com/steamcommunity/public/*",
             "https://steamcdn-a.akamaihd.net/steam/apps/*",
-            "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/*"
+            "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/*",
+            "https://steam-game-finder-server.glitch.me/*",
+            "https://store.steampowered.com/app/*",
+            "http://ip-api.com/json"
         ]
     },
     "dirs": {},

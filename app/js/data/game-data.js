@@ -19,6 +19,7 @@ class GameData extends RemoteDataBlock {
         this._flags = null;
         this._tags = null;
         this._cooptimus = false;
+        this._specs = false;
 
         this._users = new Array();
         this._childs = new Array();
@@ -110,6 +111,7 @@ class GameData extends RemoteDataBlock {
         this._tags = p_rsc.content.tags;
         this._name = p_rsc.content.name;
         this._cooptimus = p_rsc.content.cooptimus;
+        this._specs  = p_rsc.content.specs;
 
         let parentID = p_rsc.content.parentappid;
         if (parentID != ``) {

@@ -25,7 +25,7 @@ Once you added a user (likely yourself), you can easily find your friends, or fr
 ![Friendlist view](https://github.com/Nebukam/steam-game-finder/raw/main/assets/screenshots/002.png)
 
 ### - Essential filters focusing on multiplayer features
-Also includes filters from [Co-optimus](https://www.co-optimus.com/) !
+Also includes filters from [Co-optimus](https://www.co-optimus.com/), as well as size on disk!
 
 ![Filter view](https://github.com/Nebukam/steam-game-finder/raw/main/assets/screenshots/003.png)
 > :warning: Activating Co-optimus filters will greatly reduce the number of results, as data is available for "only" 2285 games. *(airquotes as it is already a titanesque job since it's maintained manually)*
@@ -33,9 +33,28 @@ Also includes filters from [Co-optimus](https://www.co-optimus.com/) !
 ### - Comprehensive view of game by number of owners
 A more flexible view showing more options by number of owners, instead of showing only exact overlaps. Quickly naviguate through groups using the shortcuts on the left.
 ![Owner groups](https://github.com/Nebukam/steam-game-finder/raw/main/assets/screenshots/004.png)
+Fetch the price of games people of in your group don't own yet
+![Fetch price](https://github.com/Nebukam/steam-game-finder/raw/main/assets/screenshots/005.png)
+
+### - Works on mobile (but not _designed_ for it)
+
+![Mobile screenshots](https://github.com/Nebukam/steam-game-finder/raw/main/assets/screenshots/mobile.png)
 
 ## Filter details
 The filters are using a dump from Steam & Cooptimus databases available [here](https://github.com/Nebukam/steam-db).
 
 
 (More TBD)
+
+
+# Disclaimers
+
+## Steam
+
+This app is not affiliated, associated, authorized, endorsed by, or in any way officially connected or any of its subsidiaries or its affiliates.  
+The official Steam website can be found at [https://store.steampowered.com/](https://store.steampowered.com/)
+
+## Co-optimus
+
+This app is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Co-optimus, or any of its subsidiaries or its affiliates.  
+The official Steam website can be found at [https://www.co-optimus.com/](https://www.co-optimus.com/)

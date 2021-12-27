@@ -17,20 +17,15 @@
         #{'--flavor-contrast-'+$st}: $c;
     }
 
-    --hh:calc(var(--size) * 0.3);
+    --thumbSize:var(--size);
 
-}
-
-.slider-ctnr{
-    margin-left: var(--hh);
-    margin-right: var(--hh);
 }
 
 .slider{
     
     &::-webkit-slider-thumb {
-        width: var(--hh);
-        height: var(--hh);
+        width: var(--thumbSize);
+        height: var(--thumbSize);
         border-radius:100%;
         background-color: var(--flavor-contrast-idle);
         margin-top:-4px;
@@ -38,8 +33,8 @@
     }
 
     &::-moz-range-thumb {
-        width: var(--hh);
-        height: var(--hh);
+        width: var(--thumbSize);
+        height: var(--thumbSize);
         border-radius:100%;
         background-color: var(--flavor-contrast-idle);
         margin-top:-4px;
@@ -53,20 +48,21 @@ $trfh:4px;
 
 .slider-assets{
 
+    left:calc(var(--thumbSize) * 0.5);
+
     // Trackline
     &::before {
         width: calc(100% - var(--fill));
         --h: calc(var(--size) * 0.1);    
         background-color: var(--flavor-primary-idle);
         border-radius:var(--h);
-        left: calc(var(--fill) + calc(var(--hh) * 0.5));
+        left: var(--fill);
     }
 
     &::after {
-        width: calc(var(--fill) + calc(var(--hh) * 2));
+        width: var(--fill);
         --h: calc(var(--size) * 0.5);
         background-color: var(--flavor-primary-idle);
-        left: calc(calc(var(--hh) * 0.5) - var(--hh));
     }
 
     &::before, &::after {

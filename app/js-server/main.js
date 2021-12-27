@@ -27,6 +27,16 @@ class ServerProcess extends server.core.ServerBase {
                 route: `/user/library/:id`,
                 handler: handlers.UserLibrary,
                 start: true
+            },
+            getStore: {
+                route: `/store/:id`,
+                handler: handlers.Store,
+                start: true
+            },
+            getDeal: {
+                route: `/deal/:id`,
+                handler: handlers.Deal,
+                start: true
             }
         });
 

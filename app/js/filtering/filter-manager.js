@@ -24,6 +24,7 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
 
         this._toggles = this._AddGroup(filters.Toggles);
         this._regular = this._AddGroup(filters.Regular);
+        this._specs = this._AddGroup(filters.Specs);
         this._cooptimus = this._AddGroup(filters.Cooptimus);
 
         // TODO : Only update filters when needed
@@ -53,6 +54,7 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
     get overlap() { return this._overlap; }
     get toggles() { return this._toggles; }
     get regular() { return this._regular; }
+    get specs() { return this._specs; }
     get cooptimus() { return this._cooptimus; }
 
     _AddGroup(p_class) {
@@ -100,7 +102,8 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
             if (appData.passOverlap) { this._overlapCount++; }
 
             if (fCache[this._regular._id]
-                && fCache[this._cooptimus._id]) {
+                && fCache[this._cooptimus._id]
+                && fCache[this._specs._id]) {
                 appData.passFilters = true;
                 this._filteredCount++;
             } else {
@@ -139,7 +142,8 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
             if (appData.passOverlap) { this._overlapCount++; }
 
             if (fCache[this._regular._id]
-                && fCache[this._cooptimus._id]) {
+                && fCache[this._cooptimus._id]
+                && fCache[this._specs._id]) {
                 appData.passFilters = true;
                 this._filteredCount++;
             } else {
@@ -167,7 +171,8 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
         }
 
         if (fCache[this._regular._id]
-            && fCache[this._cooptimus._id]) {
+            && fCache[this._cooptimus._id]
+            && fCache[this._specs._id]) {
             p_app.passFilters = true;
         } else {
             p_app.passFilters = false;

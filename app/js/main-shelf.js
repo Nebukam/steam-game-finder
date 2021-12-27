@@ -23,4 +23,4 @@ class MainShelf extends nkm.uilib.views.Shelf {
 }
 
 module.exports = MainShelf;
-ui.Register(`toolbox-main-shelf`, MainShelf);
+ui.Register(`sgf-main-shelf`, MainShelf);

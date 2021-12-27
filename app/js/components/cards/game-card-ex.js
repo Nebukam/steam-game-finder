@@ -65,9 +65,11 @@ class GameCardEx extends GameCard {
 
         super._UpdateInfos();
 
+        let data = this._data;
+        this.htitle = `Show infos for ${data.name}`;
+
         if(!this._isPainted){ return; }
 
-        let data = this._data;
 
         let
             users = nkm.env.APP.database._userReadyList,
@@ -125,6 +127,10 @@ class GameCardEx extends GameCard {
         && p_data.activeUserCount > 0 
         && !p_data._parentGame
         && p_data.passFilters; 
+    }
+
+    _Launch() {
+        nkm.env.APP._RequestGameInfos(this._data);
     }
 
     _Cleanup() {

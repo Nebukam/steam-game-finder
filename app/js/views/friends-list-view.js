@@ -134,15 +134,17 @@ class FriendsListView extends uilib.overlays.Drawer {
     }
 
     _SetInfosLoading(){
+        this._infoCard._frame.icon.element.classList.add(`rotating-fast`);
         this._infoCard.visible = true;
-        this._infoCard.icon = `search`;
+        this._infoCard.icon = `refresh`;
         this._infoCard.title = `Loading`;
         this._infoCard.subtitle = `loading friendlist, please be patient`;
-        this._infoCard.flavor = null;// nkm.com.FLAGS.INFOS;
-        this._infoCard.variant = ui.FLAGS.MINIMAL;
+        this._infoCard.flavor = nkm.com.FLAGS.LOADING;
+        this._infoCard.variant = null;
     }
 
     _SetInfosError(){
+        this._infoCard._frame.icon.element.classList.remove(`rotating-fast`);
         this._infoCard.visible = true;
         this._infoCard.icon = `warning`;
         this._infoCard.title = `PRIVATE`;
@@ -152,6 +154,7 @@ class FriendsListView extends uilib.overlays.Drawer {
     }
 
     _SetInfosNone(){
+        this._infoCard._frame.icon.element.classList.remove(`rotating-fast`);
         this._infoCard.visible = false;
     }
 

@@ -8,6 +8,7 @@ const SIGNAL = require(`../signal`);
 
 const _flag_showAll = `show-all`;
 const _flag_showCooptimus = `show-cooptimus`;
+const _flag_showSpecs = `show-specs`;
 
 
 class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
@@ -21,7 +22,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
         //nkm.env.features.Watch(nkm.env.SIGNAL.DISPLAY_TYPE_CHANGED, this._OnDisplayTypeChanged, this);
         nkm.env.APP.filters.Watch(nkm.com.SIGNAL.UPDATED, this._OnFiltersUpdated, this);
 
-        this._flags.Add(this, _flag_showAll, _flag_showCooptimus);
+        this._flags.Add(this, _flag_showAll, _flag_showCooptimus, _flag_showSpecs);
 
     }
 
@@ -47,6 +48,9 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
                 'display': 'none'
             },
             ':host(.show-cooptimus) .cooptimus': {
+                'display': 'none'
+            },
+            ':host(.show-specs) .specs': {
                 'display': 'none'
             },
             '.header, .footer': {
@@ -79,10 +83,10 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
             '.large-filter': {
                 'flex': '1 1 66%'
             },
-            '.label': {
+            '.title': {
                 'margin': '10px',
                 'margin-top': '0px',
-                'padding-top': '10px',
+                'padding-top': '20px',
                 'font-weight': '900',
                 'flex': '1 1 66%',
                 'border-top': '2px solid rgba(140,140,140,0.15)',
@@ -117,7 +121,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
 
         //#region Regular filters
 
-        let label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `label` }, this._body));
+        let label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `title` }, this._body));
         label.Set(`Basic filters`); this._labelBasicFilters = label;
 
         // Show all
@@ -137,7 +141,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
 
         //#region Cooptimus filters
 
-        label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `label` }, this._body));
+        label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `title` }, this._body));
         label.Set(`Co-optimus`); this._labelCoopFilters = label;
 
         let cooptimusLink = this.Add(uilib.buttons.Tool, `btn`, label.element);
@@ -154,6 +158,22 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
         enums = filters.cooptimus._filters;
         for (var i = 0; i < enums.length; i++) {
             this._AddFilter(enums[i], this.coopFBox);
+        }
+
+        //#endregion
+
+        //#region Specs filters
+
+        label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `title` }, this._body));
+        label.Set(`Technical filters`);
+
+        this._AddToggle(filters.toggles._toggleSpecs);
+
+        this.specsFBox = ui.dom.El(`div`, { class: `box specs` }, this._body);
+
+        enums = filters.specs._filters;
+        for (var i = 0; i < enums.length; i++) {
+            this._AddFilter(enums[i], this.specsFBox);
         }
 
         //#endregion
@@ -198,9 +218,11 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
 
         let useBasics = p_filters.toggles.isBasicsEnabled;
         let useCooptimus = p_filters.toggles.isCooptimusEnabled;
+        let useSpecs = p_filters.toggles.isSpecsEnabled;
 
         this._flags.Set(_flag_showAll, !useBasics);
         this._flags.Set(_flag_showCooptimus, !useCooptimus);
+        this._flags.Set(_flag_showSpecs, !useSpecs);
 
         /*
         this._labelBasicFilters.Set(`Basic filters (${p_filters.regular._lastMatchCount} results)`);

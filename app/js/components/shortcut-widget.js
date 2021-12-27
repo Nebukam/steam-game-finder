@@ -59,7 +59,7 @@ class ShortcutWidget extends ui.Widget {
     }
 
     _OnClick(p_field, p_value){
-        this._mainView._groups[this._index].scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+        this._mainView._groups[this._index].scrollIntoView({ behavior: 'auto', block: 'start', inline: 'start' });
     }
 
     //#endregion
