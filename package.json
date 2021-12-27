@@ -1,6 +1,6 @@
 {
     "name": "steam-game-finder",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Steam : Game Finder allows you to find which multiplayer games are shared within a group of steam users",
     "main": "index.js",
     "author": {

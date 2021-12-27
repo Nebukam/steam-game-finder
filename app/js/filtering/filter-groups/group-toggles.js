@@ -15,6 +15,7 @@ class FilterGroupCooptimus extends FilterGroup {
         this._id = `filterlist-toggles`;
 
         this._Bind(this._OnRegularUpdated);
+        this._Bind(this._OnSpecsUpdated);
         this._Bind(this._OnCoopUpdated);
 
         this._toggleExclusive = this._Add({ key: 1, flag: false, id: `Exact matches only` });
@@ -24,7 +25,7 @@ class FilterGroupCooptimus extends FilterGroup {
 
         this._toggleExclusive._updateFn = this._OnRegularUpdated;
         this._toggleBasics._updateFn = this._OnRegularUpdated;
-        this._toggleSpecs._updateFn = this._OnRegularUpdated;
+        this._toggleSpecs._updateFn = this._OnSpecsUpdated;
         this._toggleCooptimus._updateFn = this._OnCoopUpdated;
 
     }
@@ -52,6 +53,11 @@ class FilterGroupCooptimus extends FilterGroup {
     _OnRegularUpdated(){
         this._OnFilterUpdated();
         nkm.env.APP.filters.regular._OnFilterUpdated();
+    }
+
+    _OnSpecsUpdated(){
+        this._OnFilterUpdated();
+        nkm.env.APP.filters.specs._OnFilterUpdated();
     }
 
     _OnCoopUpdated(){
