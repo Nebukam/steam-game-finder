@@ -51,7 +51,7 @@ The filters are using a dump from Steam & Cooptimus databases available [here](h
 
 ## Steam
 
-This app is not affiliated, associated, authorized, endorsed by, or in any way officially connected or any of its subsidiaries or its affiliates.  
+This app is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Steam or any of its subsidiaries or its affiliates.  
 The official Steam website can be found at [https://store.steampowered.com/](https://store.steampowered.com/)
 
 ## Co-optimus
