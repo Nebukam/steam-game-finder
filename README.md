@@ -46,6 +46,9 @@ The filters are using a dump from Steam & Cooptimus databases available [here](h
 
 (More TBD)
 
+# Special thanks
+Special thanks to [@andrasfuchs](https://github.com/andrasfuchs) whom feedback & support made this app better for everyone ^_^  
+And thanks to anyone in the Steam Community forums for their comments and suggestions.
 
 # Disclaimers
 

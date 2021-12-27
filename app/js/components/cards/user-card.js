@@ -40,7 +40,7 @@ class UserCard extends MediaCardEx {
             ':host': {
                 '--currentOpacity': 1,
                 '--op': 0,
-                'opacity': `var(--op)`,
+                'opacity': `var(--op) !important`,
                 'transition': 'opacity 0.5s',
                 'height': '115px',
                 //margin:'10px'
