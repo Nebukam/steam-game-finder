@@ -112,7 +112,7 @@ class SteamGameFinder extends nkm.app.AppBase {
         });
 
         this._gamesList.options.view.RequestDisplay();
-        this._gamesGroup.options.view.RequestDisplay();
+        //this._gamesGroup.options.view.RequestDisplay();
         //this._gamesList = this.mainLayout.Add(sgfViews.GamesList, `workspace`);
         //new ui.manipulators.GridItem(this._gamesList, 2, 2, 1, 1);
 
