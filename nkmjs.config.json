@@ -29,7 +29,7 @@
             "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/*",
             "https://steam-game-finder-server.glitch.me/*",
             "https://store.steampowered.com/app/*",
-            "https://ipinfo.io"
+            "https://ipinfo.io/json"
         ]
     },
     "dirs": {},

@@ -350,7 +350,8 @@ class SteamGameFinder extends nkm.app.AppBase {
             {
                 success: this._Bind(this._OnIPRequestSuccess),
                 error: this._Bind(this._OnIPRequestEnd),
-                any:this._Bind(this._OnIPRequestEnd)
+                any:this._Bind(this._OnIPRequestEnd),
+                withCredentials:false
             }
         );
         
