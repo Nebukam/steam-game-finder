@@ -4,4 +4,5 @@ module.exports = {
     Specs: require(`./group-specs`),
     Cooptimus: require(`./group-cooptimus`),
     Overlap: require(`./group-overlap`),
+    Tags: require(`./group-tags`),
 }

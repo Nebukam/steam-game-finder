@@ -6,7 +6,7 @@ const collections = nkm.collections;
 
 const FilterGroup = require(`./filter-group`);
 
-class FilterGroupCooptimus extends FilterGroup {
+class GroupToggles extends FilterGroup {
 
     constructor() { super(); }
 
@@ -17,16 +17,19 @@ class FilterGroupCooptimus extends FilterGroup {
         this._Bind(this._OnRegularUpdated);
         this._Bind(this._OnSpecsUpdated);
         this._Bind(this._OnCoopUpdated);
+        this._Bind(this._OnTagsUpdated);
 
         this._toggleExclusive = this._Add({ key: 1, flag: false, id: `Exact matches only` });
         this._toggleBasics = this._Add({ key: 2, flag: false, id: `Enable` });
         this._toggleCooptimus = this._Add({ key: 3, flag: false, id: `Enable` });
         this._toggleSpecs = this._Add({ key: 4, flag: false, id: `Enable` });
+        this._toggleTags = this._Add({ key: 5, flag: false, id: `Enable` });
 
         this._toggleExclusive._updateFn = this._OnRegularUpdated;
         this._toggleBasics._updateFn = this._OnRegularUpdated;
         this._toggleSpecs._updateFn = this._OnSpecsUpdated;
         this._toggleCooptimus._updateFn = this._OnCoopUpdated;
+        this._toggleTags._updateFn = this._OnTagsUpdated;
 
     }
 
@@ -34,6 +37,7 @@ class FilterGroupCooptimus extends FilterGroup {
     get isExclusiveEnabled(){ return this._toggleExclusive.flag; }
     get isSpecsEnabled(){ return this._toggleSpecs.flag; }
     get isCooptimusEnabled(){ return this._toggleCooptimus.flag; }    
+    get isTagsEnabled(){ return this._toggleTags.flag; } 
 
     _Check(p_app) { return true; }
 
@@ -65,6 +69,11 @@ class FilterGroupCooptimus extends FilterGroup {
         nkm.env.APP.filters.cooptimus._OnFilterUpdated();
     }
 
+    _OnTagsUpdated(){
+        this._OnFilterUpdated();
+        nkm.env.APP.filters.tags._OnFilterUpdated();
+    }
+
 }
 
-module.exports = FilterGroupCooptimus;
+module.exports = GroupToggles;

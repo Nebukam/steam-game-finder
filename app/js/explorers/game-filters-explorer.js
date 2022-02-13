@@ -9,6 +9,7 @@ const SIGNAL = require(`../signal`);
 const _flag_showAll = `show-all`;
 const _flag_showCooptimus = `show-cooptimus`;
 const _flag_showSpecs = `show-specs`;
+const _flag_showTags = `show-tags`;
 
 
 class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
@@ -22,7 +23,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
         //nkm.env.features.Watch(nkm.env.SIGNAL.DISPLAY_TYPE_CHANGED, this._OnDisplayTypeChanged, this);
         nkm.env.APP.filters.Watch(nkm.com.SIGNAL.UPDATED, this._OnFiltersUpdated, this);
 
-        this._flags.Add(this, _flag_showAll, _flag_showCooptimus, _flag_showSpecs);
+        this._flags.Add(this, _flag_showAll, _flag_showCooptimus, _flag_showSpecs, _flag_showTags);
 
     }
 
@@ -51,6 +52,9 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
                 'display': 'none'
             },
             ':host(.show-specs) .specs': {
+                'display': 'none'
+            },
+            ':host(.show-tags) .tags': {
                 'display': 'none'
             },
             '.header, .footer': {
@@ -178,6 +182,34 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
 
         //#endregion
 
+        //#region Tags filters
+
+        filters.tags.Watch(com.SIGNAL.READY, this._OnTagLoaded, this);
+
+        //#endregion
+
+    }
+
+    _OnTagLoaded(){
+        
+        console.log(`_OnTagLoaded`);
+        let filters = nkm.env.APP.filters;
+
+        let label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `title` }, this._body));
+        label.Set(`Filters by tags`);
+
+        this._AddToggle(filters.toggles._toggleTags);
+
+        this.tagsBox = ui.dom.El(`div`, { class: `box tags` }, this._body);
+
+        let enums = filters.tags._filters;
+
+        for (var i = 0; i < enums.length; i++) {
+            this._AddFilter(enums[i], this.tagsBox);
+        }
+
+        console.log(`Huoh`);
+
     }
 
     _AddToggle(p_enum, p_ctnr) {
@@ -195,7 +227,9 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
         let type = comps.filters.FilterWidget;
 
         if (p_enum.values) { type = comps.filters.SliderFilterWidget; classes += `large-filter`; }
-        else { classes += `small-filter` }
+        else { 
+            if(p_enum.isTag){ type = comps.filters.FilterTagWidget; }
+            classes += `small-filter` }
 
         this._GroupLabel(p_enum.group, p_parent);
 
@@ -219,10 +253,12 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
         let useBasics = p_filters.toggles.isBasicsEnabled;
         let useCooptimus = p_filters.toggles.isCooptimusEnabled;
         let useSpecs = p_filters.toggles.isSpecsEnabled;
+        let useTags = p_filters.toggles.isTagsEnabled;
 
         this._flags.Set(_flag_showAll, !useBasics);
         this._flags.Set(_flag_showCooptimus, !useCooptimus);
         this._flags.Set(_flag_showSpecs, !useSpecs);
+        this._flags.Set(_flag_showTags, !useTags);
 
         /*
         this._labelBasicFilters.Set(`Basic filters (${p_filters.regular._lastMatchCount} results)`);

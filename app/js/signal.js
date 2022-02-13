@@ -26,6 +26,8 @@ class SIGNAL {
     static INFOS_UPDATED = Symbol(`infos-updated`);
     static FILTERS_UPDATED = Symbol(`filters-updated`);
 
+    static TAG_UPDATED = Symbol(`tag-updated`);
+
 }
 
 module.exports = SIGNAL;

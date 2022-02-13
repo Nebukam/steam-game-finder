@@ -63,6 +63,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
                 this._applist.push(p_game);
                 this._Broadcast(SIGNAL.GAME_ADDED, p_game);
                 p_game.Watch(nkm.com.SIGNAL.UPDATED, this._OnGameUpdated, this);
+
                 this._delayedSort.Schedule();
             }
 
