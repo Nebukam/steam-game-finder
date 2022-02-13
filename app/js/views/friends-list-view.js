@@ -88,7 +88,7 @@ class FriendsListView extends uilib.overlays.Drawer {
 
     _OnFriendlistLoadSuccess(p_rsc) {
 
-        let friendSplit = p_rsc.content.split(`<div class="selectable friend_block_`);
+        let friendSplit = p_rsc.content.split(`data-steamid="`);
 
         if (friendSplit.length == 0) {
             // No friends or private friendlist
@@ -96,12 +96,12 @@ class FriendsListView extends uilib.overlays.Drawer {
         }
 
         for (var i = 0, n = friendSplit.length; i < n; i++) {
-            let friendserial = friendSplit[i];
+            let friendserial = friendSplit[i]; //
             try {
 
-                let profileID64 = friendserial.split(`data-steamid="`)[1].split(`"`)[0];
-                let profileAvatar = friendserial.split(`<div class="player_avatar`)[1].split(`<img src="`)[1].split(`"`)[0];
-                let profileName = friendserial.split(`<div class="friend_block_content`)[1].split(`>`)[1].split(`<`)[0];
+                let profileID64 = friendserial.split(`"`)[0];
+                let profileAvatar = friendserial.split(`<img src="`)[1].split(`.jpg"`)[0] + ".jpg";
+                let profileName = friendserial.split(`data-search="`)[1].split(` ; `)[0];
 
                 let friend = new FriendData();
                 friend._profileID64 = profileID64;
