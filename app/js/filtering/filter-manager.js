@@ -242,7 +242,6 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
             }
 
         }
-
         // Compare full tag list against available one and broadcast
         for (let i = 0; i < this._tags._filters.length; i++) {
             let filter = this._tags._filters[i];

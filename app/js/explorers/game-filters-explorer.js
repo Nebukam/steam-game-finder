@@ -111,6 +111,9 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
                 'border-top': '1px solid rgba(140,140,140,0.15)',
                 'text-align': 'center',
                 'padding-top': '8px'
+            },
+            '.wide':{
+                'min-width':'80%'
             }
 
 
@@ -202,18 +205,18 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
 
         this.tagsBox = ui.dom.El(`div`, { class: `box tags` }, this._body);
 
+        this._AddToggle(filters.toggles._toggleTagsExclusive, this.tagsBox, ` wide`);
+
         let enums = filters.tags._filters;
 
         for (var i = 0; i < enums.length; i++) {
             this._AddFilter(enums[i], this.tagsBox);
         }
 
-        console.log(`Huoh`);
-
     }
 
-    _AddToggle(p_enum, p_ctnr) {
-        let toggle = this.Add(comps.filters.FilterWidget, `filter-item`, (p_ctnr || this._body));
+    _AddToggle(p_enum, p_ctnr, p_extracss = ``) {
+        let toggle = this.Add(comps.filters.FilterWidget, `filter-item${p_extracss}`, (p_ctnr || this._body));
         toggle.size = ui.FLAGS.SIZE_XS;
         toggle.sourceEnum = p_enum;
         toggle._flavor.Set(nkm.com.FLAGS.WARNING);

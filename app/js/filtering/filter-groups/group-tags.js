@@ -27,8 +27,8 @@ class FilterGroupTags extends FilterGroup {
             {
                 success: this._Bind(this._OnTagListLoaded),
                 error: this._Bind(this._OnTagListError),
-                important:true, 
-                parallel:true
+                important: true,
+                parallel: true
             }
         );
 
@@ -36,7 +36,7 @@ class FilterGroupTags extends FilterGroup {
 
     }
 
-    _OnTagListLoaded(p_rsc){
+    _OnTagListLoaded(p_rsc) {
 
         this._loaded = true;
 
@@ -47,38 +47,54 @@ class FilterGroupTags extends FilterGroup {
 
         let DB = nkm.env.APP.database;
 
-        for(let i = 0; i < p_rsc.content.length; i++){
+        for (let i = 0; i < p_rsc.content.length; i++) {
             let tag = p_rsc.content[i],
-            flag = this._cached.includes(tag) ? true : false;
-            this._Add({ key: tag, flag: flag, id: tag, isTag:true, isUsed:false });
+                flag = this._cached.includes(tag) ? true : false;
+            this._Add({ key: tag, flag: flag, id: tag, isTag: true, isUsed: false });
         }
 
         this._Broadcast(nkm.com.SIGNAL.READY, this);
 
     }
 
-    _OnTagListError(p_err){
+    _OnTagListError(p_err) {
 
     }
 
     _Check(p_app) {
 
-        if(!this._loaded){ return true; }
+        if (!this._loaded) { return true; }
         if (!this._toggles.isTagsEnabled) { return true; }
 
         if (!p_app._tags) { return false; }
 
-        for (let i = 0; i < this._filters.length; i++) {
+        if (this._toggles.isTagExclusiveEnabled) {
+            for (let i = 0; i < this._filters.length; i++) {
 
-            let filter = this._filters[i];
+                let filter = this._filters[i];
 
-            if (!filter.isUsed || !filter.flag) { continue; }
+                if (!filter.isUsed || !filter.flag) { continue; }
 
-            if(!p_app._tags.includes(filter.id)){ return false; }
+                if (!p_app._tags.includes(filter.id)) { return false; }
 
+            }
+
+            return true;
+        } else {
+            for (let i = 0; i < this._filters.length; i++) {
+
+                let filter = this._filters[i];
+
+                if (!filter.isUsed || !filter.flag) { continue; }
+
+                if (p_app._tags.includes(filter.id)) { return true; }
+
+            }
+
+            return false;
         }
 
-        return true;
+
 
     }
 

@@ -24,12 +24,14 @@ class GroupToggles extends FilterGroup {
         this._toggleCooptimus = this._Add({ key: 3, flag: false, id: `Enable` });
         this._toggleSpecs = this._Add({ key: 4, flag: false, id: `Enable` });
         this._toggleTags = this._Add({ key: 5, flag: false, id: `Enable` });
+        this._toggleTagsExclusive = this._Add({ key: 6, flag: false, id: `Exact matches only` });
 
         this._toggleExclusive._updateFn = this._OnRegularUpdated;
         this._toggleBasics._updateFn = this._OnRegularUpdated;
         this._toggleSpecs._updateFn = this._OnSpecsUpdated;
         this._toggleCooptimus._updateFn = this._OnCoopUpdated;
         this._toggleTags._updateFn = this._OnTagsUpdated;
+        this._toggleTagsExclusive._updateFn = this._OnTagsUpdated;
 
     }
 
@@ -38,6 +40,7 @@ class GroupToggles extends FilterGroup {
     get isSpecsEnabled(){ return this._toggleSpecs.flag; }
     get isCooptimusEnabled(){ return this._toggleCooptimus.flag; }    
     get isTagsEnabled(){ return this._toggleTags.flag; } 
+    get isTagExclusiveEnabled(){ return this._toggleTagsExclusive.flag; } 
 
     _Check(p_app) { return true; }
 

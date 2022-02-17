@@ -37,7 +37,7 @@ class GameCardEx extends GameCard {
                 'height': '150px',
                 'min-width': '250px',
                 'max-width': '350px',
-                '--header-size': '100px'
+                '--header-size': '100px',
             },
             '.label': {
                 'opacity': '0.5',

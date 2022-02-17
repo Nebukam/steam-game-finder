@@ -26,8 +26,9 @@ class GameCard extends MediaCardEx {
                 'transition': 'opacity 0.5s',
                 'width': '140px',
                 'max-width': '180px',
-                '--header-size': '225px'
+                '--header-size': '225px',
             },
+            ':host(.unpainted) .tags':{ 'display':'none' },
             ':host(.dlc) .header::before': {
                 'position': 'absolute',
                 'width': '100%',
