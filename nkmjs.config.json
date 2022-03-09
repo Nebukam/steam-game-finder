@@ -24,6 +24,7 @@
             "%homepage%",
             "https://nebukam.github.io/*",
             "https://steamcommunity.com/*",
+            "https://avatars.cloudflare.steamstatic.com/*",
             "https://cdn.akamai.steamstatic.com/steamcommunity/public/*",
             "https://steamcdn-a.akamaihd.net/steam/apps/*",
             "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/*",

@@ -6,6 +6,7 @@ const RemoteDataBlock = require(`../../data/remote-data-block`);
 const SIGNAL = require(`../../signal`);
 
 const _flag_dlc = 'dlc';
+const domparser = new DOMParser();
 
 class MediaCardEx extends uilib.cards.Media {
     constructor() { super(); }
@@ -94,11 +95,12 @@ class MediaCardEx extends uilib.cards.Media {
         "#endif";
 
         "#if EXT";
+        console.log(p_data[this._mediaPropertyName]);
         nkm.io.Read(p_data[this._mediaPropertyName],
             { cl: nkm.io.resources.BlobResource },
             {
                 success: (p_rsc) => { this.media = p_rsc.objectURL; },
-                error: () => { this.media = nkm.style.URLImgs(`placeholder-dark.png`); },
+                error: (e) => { console.log(e); this.media = nkm.style.URLImgs(`placeholder-dark.png`); },
                 parallel: true
 
             });
