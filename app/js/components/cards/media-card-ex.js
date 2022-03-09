@@ -95,12 +95,11 @@ class MediaCardEx extends uilib.cards.Media {
         "#endif";
 
         "#if EXT";
-        console.log(p_data[this._mediaPropertyName]);
         nkm.io.Read(p_data[this._mediaPropertyName],
             { cl: nkm.io.resources.BlobResource },
             {
                 success: (p_rsc) => { this.media = p_rsc.objectURL; },
-                error: (e) => { console.log(e); this.media = nkm.style.URLImgs(`placeholder-dark.png`); },
+                error: (e) => { this.media = nkm.style.URLImgs(`placeholder-dark.png`); },
                 parallel: true
 
             });
