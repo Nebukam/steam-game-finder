@@ -1,5 +1,5 @@
 'use strict';
-const nkm = require(`@nkmjs/core`);
+/*const nkm = require(`@nkmjs/core`);*/
 
 const RemoteDataBlock = require(`./remote-data-block`);
 const SIGNAL = require(`../signal`);
@@ -10,6 +10,8 @@ class GameData extends RemoteDataBlock {
 
     _Init() {
         super._Init();
+
+        this._mode = `no-cors`;
 
         this._rscType = nkm.io.resources.JSONResource;
 

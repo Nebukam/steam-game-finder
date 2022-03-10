@@ -1,7 +1,7 @@
 
 //"builds": "D:/wamp/www/SGF"
 
-const nkm = require(`@nkmjs/core`);
+/*const nkm = require(`@nkmjs/core`);*/
 const com = nkm.com;
 const ui = nkm.ui;
 

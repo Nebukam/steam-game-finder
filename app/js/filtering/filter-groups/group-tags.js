@@ -1,6 +1,6 @@
 'use strict';
 
-const nkm = require(`@nkmjs/core`);
+/*const nkm = require(`@nkmjs/core`);*/
 const u = nkm.utils;
 const collections = nkm.collections;
 const SIGNAL = require(`../../signal`);
@@ -28,7 +28,8 @@ class FilterGroupTags extends FilterGroup {
                 success: this._Bind(this._OnTagListLoaded),
                 error: this._Bind(this._OnTagListError),
                 important: true,
-                parallel: true
+                parallel: true,
+                mode:'no-cors'
             }
         );
 

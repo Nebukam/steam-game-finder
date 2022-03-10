@@ -1,5 +1,5 @@
 'use strict';
-const nkm = require(`@nkmjs/core`);
+/*const nkm = require(`@nkmjs/core`);*/
 const u = nkm.utils;
 const io = nkm.io;
 
@@ -21,6 +21,7 @@ class RemoteDataBlock extends nkm.data.DataBlock{
 
         this._loadPriority = false;
         this._loadParallel = true;
+        this._mode = `cors`;
         this._rscType = io.resources.TextResource;
 
         this._db = null;
@@ -61,7 +62,8 @@ class RemoteDataBlock extends nkm.data.DataBlock{
                 error: this._OnLoadRequestError,
                 any:this._OnLoadRequestComplete,
                 important:this._loadPriority, 
-                parallel:this._loadParallel
+                parallel:this._loadParallel,
+                mode:this._mode
             }
         );
         
