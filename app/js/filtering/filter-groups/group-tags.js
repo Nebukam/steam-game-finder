@@ -1,6 +1,6 @@
 'use strict';
 
-/*const nkm = require(`@nkmjs/core`);*/
+const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const collections = nkm.collections;
 const SIGNAL = require(`../../signal`);

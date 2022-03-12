@@ -1,4 +1,4 @@
-/*const nkm = require(`@nkmjs/core`);*/
+const nkm = require(`@nkmjs/core`);
 const io = nkm.io;
 const u = nkm.utils;
 const ui = nkm.ui;

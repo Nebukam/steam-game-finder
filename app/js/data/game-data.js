@@ -1,5 +1,5 @@
 'use strict';
-/*const nkm = require(`@nkmjs/core`);*/
+const nkm = require(`@nkmjs/core`);
 
 const RemoteDataBlock = require(`./remote-data-block`);
 const SIGNAL = require(`../signal`);

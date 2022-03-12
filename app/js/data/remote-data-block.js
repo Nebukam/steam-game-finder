@@ -1,5 +1,5 @@
 'use strict';
-/*const nkm = require(`@nkmjs/core`);*/
+const nkm = require(`@nkmjs/core`);
 const u = nkm.utils;
 const io = nkm.io;
 

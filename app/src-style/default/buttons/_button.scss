@@ -32,11 +32,13 @@ $btnBorderRadius: 3px;
     background-color:rgba(0,0,0,0.5);
     border: none;
 
+    --flavor-color: rgba(0,0,0,0.1);
+
     --flavor-primary-disabled:rgba(0,0,0,0.1);
     --flavor-secondary-disabled:rgba(0,0,0,0.1);
     --flavor-contrast-disabled:rgba(0,0,0,0.5);
 
-    @include state-color-variations( rgba(50,50,50,0.65), rgba(140,140,140,0.5), 1, 0.8) 
+    @include state-color-variations( rgba(50,50,50,0.65), rgba(140,140,140,0.5), 0.65, 1) 
     using ( $index, $st, $p, $s, $c){
         #{'--flavor-primary-'+$st}: $p;
         #{'--flavor-secondary-'+$st}: $s;
@@ -48,6 +50,22 @@ $btnBorderRadius: 3px;
         background-color: var(--flavor-secondary-focused);
     }
 
+}
+
+:host(.inline){    
+    border-radius: 0;
+}
+
+:host(.inline:first-child){
+    border-radius: $btnBorderRadius 0 0 $btnBorderRadius;
+}
+
+:host(.inline:last-child){
+    border-radius: 0 $btnBorderRadius $btnBorderRadius 0;
+}
+
+:host(.inline:only-child){
+    border-radius: $btnBorderRadius;
 }
 
 // ----> States
@@ -62,7 +80,7 @@ $btnBorderRadius: 3px;
     }
 }
 
-$th: 4px;
+$th: 2px;
 
 :host(#{$FOCUSED}){
 
@@ -111,6 +129,17 @@ $th: 4px;
 
     top: auto;
     bottom: -$th*0.5; // Default state ~= top
+}
+
+:host(#{$TOGGLED}){
+    //backdrop-filter:brightness(0.65);
+    background-color: var(--flavor-primary-toggled);
+    //border-color: var(--flavor-secondary-toggled);
+    border-color: var(--flavor-color);
+
+    & .label{
+        color: var(--flavor-contrast-toggled);
+    }
 }
 
 // ----> Horizontal placement
@@ -174,7 +203,6 @@ $th: 4px;
 /* Base state : DISABLED */
 
 :host(#{$DISABLED}){
-    opacity:0.5;
 
     background-color: var(--flavor-primary-disabled);
     border-color: var(--flavor-secondary-disabled);
@@ -208,7 +236,7 @@ $pad2: $pad * 2;
     left:-#{$pad};
     width: calc(100% + #{$pad2});
     height: calc(100% + #{$pad2});
-    border-radius: $btnBorderRadius;
+    border-radius: inherit;
     overflow: hidden;
     opacity: 0.5;
 }
