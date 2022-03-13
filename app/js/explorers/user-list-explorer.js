@@ -99,7 +99,7 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
         
 
         this._infoCard = this.Add(uilib.cards.Icon, 'info-card', this._body);
-        this._infoCard._optionsHandler.Process(
+        this._infoCard._distribute.Update(
             this._infoCard,
             {
                 [`header-placement`]: ui.FLAGS.TOP,
