@@ -54,7 +54,7 @@ class GameCardEx extends GameCard {
         super._OnDataUpdated(p_data);
 
         if (this._lastActiveUserCount != p_data.activeUserCount) {
-            this._Broadcast(SIGNAL.INFOS_UPDATED, this);
+            this.Broadcast(SIGNAL.INFOS_UPDATED, this);
             this._lastActiveUserCount = p_data.activeUserCount;
             this._mainView._MoveToGroup(this, p_data.activeUserCount);
         }

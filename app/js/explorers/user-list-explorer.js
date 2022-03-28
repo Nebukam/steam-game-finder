@@ -72,25 +72,25 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
 
         super._Render();
 
-        this.Add(comps.UserInputField, `user-input-field`, this._header);
+        this.Attach(comps.UserInputField, `user-input-field`, this._header);
 
         /*
         for(let i = 0; i < 13; i++){
-            let card = this.Add(comps.cards.UserCard, `user-card`);
+            let card = this.Attach(comps.cards.UserCard, `user-card`);
             card.title = "Gamertag";
             card.subtitle = "Private profile";
             card.label = "{xxx} games in library";
         }
         */
 
-        this._refreshAllBtn = this.Add(uilib.buttons.Button, 'btn', this._footer);
+        this._refreshAllBtn = this.Attach(uilib.buttons.Button, 'btn', this._footer);
         this._refreshAllBtn.options = {
             [ui.IDS.LABEL]: `Reload all profiles`,
             variant:ui.FLAGS.FRAME,
             trigger:{fn:this._Bind(this._ReloadAll)}
         }
 
-        this._copyBtn = this.Add(uilib.buttons.Button, 'btn', this._footer);
+        this._copyBtn = this.Attach(uilib.buttons.Button, 'btn', this._footer);
         this._copyBtn.options = {
             [ui.IDS.LABEL]: `Copy to clipboard`,
             trigger:{fn:this._Bind(this._CopyUsersToClipboard)}
@@ -98,7 +98,7 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
 
         
 
-        this._infoCard = this.Add(uilib.cards.Icon, 'info-card', this._body);
+        this._infoCard = this.Attach(uilib.cards.Icon, 'info-card', this._body);
         this._infoCard._distribute.Update(
             this._infoCard,
             {
@@ -118,7 +118,7 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
     _OnUserAdded(p_user) {
         var ctrl = this._usermap.Get(p_user);
         if (ctrl) { return; }
-        ctrl = this.Add(comps.cards.UserCard, `user-card`);
+        ctrl = this.Attach(comps.cards.UserCard, `user-card`);
         ctrl.data = p_user;
         ctrl._friendsCallback = this._friendsCallback;
         this._usermap.Set(p_user, ctrl);

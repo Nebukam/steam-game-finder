@@ -10,12 +10,12 @@
     "license": "none",
     "private": true,
     "dependencies": {
-        "@nkmjs/core": "^0.1.37"
+        "@nkmjs/core": "../nkmjs/packages/nkmjs-core"
     },
     "scripts": {
         "nkmjs": "nkmjs"
     },
     "devDependencies": {
-        "@nkmjs/core-dev": "^0.1.47"
+        "@nkmjs/core-dev": "../nkmjs/packages/nkmjs-core-dev"
     }
 }

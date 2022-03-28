@@ -52,7 +52,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
     }
 
     _OnGameUpdated(p_game) {
-        this._Broadcast(SIGNAL.GAME_UPDATED, p_game);
+        this.Broadcast(SIGNAL.GAME_UPDATED, p_game);
     }
 
     _OnGameStateChanged(p_game, p_state) {
@@ -61,7 +61,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
 
             if (!this._applist.includes(p_game)) {
                 this._applist.push(p_game);
-                this._Broadcast(SIGNAL.GAME_ADDED, p_game);
+                this.Broadcast(SIGNAL.GAME_ADDED, p_game);
                 p_game.Watch(nkm.com.SIGNAL.UPDATED, this._OnGameUpdated, this);
 
                 this._delayedSort.Schedule();
@@ -74,7 +74,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
     _OnGameReleased(p_game) {
         this._gameMap.Remove(p_game.appid);
         this._applist.splice(this._applist.indexOf(p_game), 1);
-        this._Broadcast(SIGNAL.GAME_REMOVED, p_game);
+        this.Broadcast(SIGNAL.GAME_REMOVED, p_game);
     }
 
     _SortGames() {
@@ -123,7 +123,7 @@ class Database extends nkm.com.pool.DisposableObjectEx {
             user.active = p_active;
             user._db = this;
             this._userMap.Set(p_userID, user);
-            this._Broadcast(SIGNAL.USER_ADDED, user);
+            this.Broadcast(SIGNAL.USER_ADDED, user);
             user.Watch(nkm.com.SIGNAL.UPDATED, this._OnUserUpdate, this);
             user.RequestLoad();
 
@@ -146,10 +146,10 @@ class Database extends nkm.com.pool.DisposableObjectEx {
 
         if (this._userReadyList.Contains(p_user)) {
             this._userReadyList.Remove(p_user);
-            this._Broadcast(SIGNAL.USER_READY_REMOVED, p_user);
+            this.Broadcast(SIGNAL.USER_READY_REMOVED, p_user);
         }
 
-        this._Broadcast(SIGNAL.USER_REMOVED, p_user);
+        this.Broadcast(SIGNAL.USER_REMOVED, p_user);
         this._UpdateStoredUserlist();
     }
 
@@ -160,17 +160,17 @@ class Database extends nkm.com.pool.DisposableObjectEx {
             if (p_user.gamesCount > 0 && p_user.active) {
                 if (!this._userReadyList.Contains(p_user)) {
                     this._userReadyList.Add(p_user);
-                    this._Broadcast(SIGNAL.USER_READY_ADDED, p_user);
+                    this.Broadcast(SIGNAL.USER_READY_ADDED, p_user);
                 }
             } else {
                 if (this._userReadyList.Contains(p_user)) {
                     this._userReadyList.Remove(p_user);
                     console.log(`User ready removed`);
-                    this._Broadcast(SIGNAL.USER_READY_REMOVED, p_user);
+                    this.Broadcast(SIGNAL.USER_READY_REMOVED, p_user);
                 }
             }
 
-            this._Broadcast(SIGNAL.USER_UPDATED, p_user);
+            this.Broadcast(SIGNAL.USER_UPDATED, p_user);
             this._UpdateStoredUserlist();
 
         } else if (p_user.state == RemoteDataBlock.STATE_INVALID

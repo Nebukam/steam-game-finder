@@ -70,7 +70,7 @@ class GameData extends RemoteDataBlock {
         this._delayedInfoUpdate.Schedule();
     }
 
-    _DispatchInfosUpdate(){ this._Broadcast(SIGNAL.INFOS_UPDATED, this); }
+    _DispatchInfosUpdate(){ this.Broadcast(SIGNAL.INFOS_UPDATED, this); }
 
     get usercount() { return this._users.length; }
 

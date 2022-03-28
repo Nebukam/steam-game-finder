@@ -151,7 +151,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
         label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `title` }, this._body));
         label.Set(`Co-optimus`); this._labelCoopFilters = label;
 
-        let cooptimusLink = this.Add(uilib.buttons.Tool, `btn`, label.element);
+        let cooptimusLink = this.Attach(uilib.buttons.Tool, `btn`, label.element);
         cooptimusLink.options = {
             trigger: { fn: () => { window.open('https://www.co-optimus.com/', '_blank'); } },
             flavor: com.FLAGS.INFOS, variant: ui.FLAGS.MINIMAL, icon: 'infos', size: ui.FLAGS.SIZE_XS,
@@ -216,7 +216,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
     }
 
     _AddToggle(p_enum, p_ctnr, p_extracss = ``) {
-        let toggle = this.Add(comps.filters.FilterWidget, `filter-item${p_extracss}`, (p_ctnr || this._body));
+        let toggle = this.Attach(comps.filters.FilterWidget, `filter-item${p_extracss}`, (p_ctnr || this._body));
         toggle.size = ui.FLAGS.SIZE_XS;
         toggle.sourceEnum = p_enum;
         toggle._flavor.Set(nkm.com.FLAGS.WARNING);
@@ -236,7 +236,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
 
         this._GroupLabel(p_enum.group, p_parent);
 
-        let toggle = this.Add(type, classes, p_parent);
+        let toggle = this.Attach(type, classes, p_parent);
 
         toggle.size = ui.FLAGS.SIZE_XS;
         toggle.sourceEnum = p_enum;

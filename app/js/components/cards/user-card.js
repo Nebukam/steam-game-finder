@@ -75,7 +75,7 @@ class UserCard extends MediaCardEx {
     _Render() {
         super._Render();
         this._frame[ui.IDS.TITLE].ellipsis = true;
-        this._deleteBtn = this.Add(uilib.buttons.Tool, `btn-delete`);
+        this._deleteBtn = this.Attach(uilib.buttons.Tool, `btn-delete`);
         this._deleteBtn.options = {
             htitle: `Delete`, icon: 'close-small',
             trigger: { fn: this._Bind(this._DeleteUserEntry) },

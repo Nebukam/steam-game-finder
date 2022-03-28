@@ -60,9 +60,9 @@ class SliderFilterWidget extends ui.Widget {
     _Render() {
         super._Render();
 
-        this._toggle = this.Add(uilib.inputs.Boolean, `toggle`, this);
+        this._toggle = this.Attach(uilib.inputs.Boolean, `toggle`, this);
         this._toggle.size = ui.FLAGS.SIZE_XS;
-        this._selector = this.Add(uilib.inputs.SliderOnly, `slider`, this);
+        this._selector = this.Attach(uilib.inputs.SliderOnly, `slider`, this);
         this._selector.size = ui.FLAGS.SIZE_XS;
         //this._label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `label-value` }, this));
 

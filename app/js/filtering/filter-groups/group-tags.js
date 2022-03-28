@@ -54,7 +54,7 @@ class FilterGroupTags extends FilterGroup {
             this._Add({ key: tag, flag: flag, id: tag, isTag: true, isUsed: false });
         }
 
-        this._Broadcast(nkm.com.SIGNAL.READY, this);
+        this.Broadcast(nkm.com.SIGNAL.READY, this);
 
     }
 

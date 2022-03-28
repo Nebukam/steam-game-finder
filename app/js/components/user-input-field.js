@@ -30,11 +30,11 @@ class UserInputField extends ui.DisplayObjectContainer {
     _Render(){
         super._Render();
 
-        this._inputField = this.Add(uilib.inputs.Text, `field-id`);
+        this._inputField = this.Attach(uilib.inputs.Text, `field-id`);
         this._inputField.placeholderValue = `Profile name, url, ...`;
         this._inputField.handler.Watch(ui.inputs.SIGNAL.VALUE_SUBMITTED, this._OnInputSubmit, this);
 
-        this._submitBtn = this.Add(uilib.buttons.Tool, 'btn-add');
+        this._submitBtn = this.Attach(uilib.buttons.Tool, 'btn-add');
         this._submitBtn.options = {
             [ui.IDS.FLAVOR] : ui.FLAGS.CTA,
             //[ui.IDS.VARIANT] : ui.FLAGS.FRAME,

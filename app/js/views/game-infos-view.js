@@ -92,7 +92,7 @@ class GameInfosView extends uilib.overlays.Drawer {
         this._header = ui.dom.El('div', { class: 'header' }, this._body);
         this._cardCtnr = ui.dom.El('div', { class: 'card-ctnr' }, this._body);
 
-        this._infoCard = this.Add(uilib.cards.Icon, 'info-card', this._body);
+        this._infoCard = this.Attach(uilib.cards.Icon, 'info-card', this._body);
         this._infoCard._mediaPlacement.Set(ui.FLAGS.TOP);        
 
 
@@ -101,19 +101,19 @@ class GameInfosView extends uilib.overlays.Drawer {
         this._discount = new ui.manipulators.Text(ui.dom.El(`div`, { class: `discount title font-large boxitem` }, this._pricingBox));
         this._price = new ui.manipulators.Text(ui.dom.El(`div`, { class: `price title font-xlarge boxitem` }, this._pricingBox));
 
-        this._openInSteam = this.Add(uilib.buttons.Button, `open-in-steam boxitem`, this._body);
+        this._openInSteam = this.Attach(uilib.buttons.Button, `open-in-steam boxitem`, this._body);
         this._openInSteam.options = {
             label:`Open store page in Steam`, flavor:ui.FLAGS.CTA,
             trigger:{fn:()=>{ window.open(`steam://store/${this._appid}`); }}
         };
 
-        this._openInBrowser = this.Add(uilib.buttons.Button, `open-in-steam boxitem`, this._body);
+        this._openInBrowser = this.Attach(uilib.buttons.Button, `open-in-steam boxitem`, this._body);
         this._openInBrowser.options = {
             label:`Open store page in Browser`, variant:ui.FLAGS.FRAME,
             trigger:{fn:()=>{ window.open(`https://store.steampowered.com/app/${this._appid}`, '_blank'); }}
         };
 
-        //this._input = this.Add(comps.UserInputField, `input-field`, this._body);
+        //this._input = this.Attach(comps.UserInputField, `input-field`, this._body);
     }
 
     _OnDataChanged(p_oldData) {

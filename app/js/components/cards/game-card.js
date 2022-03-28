@@ -59,11 +59,11 @@ class GameCard extends MediaCardEx {
 
         this._tagsCtnr = ui.El(`div`, { class: `tags` }, this._frame.header.element);
 
-        this._tagDiskSize = this.Add(uilib.widgets.Tag, `tag disk-size`, this._tagsCtnr);
+        this._tagDiskSize = this.Attach(uilib.widgets.Tag, `tag disk-size`, this._tagsCtnr);
         //this._tagDiskSize.visible = false;
         this._tagDiskSize.label = `50 GB`;
 
-        this._tagDLC = this.Add(uilib.widgets.Tag, `tag dlc`, this._tagsCtnr);
+        this._tagDLC = this.Attach(uilib.widgets.Tag, `tag dlc`, this._tagsCtnr);
         this._tagDLC.visible = false;
         this._tagDLC.flavor = nkm.com.FLAGS.INFOS;
         this._tagDLC.label = `DLC`;

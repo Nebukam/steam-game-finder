@@ -59,10 +59,10 @@ class SearchResultView extends uilib.overlays.Drawer {
         this._header = ui.dom.El('div', { class: 'header' }, this._body);
         this._cardCtnr = ui.dom.El('div', { class: 'card-ctnr' }, this._body);
 
-        this._infoCard = this.Add(uilib.cards.Icon, 'info-card', this._body);
+        this._infoCard = this.Attach(uilib.cards.Icon, 'info-card', this._body);
         this._infoCard._mediaPlacement.Set(ui.FLAGS.TOP);
 
-        //this._input = this.Add(comps.UserInputField, `input-field`, this._body);
+        //this._input = this.Attach(comps.UserInputField, `input-field`, this._body);
     }
 
     _OnDataChanged(p_oldData) {

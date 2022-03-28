@@ -61,7 +61,7 @@ class FriendsListView extends uilib.overlays.Drawer {
         this._header = ui.dom.El('div', { class: 'header' }, this._body);
         this._cardCtnr = ui.dom.El('div', { class: 'card-ctnr' }, this._body);
 
-        this._infoCard = this.Add(uilib.cards.Icon, 'info-card', this._body);
+        this._infoCard = this.Attach(uilib.cards.Icon, 'info-card', this._body);
         this._infoCard._mediaPlacement.Set(ui.FLAGS.TOP);
     }
 
@@ -109,7 +109,7 @@ class FriendsListView extends uilib.overlays.Drawer {
                 friend._avatarURL = profileAvatar;
                 friend.existingUser = nkm.env.APP.database.FindUser(profileID64);
                 
-                let card = this.Add(comps.cards.FriendCard, `user-card`, this._cardCtnr);
+                let card = this.Attach(comps.cards.FriendCard, `user-card`, this._cardCtnr);
                 card.data = friend;
 
                 this._friendlist.push(card);

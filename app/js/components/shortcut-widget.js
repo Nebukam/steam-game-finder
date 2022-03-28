@@ -36,7 +36,7 @@ class ShortcutWidget extends ui.Widget {
     _Render(){
         super._Render();
 
-        this._btn = this.Add(uilib.buttons.Button, 'btn-add');
+        this._btn = this.Attach(uilib.buttons.Button, 'btn-add');
         this._btn.options = {
             //[ui.IDS.FLAVOR] : ui.FLAGS.CTA,
             [ui.IDS.VARIANT] : ui.FLAGS.FRAME,

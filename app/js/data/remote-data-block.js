@@ -39,7 +39,7 @@ class RemoteDataBlock extends nkm.data.DataBlock{
         if(p_state == this._state){return;}
         let oldState = this._state;
         this._state = p_state;        
-        this._Broadcast(SIGNAL.STATE_CHANGED, this, p_state, oldState);
+        this.Broadcast(SIGNAL.STATE_CHANGED, this, p_state, oldState);
         this.CommitUpdate();
     }
 

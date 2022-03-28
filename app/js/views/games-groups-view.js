@@ -107,7 +107,7 @@ class GamesGroupsView extends ui.views.View {
 
         //this._header = ui.dom.El('div', { class: 'header' }, this);
 
-        //this._infoCard = this.Add(comps.cards.InfoCard, 'info-card', this._header);
+        //this._infoCard = this.Attach(comps.cards.InfoCard, 'info-card', this._header);
 
     }
 
@@ -122,7 +122,7 @@ class GamesGroupsView extends ui.views.View {
 
         if (ctrl) { return; }
 
-        ctrl = this.Add(comps.cards.GameCardEx, `game-card`, this._appCtrlPool);
+        ctrl = this.Attach(comps.cards.GameCardEx, `game-card`, this._appCtrlPool);
 
         this._appmap.Set(p_app, ctrl);
         this._appctrls.push(ctrl);
@@ -160,12 +160,12 @@ class GamesGroupsView extends ui.views.View {
     }
 
     _OnUserAdded(p_user) {
-        let group = this.Add(comps.GamesGroup, `group`, this._cardCtnr);
+        let group = this.Attach(comps.GamesGroup, `group`, this._cardCtnr);
         group.index = this._groups.length;
         group.mainView = this;
         this._groups.push(group);
 
-        let shortcut = this.Add(comps.ShortcutWidget, `shortcut`, this._shortcutCtnr);
+        let shortcut = this.Attach(comps.ShortcutWidget, `shortcut`, this._shortcutCtnr);
         shortcut.index = this._shortcuts.length;
         shortcut.mainView = this;
         this._shortcuts.push(shortcut);
@@ -188,7 +188,7 @@ class GamesGroupsView extends ui.views.View {
     }
 
     _ReturnGame(p_appCtrl) {
-        this.Add(p_appCtrl, `game-card`, this._appCtrlPool);
+        this.Attach(p_appCtrl, `game-card`, this._appCtrlPool);
         if (p_appCtrl.group) { p_appCtrl.group.RemoveGame(p_appCtrl); }
     }
 

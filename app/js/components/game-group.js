@@ -120,7 +120,7 @@ class GamesGroup extends ui.Widget {
 
     AddGame(p_game) {
         this._gamelist.Add(p_game);
-        this.Add(p_game, `game-card`, this._groupBody);
+        this.Attach(p_game, `game-card`, this._groupBody);
         if (p_game.group) { p_game.group.RemoveGame(p_game); }
         p_game.group = this;
         p_game.order = this._offsetOrder++;

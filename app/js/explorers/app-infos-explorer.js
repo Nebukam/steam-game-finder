@@ -63,7 +63,7 @@ class AppInfosExplorer extends nkm.uiworkspace.Explorer {
 
         super._Render();
 
-        this._infoCard = this.Add(uilib.cards.Icon, 'info-card', this._body);
+        this._infoCard = this.Attach(uilib.cards.Icon, 'info-card', this._body);
         this._infoCard._mediaPlacement.Set(ui.FLAGS.TOP);
 
         this._infoCard.icon = `infos`;

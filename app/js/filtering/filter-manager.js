@@ -125,7 +125,7 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
             }
         }
 
-        this._Broadcast(nkm.com.SIGNAL.UPDATED, this);
+        this.Broadcast(nkm.com.SIGNAL.UPDATED, this);
 
     }
 
@@ -175,7 +175,7 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
 
         }
 
-        this._Broadcast(nkm.com.SIGNAL.UPDATED, this);
+        this.Broadcast(nkm.com.SIGNAL.UPDATED, this);
 
     }
 
@@ -198,7 +198,7 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
             p_app.passFilters = false;
         }
 
-        this._Broadcast(nkm.com.SIGNAL.UPDATED, this);
+        this.Broadcast(nkm.com.SIGNAL.UPDATED, this);
 
     }
 
@@ -248,7 +248,7 @@ class FilterManager extends nkm.com.pool.DisposableObjectEx {
             let isUsed = tempTagList.includes(filter.id);
             //if (filter.isUsed != isUsed) {
                 filter.isUsed = isUsed;
-                this._Broadcast(DATA_SIGNAL.TAG_UPDATED, filter);
+                this.Broadcast(DATA_SIGNAL.TAG_UPDATED, filter);
             //}
         }
 

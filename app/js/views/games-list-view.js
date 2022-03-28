@@ -79,7 +79,7 @@ class GamesListView extends ui.views.View {
         this._cardCtnr = ui.dom.El('div', { class:'card-ctnr' }, this);
         this._header = ui.dom.El('div', { class:'header' }, this);        
 
-        this._infoCard = this.Add(comps.cards.InfoCard, 'info-card', this._header);
+        this._infoCard = this.Attach(comps.cards.InfoCard, 'info-card', this._header);
 
         this._OnDisplayTypeChanged(nkm.env.displayType, null);
 
@@ -94,7 +94,7 @@ class GamesListView extends ui.views.View {
     _AddApp(p_app){
         var ctrl = this._appmap.Get(p_app);
         if(ctrl){return;}
-        ctrl = this.Add(comps.cards.GameCard, `game-card`, this._cardCtnr);
+        ctrl = this.Attach(comps.cards.GameCard, `game-card`, this._cardCtnr);
         ctrl.data = p_app;
         this._appmap.Set(p_app, ctrl);
         this._appctrls.push(ctrl);
