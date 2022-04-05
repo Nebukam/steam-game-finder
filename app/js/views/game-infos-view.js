@@ -1,6 +1,6 @@
 const nkm = require(`@nkmjs/core`);
 const io = nkm.io;
-const u = nkm.utils;
+const u = nkm.u;
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 

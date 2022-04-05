@@ -1,7 +1,7 @@
 'use strict';
 
 const nkm = require(`@nkmjs/core`);
-const u = nkm.utils;
+const u = nkm.u;
 const collections = nkm.collections;
 
 class FilterGroup extends nkm.com.pool.DisposableObjectEx {

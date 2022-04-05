@@ -1,7 +1,7 @@
 'use strict';
 
 const nkm = require(`@nkmjs/core`);
-const u = nkm.utils;
+const u = nkm.u;
 const collections = nkm.collections;
 const filters = require(`./filter-groups`);
 const DATA_SIGNAL = require(`../signal`);
