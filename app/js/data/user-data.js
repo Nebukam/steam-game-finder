@@ -211,7 +211,7 @@ class UserData extends RemoteDataBlock {
             try {
                 gamelist = JSON.parse(`${sourceSplit}]`);
             } catch (e) {
-                console.log(`${sourceSplit}]`);
+                console.error(`${sourceSplit}]`);
             }
 
             for (var i = 0; i < gamelist.length; i++) {

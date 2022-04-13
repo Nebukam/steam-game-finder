@@ -7,7 +7,7 @@ const _flag_noProfile = 'no-profile';
 class SearchCard extends uilib.cards.Media {
     constructor() { super(); }
 
-    static __default_headerPlacement = ui.FLAGS.LEFT;
+    static __defaultHeaderPlacement = ui.FLAGS.LEFT;
 
     _Init() {
         super._Init();

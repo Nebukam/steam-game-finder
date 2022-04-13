@@ -11,7 +11,7 @@ const _flag_dlc = 'dlc';
 class GameCard extends MediaCardEx {
     constructor() { super(); }
 
-    static __default_headerPlacement = ui.FLAGS.TOP;
+    static __defaultHeaderPlacement = ui.FLAGS.TOP;
 
     _Init() {
         super._Init();

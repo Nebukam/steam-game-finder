@@ -10,7 +10,7 @@ const _flag_noProfile = 'no-profile';
 class UserCard extends MediaCardEx {
     constructor() { super(); }
 
-    static __default_headerPlacement = ui.FLAGS.LEFT;
+    static __defaultHeaderPlacement = ui.FLAGS.LEFT;
 
     _Init() {
         super._Init();
@@ -154,7 +154,7 @@ class UserCard extends MediaCardEx {
 
                 break;
             case RemoteDataBlock.STATE_INVALID:
-                console.log(data);
+                //console.log(data);
                 if (data._privacy == `friendsonly`) {
                     subtitle = `Only visible to his friends.`;
                     flavor = nkm.com.FLAGS.ERROR;

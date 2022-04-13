@@ -49,12 +49,6 @@ class FriendsListView extends uilib.overlays.Drawer {
         }, super._Style());
     }
 
-    _Cleanup() {
-        super._Cleanup();
-        console.log(`Cleanup !`);
-    }
-
-
     _Render() {
         super._Render();
 

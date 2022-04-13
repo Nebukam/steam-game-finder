@@ -195,7 +195,6 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
 
     _OnTagLoaded(){
         
-        console.log(`_OnTagLoaded`);
         let filters = nkm.env.APP.filters;
 
         let label = new ui.manipulators.Text(ui.dom.El(`div`, { class: `title` }, this._body));

@@ -17,7 +17,7 @@ class GamesGroupsView extends ui.views.View {
         this._appCtrlPool;
 
         this._groups = new Array();
-        this._shortcuts = new Array();
+        this._shortcutWidgets = new Array();
 
         nkm.env.APP.database.Watch(SIGNAL.USER_READY_ADDED, this._OnUserAdded, this);
         nkm.env.APP.database.Watch(SIGNAL.USER_READY_REMOVED, this._OnUserRemoved, this);
@@ -166,15 +166,15 @@ class GamesGroupsView extends ui.views.View {
         this._groups.push(group);
 
         let shortcut = this.Attach(comps.ShortcutWidget, `shortcut`, this._shortcutCtnr);
-        shortcut.index = this._shortcuts.length;
+        shortcut.index = this._shortcutWidgets.length;
         shortcut.mainView = this;
-        this._shortcuts.push(shortcut);
+        this._shortcutWidgets.push(shortcut);
     }
 
     _OnUserRemoved(p_user) {
         let group = this._groups.pop();
         group.Release();
-        let shortcut = this._shortcuts.pop();
+        let shortcut = this._shortcutWidgets.pop();
         shortcut.Release();
     }
 

@@ -9,7 +9,7 @@ const GameCard = require(`./game-card`);
 class GameCardEx extends GameCard {
     constructor() { super(); }
 
-    static __default_headerPlacement = ui.FLAGS.LEFT;
+    static __defaultHeaderPlacement = ui.FLAGS.LEFT;
 
     _Init() {
         super._Init();

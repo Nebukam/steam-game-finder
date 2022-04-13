@@ -80,12 +80,6 @@ class GameInfosView extends uilib.overlays.Drawer {
         }, super._Style());
     }
 
-    _Cleanup() {
-        super._Cleanup();
-        console.log(`Cleanup !`);
-    }
-
-
     _Render() {
         super._Render();
 
@@ -155,7 +149,6 @@ class GameInfosView extends uilib.overlays.Drawer {
     }
 
     _OnStoreRequestSuccess(p_rsc) {
-        console.log(`_OnStoreRequestSuccess`, p_rsc);
 
         // Retrieve price data
         try {
@@ -179,7 +172,7 @@ class GameInfosView extends uilib.overlays.Drawer {
             this._infoCard.visible = false;
 
         } catch (e) {
-            console.log(p_rsc.content);
+            console.error(p_rsc.content);
             this._OnStoreRequestError(e);
         }
 
