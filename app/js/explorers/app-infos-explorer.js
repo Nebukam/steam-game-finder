@@ -7,14 +7,15 @@ const SIGNAL = require(`../signal`);
 
 const RemoteDataBlock = require(`../data/remote-data-block`);
 
-class AppInfosExplorer extends nkm.uiworkspace.Explorer {
+const base = nkm.uiworkspace.Explorer;
+class AppInfosExplorer extends base {
     constructor() { super(); }
 
     _Init() {
         super._Init();
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'max-width': '325px',
@@ -56,7 +57,7 @@ class AppInfosExplorer extends nkm.uiworkspace.Explorer {
             }
 
 
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

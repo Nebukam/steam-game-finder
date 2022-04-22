@@ -9,7 +9,8 @@ const SearchData = require(`../data/search-data`);
 
 const _flag_showPricing = `show-pricing`;
 
-class GameInfosView extends uilib.overlays.Drawer {
+const base = uilib.overlays.Drawer;
+class GameInfosView extends base {
     constructor() { super(); }
 
     _Init() {
@@ -27,7 +28,7 @@ class GameInfosView extends uilib.overlays.Drawer {
 
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'width': '350px',
@@ -77,7 +78,7 @@ class GameInfosView extends uilib.overlays.Drawer {
                 'text-align': 'center',
                 'color': 'var(--col-ready)'
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

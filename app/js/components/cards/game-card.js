@@ -8,7 +8,8 @@ const MediaCardEx = require(`./media-card-ex`);
 
 const _flag_dlc = 'dlc';
 
-class GameCard extends MediaCardEx {
+const base = MediaCardEx;
+class GameCard extends base {
     constructor() { super(); }
 
     static __defaultHeaderPlacement = ui.FLAGS.TOP;
@@ -18,7 +19,7 @@ class GameCard extends MediaCardEx {
         this._mediaPropertyName = `logo`;
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'cursor': 'pointer',
@@ -50,7 +51,7 @@ class GameCard extends MediaCardEx {
                 'display': 'flex',
                 'flex-flow': 'column nowrap',
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

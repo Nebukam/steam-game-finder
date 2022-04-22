@@ -6,7 +6,8 @@ const uilib = nkm.uilib;
 const comps = require(`../components`);
 const SearchData = require(`../data/search-data`);
 
-class SearchResultView extends uilib.overlays.Drawer {
+const base = uilib.overlays.Drawer;
+class SearchResultView extends base {
     constructor() { super(); }
 
     _Init() {
@@ -14,7 +15,7 @@ class SearchResultView extends uilib.overlays.Drawer {
         this._searchResults = new Array();
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'width': '350px',
@@ -44,7 +45,7 @@ class SearchResultView extends uilib.overlays.Drawer {
                 'margin': '4px',
                 '--size':'100%'
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

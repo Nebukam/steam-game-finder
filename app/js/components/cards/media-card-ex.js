@@ -8,7 +8,8 @@ const SIGNAL = require(`../../signal`);
 const _flag_dlc = 'dlc';
 const domparser = new DOMParser();
 
-class MediaCardEx extends uilib.cards.Media {
+const base = uilib.cards.Media;
+class MediaCardEx extends base {
     constructor() { super(); }
 
     static __usePaintCallback = true;

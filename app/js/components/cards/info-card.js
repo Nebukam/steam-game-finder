@@ -2,7 +2,9 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-class InfoCard extends uilib.cards.Icon {
+const base = uilib.cards.Icon;
+
+class InfoCard extends base {
     constructor() { super(); }
 
     static __usePaintCallback = true;
@@ -12,13 +14,13 @@ class InfoCard extends uilib.cards.Icon {
         nkm.env.APP.filters.Watch(nkm.com.SIGNAL.UPDATED, this._OnFiltersUpdated, this);
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 //'backdrop-filter':'blur(10px)',
                 //'background-color':'rgba(0,0,0,0.5)'
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

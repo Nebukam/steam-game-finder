@@ -3,7 +3,8 @@ const com = nkm.com;
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-class SliderFilterWidget extends ui.Widget {
+const base = ui.Widget;
+class SliderFilterWidget extends base {
     constructor() { super(); }
 
     _Init() {
@@ -18,7 +19,7 @@ class SliderFilterWidget extends ui.Widget {
         this._flags.Add(this, `checked`);
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'transition': 'opacity 0.5s',
@@ -54,7 +55,7 @@ class SliderFilterWidget extends ui.Widget {
                 //'font-weight': '900',
 
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

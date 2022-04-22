@@ -7,7 +7,8 @@ const MediaCardEx = require(`./media-card-ex`);
 
 const _flag_noProfile = 'no-profile';
 
-class UserCard extends MediaCardEx {
+const base = MediaCardEx;
+class UserCard extends base {
     constructor() { super(); }
 
     static __defaultHeaderPlacement = ui.FLAGS.LEFT;
@@ -35,7 +36,7 @@ class UserCard extends MediaCardEx {
     }
 
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 '--currentOpacity': 1,
@@ -69,7 +70,7 @@ class UserCard extends MediaCardEx {
                 'right': '18px',
                 '--size': 'var(--size-xs)'
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

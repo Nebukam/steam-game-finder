@@ -5,7 +5,8 @@ const ui = nkm.ui;
 const comps = require(`../components`);
 const SIGNAL = require(`../signal`);
 
-class GamesListView extends ui.views.View {
+const base = ui.views.View;
+class GamesListView extends base {
     constructor() { super(); }
 
     _Init() {
@@ -33,7 +34,7 @@ class GamesListView extends ui.views.View {
         }
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'display':'flex',
@@ -69,7 +70,7 @@ class GamesListView extends ui.views.View {
                 'flex':'1 0 auto',
                 'margin':'4px'
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render(){

@@ -6,7 +6,8 @@ const RemoteDataBlock = require(`../../data/remote-data-block`);
 const SIGNAL = require(`../../signal`);
 const GameCard = require(`./game-card`);
 
-class GameCardEx extends GameCard {
+const base = GameCard;
+class GameCardEx extends base {
     constructor() { super(); }
 
     static __defaultHeaderPlacement = ui.FLAGS.LEFT;
@@ -28,7 +29,7 @@ class GameCardEx extends GameCard {
         if (this._group) { this._group.AddGame(this); }
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'cursor': 'pointer',
@@ -43,7 +44,7 @@ class GameCardEx extends GameCard {
                 'opacity': '0.5',
                 'color': 'var(--col-warning)'
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

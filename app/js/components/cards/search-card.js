@@ -4,7 +4,9 @@ const uilib = nkm.uilib;
 
 const _flag_noProfile = 'no-profile';
 
-class SearchCard extends uilib.cards.Media {
+const base = uilib.cards.Media;
+
+class SearchCard extends base {
     constructor() { super(); }
 
     static __defaultHeaderPlacement = ui.FLAGS.LEFT;
@@ -21,7 +23,7 @@ class SearchCard extends uilib.cards.Media {
         this._flags.Add(this, _flag_noProfile);
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'cursor':'pointer',
@@ -55,7 +57,7 @@ class SearchCard extends uilib.cards.Media {
                 'right': '18px',
                 '--size': 'var(--size-xs)'
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

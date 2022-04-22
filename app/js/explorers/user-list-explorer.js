@@ -7,7 +7,8 @@ const SIGNAL = require(`../signal`);
 
 const RemoteDataBlock = require(`../data/remote-data-block`);
 
-class UserListExplorer extends nkm.uiworkspace.Explorer {
+const base = nkm.uiworkspace.Explorer;
+class UserListExplorer extends base {
     constructor() { super(); }
 
     _Init() {
@@ -34,7 +35,7 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
         }
     }
 */
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'max-width': '325px',
@@ -65,7 +66,7 @@ class UserListExplorer extends nkm.uiworkspace.Explorer {
             }
 
 
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

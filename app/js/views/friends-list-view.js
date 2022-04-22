@@ -6,7 +6,8 @@ const uilib = nkm.uilib;
 const comps = require(`../components`);
 const FriendData = require(`../data/friend-data`);
 
-class FriendsListView extends uilib.overlays.Drawer {
+const base = uilib.overlays.Drawer;
+class FriendsListView extends base {
     constructor() { super(); }
 
     _Init() {
@@ -16,7 +17,7 @@ class FriendsListView extends uilib.overlays.Drawer {
         this._friendlist = new Array();
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'min-width': '350px',
@@ -46,7 +47,7 @@ class FriendsListView extends uilib.overlays.Drawer {
                 'margin': '4px',
                 '--size':'100%'                
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

@@ -2,7 +2,8 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-class ShortcutWidget extends ui.Widget {
+const base = ui.Widget;
+class ShortcutWidget extends base {
     constructor() { super(); }
 
     _Init(){
@@ -10,7 +11,7 @@ class ShortcutWidget extends ui.Widget {
 
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'display':'flex',
@@ -30,7 +31,7 @@ class ShortcutWidget extends ui.Widget {
             }
 
 
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render(){

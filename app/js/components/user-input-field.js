@@ -2,7 +2,8 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-class UserInputField extends ui.DisplayObjectContainer {
+const base = ui.DisplayObjectContainer;
+class UserInputField extends base {
     constructor() { super(); }
 
     _Init(){
@@ -10,7 +11,7 @@ class UserInputField extends ui.DisplayObjectContainer {
 
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'display':'flex',
@@ -24,7 +25,7 @@ class UserInputField extends ui.DisplayObjectContainer {
             }
 
 
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render(){

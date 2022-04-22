@@ -2,7 +2,8 @@ const nkm = require(`@nkmjs/core`);
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-class GamesGroup extends ui.Widget {
+const base = ui.Widget;
+class GamesGroup extends base {
     constructor() { super(); }
 
     static __usePaintCallback = true;
@@ -30,7 +31,7 @@ class GamesGroup extends ui.Widget {
         this._mainView = p_value;
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'position': 'relative',
@@ -89,7 +90,7 @@ class GamesGroup extends ui.Widget {
             }
 
 
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

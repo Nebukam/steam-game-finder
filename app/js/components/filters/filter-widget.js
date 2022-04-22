@@ -3,7 +3,8 @@ const com = nkm.com;
 const ui = nkm.ui;
 const uilib = nkm.uilib;
 
-class FilterWidget extends uilib.inputs.Boolean {
+const base = uilib.inputs.Boolean;
+class FilterWidget extends base {
     constructor() { super(); }
 
     _Init() {
@@ -19,7 +20,7 @@ class FilterWidget extends uilib.inputs.Boolean {
 
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'transition': 'opacity 0.5s',
@@ -32,7 +33,7 @@ class FilterWidget extends uilib.inputs.Boolean {
                 'font-weight': '900',
 
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     set sourceEnum(p_value) {

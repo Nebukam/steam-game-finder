@@ -11,8 +11,8 @@ const _flag_showCooptimus = `show-cooptimus`;
 const _flag_showSpecs = `show-specs`;
 const _flag_showTags = `show-tags`;
 
-
-class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
+const base = nkm.uiworkspace.Explorer;
+class GameFiltersExplorer extends base {
     constructor() { super(); }
 
     _Init() {
@@ -40,7 +40,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
         }
     }
 */
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'max-width': '325px',
@@ -117,7 +117,7 @@ class GameFiltersExplorer extends nkm.uiworkspace.Explorer {
             }
 
 
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render() {

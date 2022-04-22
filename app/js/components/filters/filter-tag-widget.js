@@ -4,7 +4,9 @@ const ui = nkm.ui;
 const uilib = nkm.uilib;
 const SIGNAL = require(`../../signal`);
 
-class FilterTagWidget extends uilib.inputs.Boolean {
+const base = uilib.inputs.Boolean;
+
+class FilterTagWidget extends base {
     constructor() { super(); }
 
     _Init() {
@@ -22,7 +24,7 @@ class FilterTagWidget extends uilib.inputs.Boolean {
 
     }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'transition': 'opacity 0.5s',
@@ -45,7 +47,7 @@ class FilterTagWidget extends uilib.inputs.Boolean {
             '.label':{
                 
             }
-        }, super._Style());
+        }, base._Style());
     }
 
     set sourceEnum(p_value) {

@@ -2,15 +2,16 @@ const nkm = require(`@nkmjs/core`);
 const u = nkm.u;
 const ui = nkm.ui;
 
-class AppOptionsExplorer extends nkm.uiworkspace.Explorer {
+const base = nkm.uiworkspace.Explorer;
+class AppOptionsExplorer extends base {
     constructor() { super(); }
 
-    _Style() {
+    static _Style() {
         return nkm.style.Extends({
             ':host': {
                 'width':'350px'
             },
-        }, super._Style());
+        }, base._Style());
     }
 
     _Render(){
