@@ -9,7 +9,8 @@
 
 > Depending on review time, there can be a discrepancy between the github version and the published version.
 
-## - [:zap: **Web app**](https://nebukam.github.io/steam-game-finder/pwa/) *(May be broken from time to time)*
+## - [:zap: **Web app**](https://nebukam.github.io/steam-game-finder/pwa/) 
+#### *(May be broken from time to time)*
 > While the app is always up to date, it has a major caveat : it's using a [glitch server](https://glitch.com/edit/#!/steam-game-finder-server) to fetch data (and thus is slower and subjected to quotas). As a consequence, it cannot leverage the fact that a user is signed-in to steamcommunity.com to fetch private/friends profiles.
 
 ## Main Features
